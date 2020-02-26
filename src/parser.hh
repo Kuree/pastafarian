@@ -8,7 +8,8 @@
 class Parser {
 public:
   explicit Parser(Graph *graph) : graph_(graph) {}
-  void parse(std::vector<std::string> &files);
+  void parse(const std::string &filename, const std::string &top);
+  void parse(const std::vector<std::string> &files, const std::string &top);
 
 private:
   Graph *graph_;
