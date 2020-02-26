@@ -1,4 +1,4 @@
-module PassThrough(
+module PassThrough (
     input logic[15:0] in,
     output logic[15:0] out
 );
