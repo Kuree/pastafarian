@@ -1,9 +1,9 @@
-[submodule "extern/slang"]
-	path = extern/slang
-	url = https://github.com/MikePopoloski/slang
 [submodule "extern/googletest"]
 	path = extern/googletest
 	url = https://github.com/google/googletest
 [submodule "extern/fmt"]
 	path = extern/fmt
 	url = https://github.com/fmtlib/fmt
+[submodule "extern/yaml-cpp"]
+	path = extern/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp
