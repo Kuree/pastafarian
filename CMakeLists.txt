@@ -6,8 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 # adding deps
 add_subdirectory(extern/googletest)
 add_subdirectory(extern/fmt)
-# yaml
-add_subdirectory(extern/yaml-cpp)
+
 # adding src
 add_subdirectory(src)
 

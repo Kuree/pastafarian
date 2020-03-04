@@ -5,8 +5,10 @@
 #include <sstream>
 
 #include "fmt/format.h"
+#include "rapidjson/rapidjson.h"
 
 using fmt::format;
+
 
 
 void Parser::parse(const std::string &filename, const std::string &top) {
