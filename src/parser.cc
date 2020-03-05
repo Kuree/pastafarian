@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "fmt/format.h"
-#include "rapidjson/document.h"
+#include "simdjson.h"
 #include "util.hh"
 
 using fmt::format;
@@ -105,10 +105,12 @@ Node *parse_dispatch(const rapidjson::GenericValue<T> &value, Graph *g, Node *pa
 
 void Parser::parse(const std::string &json_content) {
     // parse the entire JSON
-    rapidjson::Document doc;
-    doc.Parse(json_content.c_str(), json_content.size());
+    auto parser = simdjson::document::parser();
+    auto [doc, error] = parser.parse(simdjson::padded_string(json_content));
+    if (error) {
+        throw std::runtime_error("unable to parse the JSON");
+    }
 
-    // we only need to parse instances since these are elaborated and compiled
     assert(doc.IsObject());
     assert(doc.HasMember("name"));
     assert(doc["name"].IsString());
