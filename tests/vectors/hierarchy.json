@@ -1,0 +1,312 @@
+{
+  "name": "$root",
+  "kind": "Root",
+  "addr": 32634512,
+  "members": [
+    {
+      "name": "",
+      "kind": "CompilationUnit",
+      "addr": 32626904,
+      "members": [
+        {
+          "name": "mod1",
+          "kind": "Definition",
+          "addr": 32627080,
+          "members": [
+            {
+              "name": "in",
+              "kind": "Port",
+              "addr": 32627800,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "32627992 in"
+            },
+            {
+              "name": "in",
+              "kind": "Net",
+              "addr": 32627992,
+              "type": "logic"
+            },
+            {
+              "name": "out",
+              "kind": "Port",
+              "addr": 32628128,
+              "type": "logic",
+              "direction": "Out",
+              "internalSymbol": "32628320 out"
+            },
+            {
+              "name": "out",
+              "kind": "Variable",
+              "addr": 32628320,
+              "type": "logic",
+              "lifetime": "Automatic",
+              "isConst": false
+            },
+            {
+              "name": "",
+              "kind": "ContinuousAssign",
+              "addr": 32628456,
+              "assignment": {
+                "kind": "Assignment",
+                "type": "logic",
+                "left": {
+                  "kind": "NamedValue",
+                  "type": "logic",
+                  "symbol": "32628320 out",
+                  "isHierarchical": false
+                },
+                "right": {
+                  "kind": "NamedValue",
+                  "type": "logic",
+                  "symbol": "32627992 in",
+                  "isHierarchical": false
+                },
+                "isNonBlocking": false
+              }
+            }
+          ],
+          "definitionKind": "Module"
+        },
+        {
+          "name": "top",
+          "kind": "Definition",
+          "addr": 32627440,
+          "members": [
+            {
+              "name": "in",
+              "kind": "Port",
+              "addr": 32628528,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "32628720 in"
+            },
+            {
+              "name": "in",
+              "kind": "Net",
+              "addr": 32628720,
+              "type": "logic"
+            },
+            {
+              "name": "out",
+              "kind": "Port",
+              "addr": 32628856,
+              "type": "logic",
+              "direction": "Out",
+              "internalSymbol": "32629048 out"
+            },
+            {
+              "name": "out",
+              "kind": "Variable",
+              "addr": 32629048,
+              "type": "logic",
+              "lifetime": "Automatic",
+              "isConst": false
+            },
+            {
+              "name": "pass",
+              "kind": "ModuleInstance",
+              "addr": 32629336,
+              "members": [
+                {
+                  "name": "in",
+                  "kind": "Port",
+                  "addr": 32824880,
+                  "type": "logic",
+                  "direction": "In",
+                  "internalSymbol": "32825072 in",
+                  "externalConnection": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "32628720 in",
+                    "isHierarchical": false
+                  }
+                },
+                {
+                  "name": "in",
+                  "kind": "Net",
+                  "addr": 32825072,
+                  "type": "logic"
+                },
+                {
+                  "name": "out",
+                  "kind": "Port",
+                  "addr": 32825208,
+                  "type": "logic",
+                  "direction": "Out",
+                  "internalSymbol": "32825400 out",
+                  "externalConnection": {
+                    "kind": "Assignment",
+                    "type": "logic",
+                    "left": {
+                      "kind": "NamedValue",
+                      "type": "logic",
+                      "symbol": "32629048 out",
+                      "isHierarchical": false
+                    },
+                    "right": {
+                      "kind": "EmptyArgument",
+                      "type": "logic"
+                    },
+                    "isNonBlocking": false
+                  }
+                },
+                {
+                  "name": "out",
+                  "kind": "Variable",
+                  "addr": 32825400,
+                  "type": "logic",
+                  "lifetime": "Automatic",
+                  "isConst": false
+                },
+                {
+                  "name": "",
+                  "kind": "ContinuousAssign",
+                  "addr": 32825536,
+                  "assignment": {
+                    "kind": "Assignment",
+                    "type": "logic",
+                    "left": {
+                      "kind": "NamedValue",
+                      "type": "logic",
+                      "symbol": "32825400 out",
+                      "isHierarchical": false
+                    },
+                    "right": {
+                      "kind": "NamedValue",
+                      "type": "logic",
+                      "symbol": "32825072 in",
+                      "isHierarchical": false
+                    },
+                    "isNonBlocking": false
+                  }
+                }
+              ],
+              "definition": "32627080 mod1"
+            }
+          ],
+          "definitionKind": "Module"
+        }
+      ]
+    },
+    {
+      "name": "top",
+      "kind": "ModuleInstance",
+      "addr": 32825608,
+      "members": [
+        {
+          "name": "in",
+          "kind": "Port",
+          "addr": 32826584,
+          "type": "logic",
+          "direction": "In",
+          "internalSymbol": "32826776 in"
+        },
+        {
+          "name": "in",
+          "kind": "Net",
+          "addr": 32826776,
+          "type": "logic"
+        },
+        {
+          "name": "out",
+          "kind": "Port",
+          "addr": 32826912,
+          "type": "logic",
+          "direction": "Out",
+          "internalSymbol": "32827104 out"
+        },
+        {
+          "name": "out",
+          "kind": "Variable",
+          "addr": 32827104,
+          "type": "logic",
+          "lifetime": "Automatic",
+          "isConst": false
+        },
+        {
+          "name": "pass",
+          "kind": "ModuleInstance",
+          "addr": 32827392,
+          "members": [
+            {
+              "name": "in",
+              "kind": "Port",
+              "addr": 32827688,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "32827880 in",
+              "externalConnection": {
+                "kind": "NamedValue",
+                "type": "logic",
+                "symbol": "32826776 in",
+                "isHierarchical": false
+              }
+            },
+            {
+              "name": "in",
+              "kind": "Net",
+              "addr": 32827880,
+              "type": "logic"
+            },
+            {
+              "name": "out",
+              "kind": "Port",
+              "addr": 32828016,
+              "type": "logic",
+              "direction": "Out",
+              "internalSymbol": "32828208 out",
+              "externalConnection": {
+                "kind": "Assignment",
+                "type": "logic",
+                "left": {
+                  "kind": "NamedValue",
+                  "type": "logic",
+                  "symbol": "32827104 out",
+                  "isHierarchical": false
+                },
+                "right": {
+                  "kind": "EmptyArgument",
+                  "type": "logic"
+                },
+                "isNonBlocking": false
+              }
+            },
+            {
+              "name": "out",
+              "kind": "Variable",
+              "addr": 32828208,
+              "type": "logic",
+              "lifetime": "Automatic",
+              "isConst": false
+            },
+            {
+              "name": "",
+              "kind": "ContinuousAssign",
+              "addr": 32828344,
+              "assignment": {
+                "kind": "Assignment",
+                "type": "logic",
+                "left": {
+                  "kind": "NamedValue",
+                  "type": "logic",
+                  "symbol": "32828208 out",
+                  "isHierarchical": false
+                },
+                "right": {
+                  "kind": "NamedValue",
+                  "type": "logic",
+                  "symbol": "32827880 in",
+                  "isHierarchical": false
+                },
+                "isNonBlocking": false
+              }
+            }
+          ],
+          "definition": "32627080 mod1"
+        }
+      ],
+      "definition": "32627440 top"
+    }
+  ]
+}

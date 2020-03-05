@@ -1,6 +1,11 @@
 #include "graph.hh"
 
-Node* Graph::add_node(const void* key) {
-    auto r = nodes_.emplace(key, Node());
-    return &r.first->second;
+Node * Graph::get_node(uint64_t key) {
+    if (has_node(key)) {
+        return nodes_map_.at(key);
+    } else {
+        // create an empty node
+        auto node = add_node(key, "");
+        return node;
+    }
 }
