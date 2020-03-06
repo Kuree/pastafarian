@@ -21,7 +21,7 @@ public:
     std::unordered_set<Edge*> edges_from;
 
     Node* parent = nullptr;
-    std::unordered_set<Node*> children;
+    std::vector<Node*> children;
 
     // only used when it's a constant node
     int64_t value = 0;
@@ -86,7 +86,7 @@ public:
             nodes_map_.emplace(key, n);
         }
         if (n->parent) {
-            n->parent->children.emplace(n);
+            n->parent->children.emplace_back(n);
         }
         return n;
     }
@@ -105,6 +105,9 @@ public:
 private:
     std::unordered_map<uint64_t, Node*> nodes_map_;
     std::vector<std::unique_ptr<Node>> nodes_;
+
+    // nodes search for cache
+    std::vector<Node*> cache_nodes_;
 
     uint64_t free_id_ptr_ = 0xFFFFFFFFFFFFFFFF;
 };

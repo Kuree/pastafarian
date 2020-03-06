@@ -14,6 +14,15 @@ constexpr auto SUCCESS = simdjson::error_code::SUCCESS;
 template <class T>
 Node *parse_dispatch(T value, Graph *g, Node *parent);
 
+
+template <class T>
+uint64_t get_address(T value) {
+    auto addr_json = value["addr"];
+    assert(addr_json.error == SUCCESS);
+    auto addr = addr_json.as_uint64_t();
+    return addr;
+}
+
 uint64_t parse_internal_symbol(std::string_view symbol) {
     auto tokens = string::get_tokens(symbol, " ");
     assert(tokens.size() == 2);
@@ -52,9 +61,7 @@ int64_t parse_num_literal(std::string_view str) {
 
 template <class T>
 Node *parse_param(T value, Graph *g) {
-    auto addr_json = value["addr"];
-    assert(addr_json.error == SUCCESS);
-    auto addr = addr_json.as_uint64_t();
+    auto addr = get_address(value);
 
     auto name_json = value["name"];
     assert(name_json.error == SUCCESS);
@@ -99,7 +106,7 @@ Node *parse_binary_op(T value, Graph *g) {
 template <class T>
 Node *parse_module(T &value, Graph *g, Node *parent) {
     auto name = std::string(value["name"].as_string());
-    auto addr = value["addr"].as_uint64_t();
+    auto addr = get_address(value);
     auto n = g->add_node(addr, name, NodeType::Module, parent);
 
     // parse inner members
@@ -109,6 +116,19 @@ Node *parse_module(T &value, Graph *g, Node *parent) {
         parse_dispatch(member, g, n);
     }
     return n;
+}
+
+template <class T>
+Node *parse_procedure_block(T value, Graph *g, Node *parent) {
+    auto addr = get_address(value);
+    auto node = g->add_node(addr, "", parent);
+
+    auto stmts = value["body"].as_array();
+    for (auto const &n: stmts) {
+        parse_dispatch(n, g, node);
+    }
+
+    return node;
 }
 
 template <class T>
@@ -147,11 +167,11 @@ Node *parse_continuous_assignment(T value, Graph *g, Node *parent) {
 template <class T>
 Node *parse_net(T value, Graph *g, Node *parent) {
     auto name_json = value["name"];
-    auto addr_json = value["addr"];
     assert(name_json.error == SUCCESS);
-    assert(addr_json.error == SUCCESS);
+
     auto name = std::string(name_json.as_string());
-    auto addr = addr_json.as_uint64_t();
+    auto addr = get_address(value);
+
     auto n = g->add_node(addr, name, NodeType::Net, parent);
     if (value["internalSymbol"].error == SUCCESS) {
         auto symbol = value["internalSymbol"].as_string();
@@ -198,6 +218,8 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
         return parse_binary_op(value, g);
     } else if (ast_kind == "Conversion") {
         return parse_conversion(value, g);
+    } else if (ast_kind == "ProceduralBlock") {
+        return parse_procedure_block(value, g, parent);
     } else {
         std::cout << "Unable to parse AST node kind " << ast_kind << std::endl;
     }

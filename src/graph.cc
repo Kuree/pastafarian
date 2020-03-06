@@ -2,6 +2,7 @@
 
 #include <stack>
 #include <queue>
+#include <algorithm>
 
 #include "util.hh"
 
@@ -35,7 +36,7 @@ bool Graph::has_path(Node *from, Node *to, uint64_t max_depth) {
 }
 
 Node * Graph::select(const std::string &name) {
-    // this is O(n) algorithm since we allow multiple top layers in the graph
+    // this is a tree traversal search
     auto tokens = string::get_tokens(name, ".");
     std::queue<std::string> search_names;
     for (auto const &n: tokens) {
@@ -43,16 +44,31 @@ Node * Graph::select(const std::string &name) {
     }
 
     uint64_t i = 0;
-    while (i < nodes_.size() && !search_names.empty()) {
+    // copy the raw vector over
+
+    if (cache_nodes_.size() != nodes_.size()) {
+        cache_nodes_.reserve(nodes_.size());
+        std::transform(nodes_.begin(), nodes_.end(), std::back_inserter(cache_nodes_), [](const auto &ptr) {
+          return ptr.get();
+        });
+    }
+    auto nodes = &cache_nodes_;
+
+    while (i < nodes->size() && !search_names.empty()) {
         auto const &target_name = search_names.front();
-        auto &node = nodes_[i];
+        auto &node = (*nodes)[i];
         if (node->name == target_name) {
             search_names.pop();
             if (search_names.empty())
-                return node.get();
+                return node;
+            // narrow the scope
+            // reset search scope and counter
+            i = 0;
+            nodes = &node->children;
+        } else {
+            i++;
         }
 
-        i++;
     }
 
     return nullptr;
