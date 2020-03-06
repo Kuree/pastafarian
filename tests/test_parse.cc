@@ -35,3 +35,13 @@ TEST_F(ParserTest, param) {   // NOLINT
     EXPECT_TRUE(in && out);
     EXPECT_TRUE(g.has_path(in, out));
 }
+
+TEST_F(ParserTest, reg) {   // NOLINT
+    parse("reg.json");
+    auto rst = g.select("register.rst");
+    auto out = g.select("register.out");
+    EXPECT_NE(rst, nullptr);
+    EXPECT_NE(out, nullptr);
+
+    EXPECT_TRUE(g.has_path(rst, out));
+}

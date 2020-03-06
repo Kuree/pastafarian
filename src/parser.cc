@@ -14,7 +14,6 @@ constexpr auto SUCCESS = simdjson::error_code::SUCCESS;
 template <class T>
 Node *parse_dispatch(T value, Graph *g, Node *parent);
 
-
 template <class T>
 uint64_t get_address(T value) {
     auto addr_json = value["addr"];
@@ -119,16 +118,66 @@ Node *parse_module(T &value, Graph *g, Node *parent) {
 }
 
 template <class T>
-Node *parse_procedure_block(T value, Graph *g, Node *parent) {
-    auto addr = get_address(value);
+Node *parse_block(T value, Graph *g, Node *parent) {
+    uint64_t addr;
+    if (value["addr"].error == SUCCESS) {
+        addr = get_address(value);
+    } else {
+        addr = g->get_free_id();
+    }
     auto node = g->add_node(addr, "", parent);
 
-    auto stmts = value["body"].as_array();
-    for (auto const &n: stmts) {
-        parse_dispatch(n, g, node);
-    }
-
+    auto body = value["body"];
+    parse_dispatch(body, g, node);
     return node;
+}
+
+template <class T>
+Node *parse_list(T value, Graph *g, Node *parent) {
+    auto list = value["list"];
+    assert(list.error == SUCCESS);
+    auto stmts = list.as_array();
+    for (auto const &stmt : stmts) {
+        parse_dispatch(stmt, g, parent);
+    }
+    return nullptr;
+}
+
+template <class T>
+Node *parse_expression_stmt(T value, Graph *g, Node *parent) {
+    auto expr = value["expr"];
+    assert(expr.error == SUCCESS);
+
+    return parse_dispatch(expr, g, parent);
+}
+
+template <class T>
+Node *parse_timed(T value, Graph *g, Node *parent) {
+    auto stmt = value["stmt"];
+    assert(stmt.error == SUCCESS);
+
+    return parse_dispatch(stmt, g, parent);
+}
+
+template <class T>
+Node *parse_conditional(T value, Graph *g, Node *parent) {
+    auto cond = value["cond"];
+    assert(cond.error == SUCCESS);
+    auto cond_node = parse_dispatch(cond, g, parent);
+    assert(cond_node != nullptr);
+    // this will be a control node
+    cond_node->type = NodeType::Control;
+
+    // true part
+    auto if_true = value["ifTrue"];
+    assert(if_true.error == SUCCESS);
+    parse_dispatch(if_true, g, cond_node);
+
+    auto if_false = value["ifFalse"];
+    if (if_false.error == SUCCESS) {
+        parse_dispatch(if_false, g, cond_node);
+    }
+    return cond_node;
 }
 
 template <class T>
@@ -218,8 +267,16 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
         return parse_binary_op(value, g);
     } else if (ast_kind == "Conversion") {
         return parse_conversion(value, g);
-    } else if (ast_kind == "ProceduralBlock") {
-        return parse_procedure_block(value, g, parent);
+    } else if (ast_kind == "ProceduralBlock" || ast_kind == "Block") {
+        return parse_block(value, g, parent);
+    } else if (ast_kind == "Timed") {
+        return parse_timed(value, g, parent);
+    } else if (ast_kind == "ExpressionStatement") {
+        return parse_expression_stmt(value, g, parent);
+    } else if (ast_kind == "List") {
+        return parse_list(value, g, parent);
+    } else if (ast_kind == "Conditional") {
+        return parse_conditional(value, g, parent);
     } else {
         std::cout << "Unable to parse AST node kind " << ast_kind << std::endl;
     }
