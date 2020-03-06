@@ -10,7 +10,6 @@ enum class NodeType { Constant, Register, Net, Control, Module, Assign };
 enum class EdgeType { Blocking, NonBlocking };
 
 struct Edge;
-void update_edge_type(Edge* edge, EdgeType type);
 
 struct Node {
 public:
@@ -23,6 +22,9 @@ public:
 
     Node* parent = nullptr;
     std::unordered_set<Node*> children;
+
+    // only used when it's a constant node
+    int64_t value = 0;
 
     Node(uint64_t id, std::string name) : id(id), name(std::move(name)) {}
     Node(uint64_t id, std::string name, Node* parent)
@@ -67,7 +69,6 @@ public:
     Edge(Node* from, Node* to) : from(from), to(to) {}
     Edge(Node* from, Node* to, EdgeType type) : from(from), to(to), type(type) {}
 };
-void inline update_edge_type(Edge* edge, EdgeType type) { edge->type = type; }
 
 class Graph {
 public:

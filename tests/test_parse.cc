@@ -27,3 +27,11 @@ TEST_F(ParserTest, hierarchy) {   // NOLINT
     EXPECT_NE(top_out, nullptr);
     EXPECT_TRUE(g.has_path(top_in, top_out));
 }
+
+TEST_F(ParserTest, param) {   // NOLINT
+    parse("param.json");
+    auto in = g.select("mod.in");
+    auto out = g.select("mod.out");
+    EXPECT_TRUE(in && out);
+    EXPECT_TRUE(g.has_path(in, out));
+}

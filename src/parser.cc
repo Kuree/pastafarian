@@ -29,6 +29,73 @@ Node *parse_named_value(T value, Graph *g) {
     return node;
 }
 
+int64_t parse_num_literal(std::string_view str) {
+    auto tokens = string::get_tokens(str, "'");
+    // we don't care about the size
+    auto name_str = tokens.back();
+    uint32_t base;
+    if (name_str[0] == 'b') {
+        base = 2;
+        name_str = name_str.substr(1);
+    } else if (name_str[0] == 'h') {
+        base = 16;
+        name_str = name_str.substr(1);
+    } else if (name_str[0] == 'o') {
+        base = 8;
+        name_str = name_str.substr(1);
+    } else {
+        base = 10;
+    }
+    auto r = std::stoll(name_str, nullptr, base);
+    return r;
+}
+
+template <class T>
+Node *parse_param(T value, Graph *g) {
+    auto addr_json = value["addr"];
+    assert(addr_json.error == SUCCESS);
+    auto addr = addr_json.as_uint64_t();
+
+    auto name_json = value["name"];
+    assert(name_json.error == SUCCESS);
+    auto name = std::string(name_json.as_string());
+
+    auto v_json = value["value"];
+    assert(v_json.error == SUCCESS);
+    auto v_str = v_json.as_string();
+    auto v = parse_num_literal(v_str);
+
+    auto node = g->add_node(addr, name, NodeType::Constant);
+    node->value = v;
+    return node;
+}
+
+template <class T>
+Node *parse_conversion(T value, Graph *g) {
+    // this is a constant node
+    auto constant_json = value["constant"];
+    assert(constant_json.error == SUCCESS);
+    auto v = parse_num_literal(constant_json.as_string());
+    auto node = g->add_node(g->get_free_id(), "", NodeType::Constant);
+    node->value = v;
+    return node;
+}
+
+template <class T>
+Node *parse_binary_op(T value, Graph *g) {
+    auto left_json = value["left"];
+    auto right_json = value["right"];
+    assert(left_json.error == SUCCESS && right_json.error == SUCCESS);
+    auto left = parse_dispatch(left_json, g, nullptr);
+    auto right = parse_dispatch(right_json, g, nullptr);
+
+    // create a new node that connect these two
+    auto node = g->add_node(g->get_free_id(), "");
+    left->add_edge(node);
+    right->add_edge(node);
+    return node;
+}
+
 template <class T>
 Node *parse_module(T &value, Graph *g, Node *parent) {
     auto name = std::string(value["name"].as_string());
@@ -71,7 +138,7 @@ Node *parse_assignment(T value, Graph *g, Node *parent) {
 }
 
 template <class T>
-Node *parse_continuous_assignment(T value, Graph *g, Node* parent) {
+Node *parse_continuous_assignment(T value, Graph *g, Node *parent) {
     auto const &assignment = value["assignment"];
     assert(assignment.error == SUCCESS);
     return parse_assignment(assignment, g, parent);
@@ -125,6 +192,12 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
         return nullptr;
     } else if (ast_kind == "ContinuousAssign") {
         return parse_continuous_assignment(value, g, parent);
+    } else if (ast_kind == "Parameter") {
+        return parse_param(value, g);
+    } else if (ast_kind == "BinaryOp") {
+        return parse_binary_op(value, g);
+    } else if (ast_kind == "Conversion") {
+        return parse_conversion(value, g);
     } else {
         std::cout << "Unable to parse AST node kind " << ast_kind << std::endl;
     }
@@ -135,11 +208,11 @@ void Parser::parse(const std::string &filename) {
     // parse the entire JSON
     auto [doc, error] = simdjson::document::parse(simdjson::get_corpus(filename));
     if (error) {
-        throw std::runtime_error("unable to parse the JSON");
+        throw std::runtime_error(::format("unable to parse the JSON file {0}"));
     }
     assert(std::string(doc["name"].as_string()) == "$root");
     auto const &members = doc["members"].as_array();
-    for (auto const &member: members) {
+    for (auto const &member : members) {
         parse_dispatch(member, graph_, nullptr);
     }
 }

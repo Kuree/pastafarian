@@ -1,0 +1,290 @@
+{
+  "name": "$root",
+  "kind": "Root",
+  "addr": 94903708383744,
+  "members": [
+    {
+      "name": "",
+      "kind": "CompilationUnit",
+      "addr": 94903708376128,
+      "members": [
+        {
+          "name": "mod",
+          "kind": "Definition",
+          "addr": 94903708376384,
+          "members": [
+            {
+              "name": "P",
+              "kind": "Parameter",
+              "addr": 94903708376680,
+              "type": "bit[3:0]",
+              "initializer": {
+                "kind": "IntegerLiteral",
+                "type": "bit[3:0]",
+                "constant": "4'b100"
+              },
+              "value": "4'b100",
+              "isLocal": false,
+              "isPort": true,
+              "isBody": false
+            },
+            {
+              "name": "P2",
+              "kind": "Parameter",
+              "addr": 94903708376864,
+              "type": "bit[3:0]",
+              "initializer": {
+                "kind": "IntegerLiteral",
+                "type": "bit[3:0]",
+                "constant": "4'b100"
+              },
+              "value": "4'b100",
+              "isLocal": false,
+              "isPort": true,
+              "isBody": false
+            },
+            {
+              "name": "in",
+              "kind": "Port",
+              "addr": 94903708377496,
+              "type": "<error>",
+              "direction": "In",
+              "internalSymbol": "94903708377720 in"
+            },
+            {
+              "name": "in",
+              "kind": "Net",
+              "addr": 94903708377720,
+              "type": "<error>"
+            },
+            {
+              "name": "out",
+              "kind": "Port",
+              "addr": 94903708377888,
+              "type": "<error>",
+              "direction": "Out",
+              "internalSymbol": "94903708378112 out"
+            },
+            {
+              "name": "out",
+              "kind": "Variable",
+              "addr": 94903708378112,
+              "type": "<error>",
+              "lifetime": "Automatic",
+              "isConst": false
+            },
+            {
+              "name": "v",
+              "kind": "Variable",
+              "addr": 94903708377136,
+              "type": "<error>",
+              "lifetime": "Automatic",
+              "isConst": false
+            },
+            {
+              "name": "",
+              "kind": "ContinuousAssign",
+              "addr": 94903708507872,
+              "assignment": {
+                "kind": "Invalid",
+                "type": "<error>",
+                "child": {
+                  "kind": "Assignment",
+                  "type": "<error>",
+                  "left": {
+                    "kind": "NamedValue",
+                    "type": "<error>",
+                    "symbol": "94903708377136 v",
+                    "isHierarchical": false
+                  },
+                  "right": {
+                    "kind": "NamedValue",
+                    "type": "<error>",
+                    "symbol": "94903708377720 in",
+                    "isHierarchical": false
+                  },
+                  "isNonBlocking": false
+                }
+              }
+            },
+            {
+              "name": "",
+              "kind": "ContinuousAssign",
+              "addr": 94903708507960,
+              "assignment": {
+                "kind": "Invalid",
+                "type": "<error>",
+                "child": {
+                  "kind": "Assignment",
+                  "type": "<error>",
+                  "left": {
+                    "kind": "NamedValue",
+                    "type": "<error>",
+                    "symbol": "94903708378112 out",
+                    "isHierarchical": false
+                  },
+                  "right": {
+                    "kind": "Invalid",
+                    "type": "<error>",
+                    "child": {
+                      "kind": "BinaryOp",
+                      "type": "<error>",
+                      "op": "Multiply",
+                      "left": {
+                        "kind": "NamedValue",
+                        "type": "<error>",
+                        "symbol": "94903708377136 v",
+                        "isHierarchical": false
+                      },
+                      "right": {
+                        "kind": "IntegerLiteral",
+                        "type": "bit[3:0]"
+                      }
+                    }
+                  },
+                  "isNonBlocking": false
+                }
+              }
+            }
+          ],
+          "definitionKind": "Module"
+        }
+      ]
+    },
+    {
+      "name": "mod",
+      "kind": "ModuleInstance",
+      "addr": 94903708508048,
+      "members": [
+        {
+          "name": "P",
+          "kind": "Parameter",
+          "addr": 94903708508216,
+          "type": "bit[3:0]",
+          "initializer": {
+            "kind": "IntegerLiteral",
+            "type": "bit[3:0]",
+            "constant": "4'b100"
+          },
+          "value": "4'b100",
+          "isLocal": false,
+          "isPort": true,
+          "isBody": false
+        },
+        {
+          "name": "P2",
+          "kind": "Parameter",
+          "addr": 94903708508400,
+          "type": "bit[3:0]",
+          "initializer": {
+            "kind": "IntegerLiteral",
+            "type": "bit[3:0]",
+            "constant": "4'b100"
+          },
+          "value": "4'b100",
+          "isLocal": false,
+          "isPort": true,
+          "isBody": false
+        },
+        {
+          "name": "in",
+          "kind": "Port",
+          "addr": 94903708518488,
+          "type": "logic[3:0]",
+          "direction": "In",
+          "internalSymbol": "94903708518712 in"
+        },
+        {
+          "name": "in",
+          "kind": "Net",
+          "addr": 94903708518712,
+          "type": "logic[3:0]"
+        },
+        {
+          "name": "out",
+          "kind": "Port",
+          "addr": 94903708518880,
+          "type": "logic[3:0]",
+          "direction": "Out",
+          "internalSymbol": "94903708519104 out"
+        },
+        {
+          "name": "out",
+          "kind": "Variable",
+          "addr": 94903708519104,
+          "type": "logic[3:0]",
+          "lifetime": "Automatic",
+          "isConst": false
+        },
+        {
+          "name": "v",
+          "kind": "Variable",
+          "addr": 94903708508672,
+          "type": "logic[3:0]",
+          "lifetime": "Automatic",
+          "isConst": false
+        },
+        {
+          "name": "",
+          "kind": "ContinuousAssign",
+          "addr": 94903708519272,
+          "assignment": {
+            "kind": "Assignment",
+            "type": "logic[3:0]",
+            "left": {
+              "kind": "NamedValue",
+              "type": "logic[3:0]",
+              "symbol": "94903708508672 v",
+              "isHierarchical": false
+            },
+            "right": {
+              "kind": "NamedValue",
+              "type": "logic[3:0]",
+              "symbol": "94903708518712 in",
+              "isHierarchical": false
+            },
+            "isNonBlocking": false
+          }
+        },
+        {
+          "name": "",
+          "kind": "ContinuousAssign",
+          "addr": 94903708519360,
+          "assignment": {
+            "kind": "Assignment",
+            "type": "logic[3:0]",
+            "left": {
+              "kind": "NamedValue",
+              "type": "logic[3:0]",
+              "symbol": "94903708519104 out",
+              "isHierarchical": false
+            },
+            "right": {
+              "kind": "BinaryOp",
+              "type": "logic[3:0]",
+              "op": "Multiply",
+              "left": {
+                "kind": "NamedValue",
+                "type": "logic[3:0]",
+                "symbol": "94903708508672 v",
+                "isHierarchical": false
+              },
+              "right": {
+                "kind": "Conversion",
+                "type": "logic[3:0]",
+                "constant": "4'b10",
+                "operand": {
+                  "kind": "IntegerLiteral",
+                  "type": "bit[3:0]",
+                  "constant": "4'b10"
+                }
+              }
+            },
+            "isNonBlocking": false
+          }
+        }
+      ],
+      "definition": "94903708376384 mod"
+    }
+  ]
+}
