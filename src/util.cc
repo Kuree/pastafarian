@@ -191,7 +191,7 @@ void trim(std::string &s) {
     rtrim(s);
 }
 
-std::vector<std::string> get_tokens(const std::string &line, const std::string &delimiter) {
+std::vector<std::string> get_tokens(std::string_view line, const std::string &delimiter) {
     std::vector<std::string> tokens;
     size_t prev = 0, pos = 0;
     std::string token;

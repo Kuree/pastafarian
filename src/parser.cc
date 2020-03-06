@@ -4,86 +4,112 @@
 #include <iostream>
 
 #include "fmt/format.h"
-#include "simdjson.h"
+#include "simdjson/simdjson.h"
 #include "util.hh"
 
 using fmt::format;
 
-template <typename T>
-Node *parse_dispatch(const rapidjson::GenericValue<T> &value, Graph *g, Node *parent);
+constexpr auto SUCCESS = simdjson::error_code::SUCCESS;
 
-uint64_t parse_internal_symbol(const std::string &symbol) {
+template <class T>
+Node *parse_dispatch(T value, Graph *g, Node *parent);
+
+uint64_t parse_internal_symbol(std::string_view symbol) {
     auto tokens = string::get_tokens(symbol, " ");
     assert(tokens.size() == 2);
     return static_cast<uint64_t>(std::stoll(tokens[0]));
 }
 
-template <typename T>
-Node *parse_named_value(const rapidjson::GenericValue<T> &value, Graph *g) {
-    auto symbol = value["symbol"].GetString();
+template <class T>
+Node *parse_named_value(T value, Graph *g) {
+    auto symbol = value["symbol"].as_string().value;
     auto symbol_addr = parse_internal_symbol(symbol);
     // if the symbol doesn't exist, the graph will create one
     auto node = g->get_node(symbol_addr);
     return node;
 }
 
-template <typename T>
-Node *parse_module(const rapidjson::GenericValue<T> &value, Graph *g, Node *parent) {
-    auto name = value["name"].GetString();
-    auto addr = value["addr"].GetUint64();
+template <class T>
+Node *parse_module(T &value, Graph *g, Node *parent) {
+    auto name = std::string(value["name"].as_string());
+    auto addr = value["addr"].as_uint64_t();
     auto n = g->add_node(addr, name, NodeType::Module, parent);
 
     // parse inner members
-    assert(value["members"].IsArray());
-    auto members = value["members"].GetArray();
+    assert(value["members"].error == SUCCESS);
+    auto members = value["members"].as_array();
     for (auto const &member : members) {
         parse_dispatch(member, g, n);
     }
     return n;
 }
 
-template <typename T>
-Node *parse_assignment(const rapidjson::GenericValue<T> &value, Graph *g, Node *parent) {
-    assert(value.HasMember("left"));
-    assert(value.HasMember("right"));
+template <class T>
+Node *parse_assignment(T value, Graph *g, Node *parent) {
     auto const &left = value["left"];
     auto const &right = value["right"];
+    // we create a new ID that's not in the symbol table
+    // this is fine since the symbol table is a memory address which won't go beyond
+    // half of uint64_t space
+    auto const addr = g->get_free_id();
     auto left_node = parse_dispatch(left, g, parent);
     auto right_node = parse_dispatch(right, g, parent);
     if (!right_node) {
         // right is just the parent
         right_node = parent;
     }
-    assert(value.HasMember("isNonBlocking"));
-    auto non_blocking = value["isNonBlocking"].GetBool();
+    // create an assignment node
+    auto n = g->add_node(addr, "", NodeType::Assign);
+    right_node->add_edge(n, EdgeType::Blocking);
+    if (right_node != parent && parent && parent->type == NodeType::Control) {
+        parent->add_edge(n, EdgeType::Blocking);
+    }
+    auto non_blocking = value["isNonBlocking"].as_bool();
     auto edge_type = non_blocking ? EdgeType::NonBlocking : EdgeType::Blocking;
-    right_node->add_edge(left_node, edge_type, nullptr);
+    n->add_edge(left_node, edge_type);
     return nullptr;
 }
 
-template <typename T>
-Node *parse_net(const rapidjson::GenericValue<T> &value, Graph *g, Node *parent) {
-    auto name = value["name"].GetString();
-    auto addr = value["addr"].GetUint64();
+template <class T>
+Node *parse_continuous_assignment(T value, Graph *g, Node* parent) {
+    auto const &assignment = value["assignment"];
+    assert(assignment.error == SUCCESS);
+    return parse_assignment(assignment, g, parent);
+}
+
+template <class T>
+Node *parse_net(T value, Graph *g, Node *parent) {
+    auto name_json = value["name"];
+    auto addr_json = value["addr"];
+    assert(name_json.error == SUCCESS);
+    assert(addr_json.error == SUCCESS);
+    auto name = std::string(name_json.as_string());
+    auto addr = addr_json.as_uint64_t();
     auto n = g->add_node(addr, name, NodeType::Net, parent);
-    if (value.HasMember("internalSymbol")) {
-        auto symbol = value["internalSymbol"].GetString();
+    if (value["internalSymbol"].error == SUCCESS) {
+        auto symbol = value["internalSymbol"].as_string();
         auto symbol_addr = parse_internal_symbol(symbol);
         g->alias_node(symbol_addr, n);
     }
-    if (value.HasMember("externalConnection")) {
+    if (value["externalConnection"].error == SUCCESS) {
         auto const &connection = value["externalConnection"];
         auto node = parse_dispatch(connection, g, n);
-        // add an assignment edge
-        if (connection["kind"] != "Assignment") n->add_edge(node);
+        if (node) {
+            // NOTICE:
+            // if the external connection is not an assignment, it will return nullptr
+            // add an assignment edge
+            auto assign = g->add_node(g->get_free_id(), "", NodeType::Assign);
+            node->add_edge(assign);
+            assign->add_edge(n);
+        }
     }
     return n;
 }
 
-template <typename T>
-Node *parse_dispatch(const rapidjson::GenericValue<T> &value, Graph *g, Node *parent) {
-    assert(value.HasMember("kind"));
-    const std::string &ast_kind = value["kind"].GetString();
+template <class T>
+Node *parse_dispatch(T value, Graph *g, Node *parent) {
+    assert(value["kind"].error == SUCCESS);
+    auto ast_kind = std::string(value["kind"].as_string());
     if (ast_kind == "CompilationUnit") {
         // don't care
     } else if (ast_kind == "ModuleInstance") {
@@ -97,28 +123,23 @@ Node *parse_dispatch(const rapidjson::GenericValue<T> &value, Graph *g, Node *pa
         return parse_assignment(value, g, parent);
     } else if (ast_kind == "EmptyArgument") {
         return nullptr;
+    } else if (ast_kind == "ContinuousAssign") {
+        return parse_continuous_assignment(value, g, parent);
     } else {
         std::cout << "Unable to parse AST node kind " << ast_kind << std::endl;
     }
     return nullptr;
 }
 
-void Parser::parse(const std::string &json_content) {
+void Parser::parse(const std::string &filename) {
     // parse the entire JSON
-    auto parser = simdjson::document::parser();
-    auto [doc, error] = parser.parse(simdjson::padded_string(json_content));
+    auto [doc, error] = simdjson::document::parse(simdjson::get_corpus(filename));
     if (error) {
         throw std::runtime_error("unable to parse the JSON");
     }
-
-    assert(doc.IsObject());
-    assert(doc.HasMember("name"));
-    assert(doc["name"].IsString());
-    assert(doc["name"].GetString() == "$root");
-    assert(doc.HasMember("members"));
-    assert(doc["members"].IsArray());
-    auto const &members = doc["members"].GetArray();
-    for (auto const &member : members) {
+    assert(std::string(doc["name"].as_string()) == "$root");
+    auto const &members = doc["members"].as_array();
+    for (auto const &member: members) {
         parse_dispatch(member, graph_, nullptr);
     }
 }

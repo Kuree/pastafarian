@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <string_view>
 
 std::string parse_verilog(const std::string &filename);
 std::string parse_verilog(const std::vector<std::string> &filenames);
@@ -25,7 +26,7 @@ char separator();
 
 namespace string {
 void trim(std::string &str);
-std::vector<std::string> get_tokens(const std::string &line, const std::string &delimiter);
+std::vector<std::string> get_tokens(std::string_view line, const std::string &delimiter);
 template <typename Iter>
 std::string static join(Iter begin, Iter end, const std::string &sep) {
     std::stringstream stream;

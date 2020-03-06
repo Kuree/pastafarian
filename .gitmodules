@@ -6,4 +6,4 @@
 	url = https://github.com/fmtlib/fmt
 [submodule "extern/simdjson"]
 	path = extern/simdjson
-	url = https://github.com/lemire/simdjson
+	url = https://github.com/Kuree/simdjson
