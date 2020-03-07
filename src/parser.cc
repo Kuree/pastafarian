@@ -199,6 +199,11 @@ Node *parse_conditional(T value, Graph *g, Node *parent) {
     if (if_false.error == SUCCESS) {
         parse_dispatch(if_false, g, cond_node);
     }
+
+    if (parent && parent->has_type(NodeType::Control)) {
+        parent->add_edge(cond_node);
+    }
+
     return cond_node;
 }
 
@@ -258,6 +263,14 @@ Node *parse_ternary(T value, Graph *g) {
     right_node->add_edge(control_assign_node);
 
     return control_assign_node;
+}
+
+template <class T>
+Node *parse_unary(T value, Graph *g) {
+    auto op = value["operand"];
+    assert(op.error == SUCCESS);
+    auto op_node = parse_dispatch(op, g, nullptr);
+    return op_node;
 }
 
 template <class T>
@@ -327,7 +340,12 @@ Node *parse_case(T value, Graph *g, Node *parent) {
 
         parse_dispatch(default_case, g, control_node);
     }
-    return nullptr;
+
+    if (parent && parent->has_type(NodeType::Control)) {
+        parent->add_edge(cond);
+    }
+
+    return cond;
 }
 
 template <class T>
@@ -393,7 +411,8 @@ Node *parse_net(T value, Graph *g, Node *parent) {
 }
 
 static std::unordered_set<std::string> don_t_care_kind = {"TransparentMember",  // NOLINT
-                                                          "TypeAlias"};
+                                                          "TypeAlias",
+                                                          "StatementBlock"};
 
 template <class T>
 Node *parse_dispatch(T value, Graph *g, Node *parent) {
@@ -442,6 +461,8 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
         return parse_element_select(value, g);
     } else if (ast_kind == "ConditionalOp") {
         return parse_ternary(value, g);
+    } else if (ast_kind == "UnaryOp") {
+        return parse_unary(value, g);
     } else {
         std::cerr << "Unable to parse AST node kind " << ast_kind << std::endl;
     }

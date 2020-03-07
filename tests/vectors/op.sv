@@ -14,4 +14,6 @@ assign b[0][1] = f? a[1]: c[0];
 
 assign b[e] = 1;
 
+assign f = |a;
+
 endmodule

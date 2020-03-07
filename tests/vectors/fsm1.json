@@ -1,0 +1,1306 @@
+{
+  "name": "$root",
+  "kind": "Root",
+  "addr": 93965271198240,
+  "members": [
+    {
+      "name": "",
+      "kind": "CompilationUnit",
+      "addr": 93965271203664,
+      "members": [
+        {
+          "name": "mod",
+          "kind": "Definition",
+          "addr": 93965271203920,
+          "members": [
+            {
+              "name": "clk",
+              "kind": "Port",
+              "addr": 93965271349008,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "93965271349232 clk"
+            },
+            {
+              "name": "clk",
+              "kind": "Net",
+              "addr": 93965271349232,
+              "type": "logic"
+            },
+            {
+              "name": "in",
+              "kind": "Port",
+              "addr": 93965271349400,
+              "type": "logic[1:0]",
+              "direction": "In",
+              "internalSymbol": "93965271349624 in"
+            },
+            {
+              "name": "in",
+              "kind": "Net",
+              "addr": 93965271349624,
+              "type": "logic[1:0]"
+            },
+            {
+              "name": "out",
+              "kind": "Port",
+              "addr": 93965271349792,
+              "type": "logic[1:0]",
+              "direction": "Out",
+              "internalSymbol": "93965271350016 out"
+            },
+            {
+              "name": "out",
+              "kind": "Variable",
+              "addr": 93965271350016,
+              "type": "logic[1:0]",
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "rst",
+              "kind": "Port",
+              "addr": 93965271350184,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "93965271350408 rst"
+            },
+            {
+              "name": "rst",
+              "kind": "Net",
+              "addr": 93965271350408,
+              "type": "logic"
+            },
+            {
+              "name": "Blue",
+              "kind": "TransparentMember",
+              "addr": 93965271348832
+            },
+            {
+              "name": "Red",
+              "kind": "TransparentMember",
+              "addr": 93965271348920
+            },
+            {
+              "name": "Color_state",
+              "kind": "TypeAlias",
+              "addr": 93965271204304,
+              "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+            },
+            {
+              "name": "Color_current_state",
+              "kind": "Variable",
+              "addr": 93965271350576,
+              "type": {
+                "name": "Color_state",
+                "kind": "TypeAlias",
+                "addr": 93965271204304,
+                "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+              },
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "Color_next_state",
+              "kind": "Variable",
+              "addr": 93965271350744,
+              "type": {
+                "name": "Color_state",
+                "kind": "TypeAlias",
+                "addr": 93965271204304,
+                "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+              },
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "",
+              "kind": "ProceduralBlock",
+              "addr": 93965271204656,
+              "procedureKind": "AlwaysFF",
+              "body": {
+                "kind": "Timed",
+                "timing": "EventList",
+                "stmt": {
+                  "kind": "Block",
+                  "blockKind": "Sequential",
+                  "body": {
+                    "kind": "List",
+                    "list": [
+                      {
+                        "kind": "Conditional",
+                        "cond": {
+                          "kind": "NamedValue",
+                          "type": "logic",
+                          "symbol": "93965271350408 rst",
+                          "isHierarchical": false
+                        },
+                        "ifTrue": {
+                          "kind": "Block",
+                          "blockKind": "Sequential",
+                          "body": {
+                            "kind": "List",
+                            "list": [
+                              {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "Color_state",
+                                    "kind": "TypeAlias",
+                                    "addr": 93965271204304,
+                                    "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "Color_state",
+                                      "kind": "TypeAlias",
+                                      "addr": 93965271204304,
+                                      "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+                                    },
+                                    "symbol": "93965271350576 Color_current_state",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{Blue=1'd0,Red=1'd1}mod.e$1",
+                                    "constant": "1'b1",
+                                    "symbol": "93965271348464 Red",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": true
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "ifFalse": {
+                          "kind": "ExpressionStatement",
+                          "expr": {
+                            "kind": "Assignment",
+                            "type": {
+                              "name": "Color_state",
+                              "kind": "TypeAlias",
+                              "addr": 93965271204304,
+                              "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+                            },
+                            "left": {
+                              "kind": "NamedValue",
+                              "type": {
+                                "name": "Color_state",
+                                "kind": "TypeAlias",
+                                "addr": 93965271204304,
+                                "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+                              },
+                              "symbol": "93965271350576 Color_current_state",
+                              "isHierarchical": false
+                            },
+                            "right": {
+                              "kind": "NamedValue",
+                              "type": {
+                                "name": "Color_state",
+                                "kind": "TypeAlias",
+                                "addr": 93965271204304,
+                                "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+                              },
+                              "symbol": "93965271350744 Color_next_state",
+                              "isHierarchical": false
+                            },
+                            "isNonBlocking": true
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "name": "",
+              "kind": "ProceduralBlock",
+              "addr": 93965271204840,
+              "procedureKind": "AlwaysComb",
+              "body": {
+                "kind": "Block",
+                "blockKind": "Sequential",
+                "body": {
+                  "kind": "List",
+                  "list": [
+                    {
+                      "kind": "Case",
+                      "condition": "Normal",
+                      "check": "Unique",
+                      "expr": {
+                        "kind": "NamedValue",
+                        "type": {
+                          "name": "Color_state",
+                          "kind": "TypeAlias",
+                          "addr": 93965271204304,
+                          "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+                        },
+                        "symbol": "93965271350576 Color_current_state",
+                        "isHierarchical": false
+                      },
+                      "items": [
+                        {
+                          "expressions": [
+                            {
+                              "kind": "NamedValue",
+                              "type": "enum{Blue=1'd0,Red=1'd1}mod.e$1",
+                              "constant": "1'b0",
+                              "symbol": "93965271347984 Blue",
+                              "isHierarchical": false
+                            }
+                          ],
+                          "stmt": {
+                            "kind": "Conditional",
+                            "cond": {
+                              "kind": "BinaryOp",
+                              "type": "logic",
+                              "op": "Equality",
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": "logic[1:0]",
+                                "symbol": "93965271349624 in",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "Conversion",
+                                "type": "logic[1:0]",
+                                "constant": "2'b1",
+                                "operand": {
+                                  "kind": "IntegerLiteral",
+                                  "type": "bit[1:0]",
+                                  "constant": "2'b1"
+                                }
+                              }
+                            },
+                            "ifTrue": {
+                              "kind": "Block",
+                              "blockKind": "Sequential",
+                              "body": {
+                                "kind": "List",
+                                "list": [
+                                  {
+                                    "kind": "ExpressionStatement",
+                                    "expr": {
+                                      "kind": "Assignment",
+                                      "type": {
+                                        "name": "Color_state",
+                                        "kind": "TypeAlias",
+                                        "addr": 93965271204304,
+                                        "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+                                      },
+                                      "left": {
+                                        "kind": "NamedValue",
+                                        "type": {
+                                          "name": "Color_state",
+                                          "kind": "TypeAlias",
+                                          "addr": 93965271204304,
+                                          "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+                                        },
+                                        "symbol": "93965271350744 Color_next_state",
+                                        "isHierarchical": false
+                                      },
+                                      "right": {
+                                        "kind": "NamedValue",
+                                        "type": "enum{Blue=1'd0,Red=1'd1}mod.e$1",
+                                        "constant": "1'b1",
+                                        "symbol": "93965271348464 Red",
+                                        "isHierarchical": false
+                                      },
+                                      "isNonBlocking": false
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "ifFalse": {
+                              "kind": "ExpressionStatement",
+                              "expr": {
+                                "kind": "Assignment",
+                                "type": {
+                                  "name": "Color_state",
+                                  "kind": "TypeAlias",
+                                  "addr": 93965271204304,
+                                  "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+                                },
+                                "left": {
+                                  "kind": "NamedValue",
+                                  "type": {
+                                    "name": "Color_state",
+                                    "kind": "TypeAlias",
+                                    "addr": 93965271204304,
+                                    "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+                                  },
+                                  "symbol": "93965271350744 Color_next_state",
+                                  "isHierarchical": false
+                                },
+                                "right": {
+                                  "kind": "NamedValue",
+                                  "type": "enum{Blue=1'd0,Red=1'd1}mod.e$1",
+                                  "constant": "1'b0",
+                                  "symbol": "93965271347984 Blue",
+                                  "isHierarchical": false
+                                },
+                                "isNonBlocking": false
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "expressions": [
+                            {
+                              "kind": "NamedValue",
+                              "type": "enum{Blue=1'd0,Red=1'd1}mod.e$1",
+                              "constant": "1'b1",
+                              "symbol": "93965271348464 Red",
+                              "isHierarchical": false
+                            }
+                          ],
+                          "stmt": {
+                            "kind": "Conditional",
+                            "cond": {
+                              "kind": "BinaryOp",
+                              "type": "logic",
+                              "op": "Equality",
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": "logic[1:0]",
+                                "symbol": "93965271349624 in",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "Conversion",
+                                "type": "logic[1:0]",
+                                "constant": "2'b1",
+                                "operand": {
+                                  "kind": "IntegerLiteral",
+                                  "type": "bit[1:0]",
+                                  "constant": "2'b1"
+                                }
+                              }
+                            },
+                            "ifTrue": {
+                              "kind": "Block",
+                              "blockKind": "Sequential",
+                              "body": {
+                                "kind": "List",
+                                "list": [
+                                  {
+                                    "kind": "ExpressionStatement",
+                                    "expr": {
+                                      "kind": "Assignment",
+                                      "type": {
+                                        "name": "Color_state",
+                                        "kind": "TypeAlias",
+                                        "addr": 93965271204304,
+                                        "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+                                      },
+                                      "left": {
+                                        "kind": "NamedValue",
+                                        "type": {
+                                          "name": "Color_state",
+                                          "kind": "TypeAlias",
+                                          "addr": 93965271204304,
+                                          "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+                                        },
+                                        "symbol": "93965271350744 Color_next_state",
+                                        "isHierarchical": false
+                                      },
+                                      "right": {
+                                        "kind": "NamedValue",
+                                        "type": "enum{Blue=1'd0,Red=1'd1}mod.e$1",
+                                        "constant": "1'b0",
+                                        "symbol": "93965271347984 Blue",
+                                        "isHierarchical": false
+                                      },
+                                      "isNonBlocking": false
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "ifFalse": {
+                              "kind": "Conditional",
+                              "cond": {
+                                "kind": "BinaryOp",
+                                "type": "logic",
+                                "op": "Equality",
+                                "left": {
+                                  "kind": "NamedValue",
+                                  "type": "logic[1:0]",
+                                  "symbol": "93965271349624 in",
+                                  "isHierarchical": false
+                                },
+                                "right": {
+                                  "kind": "Conversion",
+                                  "type": "logic[1:0]",
+                                  "constant": "2'b0",
+                                  "operand": {
+                                    "kind": "IntegerLiteral",
+                                    "type": "bit[1:0]",
+                                    "constant": "2'b0"
+                                  }
+                                }
+                              },
+                              "ifTrue": {
+                                "kind": "Block",
+                                "blockKind": "Sequential",
+                                "body": {
+                                  "kind": "List",
+                                  "list": [
+                                    {
+                                      "kind": "ExpressionStatement",
+                                      "expr": {
+                                        "kind": "Assignment",
+                                        "type": {
+                                          "name": "Color_state",
+                                          "kind": "TypeAlias",
+                                          "addr": 93965271204304,
+                                          "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+                                        },
+                                        "left": {
+                                          "kind": "NamedValue",
+                                          "type": {
+                                            "name": "Color_state",
+                                            "kind": "TypeAlias",
+                                            "addr": 93965271204304,
+                                            "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+                                          },
+                                          "symbol": "93965271350744 Color_next_state",
+                                          "isHierarchical": false
+                                        },
+                                        "right": {
+                                          "kind": "NamedValue",
+                                          "type": "enum{Blue=1'd0,Red=1'd1}mod.e$1",
+                                          "constant": "1'b1",
+                                          "symbol": "93965271348464 Red",
+                                          "isHierarchical": false
+                                        },
+                                        "isNonBlocking": false
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "ifFalse": {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "Color_state",
+                                    "kind": "TypeAlias",
+                                    "addr": 93965271204304,
+                                    "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "Color_state",
+                                      "kind": "TypeAlias",
+                                      "addr": 93965271204304,
+                                      "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+                                    },
+                                    "symbol": "93965271350744 Color_next_state",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{Blue=1'd0,Red=1'd1}mod.e$1",
+                                    "constant": "1'b1",
+                                    "symbol": "93965271348464 Red",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": false
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Color_Blue_Output",
+              "kind": "StatementBlock",
+              "addr": 93965271205208
+            },
+            {
+              "name": "Color_Red_Output",
+              "kind": "StatementBlock",
+              "addr": 93965271205440
+            },
+            {
+              "name": "",
+              "kind": "ProceduralBlock",
+              "addr": 93965271205024,
+              "procedureKind": "AlwaysComb",
+              "body": {
+                "kind": "Block",
+                "blockKind": "Sequential",
+                "body": {
+                  "kind": "List",
+                  "list": [
+                    {
+                      "kind": "Case",
+                      "condition": "Normal",
+                      "check": "Unique",
+                      "expr": {
+                        "kind": "NamedValue",
+                        "type": {
+                          "name": "Color_state",
+                          "kind": "TypeAlias",
+                          "addr": 93965271204304,
+                          "target": "enum{Blue=1'd0,Red=1'd1}mod.e$1"
+                        },
+                        "symbol": "93965271350576 Color_current_state",
+                        "isHierarchical": false
+                      },
+                      "items": [
+                        {
+                          "expressions": [
+                            {
+                              "kind": "NamedValue",
+                              "type": "enum{Blue=1'd0,Red=1'd1}mod.e$1",
+                              "constant": "1'b0",
+                              "symbol": "93965271347984 Blue",
+                              "isHierarchical": false
+                            }
+                          ],
+                          "stmt": {
+                            "kind": "Block",
+                            "blockKind": "Sequential",
+                            "block": "93965271205208 Color_Blue_Output",
+                            "body": {
+                              "kind": "ExpressionStatement",
+                              "expr": {
+                                "kind": "Assignment",
+                                "type": "logic[1:0]",
+                                "left": {
+                                  "kind": "NamedValue",
+                                  "type": "logic[1:0]",
+                                  "symbol": "93965271350016 out",
+                                  "isHierarchical": false
+                                },
+                                "right": {
+                                  "kind": "Conversion",
+                                  "type": "logic[1:0]",
+                                  "constant": "2'b1",
+                                  "operand": {
+                                    "kind": "IntegerLiteral",
+                                    "type": "bit[1:0]",
+                                    "constant": "2'b1"
+                                  }
+                                },
+                                "isNonBlocking": false
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "expressions": [
+                            {
+                              "kind": "NamedValue",
+                              "type": "enum{Blue=1'd0,Red=1'd1}mod.e$1",
+                              "constant": "1'b1",
+                              "symbol": "93965271348464 Red",
+                              "isHierarchical": false
+                            }
+                          ],
+                          "stmt": {
+                            "kind": "Block",
+                            "blockKind": "Sequential",
+                            "block": "93965271205440 Color_Red_Output",
+                            "body": {
+                              "kind": "ExpressionStatement",
+                              "expr": {
+                                "kind": "Assignment",
+                                "type": "logic[1:0]",
+                                "left": {
+                                  "kind": "NamedValue",
+                                  "type": "logic[1:0]",
+                                  "symbol": "93965271350016 out",
+                                  "isHierarchical": false
+                                },
+                                "right": {
+                                  "kind": "Conversion",
+                                  "type": "logic[1:0]",
+                                  "constant": "2'b10",
+                                  "operand": {
+                                    "kind": "IntegerLiteral",
+                                    "type": "bit[1:0]",
+                                    "constant": "2'b10"
+                                  }
+                                },
+                                "isNonBlocking": false
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "definitionKind": "Module"
+        }
+      ]
+    },
+    {
+      "name": "mod",
+      "kind": "ModuleInstance",
+      "addr": 93965271350912,
+      "members": [
+        {
+          "name": "clk",
+          "kind": "Port",
+          "addr": 93965271369688,
+          "type": "logic",
+          "direction": "In",
+          "internalSymbol": "93965271369912 clk"
+        },
+        {
+          "name": "clk",
+          "kind": "Net",
+          "addr": 93965271369912,
+          "type": "logic"
+        },
+        {
+          "name": "in",
+          "kind": "Port",
+          "addr": 93965271370080,
+          "type": "logic[1:0]",
+          "direction": "In",
+          "internalSymbol": "93965271370304 in"
+        },
+        {
+          "name": "in",
+          "kind": "Net",
+          "addr": 93965271370304,
+          "type": "logic[1:0]"
+        },
+        {
+          "name": "out",
+          "kind": "Port",
+          "addr": 93965271370472,
+          "type": "logic[1:0]",
+          "direction": "Out",
+          "internalSymbol": "93965271370696 out"
+        },
+        {
+          "name": "out",
+          "kind": "Variable",
+          "addr": 93965271370696,
+          "type": "logic[1:0]",
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "rst",
+          "kind": "Port",
+          "addr": 93965271371536,
+          "type": "logic",
+          "direction": "In",
+          "internalSymbol": "93965271371760 rst"
+        },
+        {
+          "name": "rst",
+          "kind": "Net",
+          "addr": 93965271371760,
+          "type": "logic"
+        },
+        {
+          "name": "Blue",
+          "kind": "TransparentMember",
+          "addr": 93965271369512
+        },
+        {
+          "name": "Red",
+          "kind": "TransparentMember",
+          "addr": 93965271369600
+        },
+        {
+          "name": "Color_state",
+          "kind": "TypeAlias",
+          "addr": 93965271351168,
+          "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+        },
+        {
+          "name": "Color_current_state",
+          "kind": "Variable",
+          "addr": 93965271371928,
+          "type": {
+            "name": "Color_state",
+            "kind": "TypeAlias",
+            "addr": 93965271351168,
+            "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+          },
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "Color_next_state",
+          "kind": "Variable",
+          "addr": 93965271372096,
+          "type": {
+            "name": "Color_state",
+            "kind": "TypeAlias",
+            "addr": 93965271351168,
+            "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+          },
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "",
+          "kind": "ProceduralBlock",
+          "addr": 93965271351520,
+          "procedureKind": "AlwaysFF",
+          "body": {
+            "kind": "Timed",
+            "timing": "EventList",
+            "stmt": {
+              "kind": "Block",
+              "blockKind": "Sequential",
+              "body": {
+                "kind": "List",
+                "list": [
+                  {
+                    "kind": "Conditional",
+                    "cond": {
+                      "kind": "NamedValue",
+                      "type": "logic",
+                      "symbol": "93965271371760 rst",
+                      "isHierarchical": false
+                    },
+                    "ifTrue": {
+                      "kind": "Block",
+                      "blockKind": "Sequential",
+                      "body": {
+                        "kind": "List",
+                        "list": [
+                          {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "Color_state",
+                                "kind": "TypeAlias",
+                                "addr": 93965271351168,
+                                "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "Color_state",
+                                  "kind": "TypeAlias",
+                                  "addr": 93965271351168,
+                                  "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+                                },
+                                "symbol": "93965271371928 Color_current_state",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": "enum{Blue=1'd0,Red=1'd1}mod.e$2",
+                                "constant": "1'b1",
+                                "symbol": "93965271369144 Red",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": true
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "ifFalse": {
+                      "kind": "ExpressionStatement",
+                      "expr": {
+                        "kind": "Assignment",
+                        "type": {
+                          "name": "Color_state",
+                          "kind": "TypeAlias",
+                          "addr": 93965271351168,
+                          "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+                        },
+                        "left": {
+                          "kind": "NamedValue",
+                          "type": {
+                            "name": "Color_state",
+                            "kind": "TypeAlias",
+                            "addr": 93965271351168,
+                            "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+                          },
+                          "symbol": "93965271371928 Color_current_state",
+                          "isHierarchical": false
+                        },
+                        "right": {
+                          "kind": "NamedValue",
+                          "type": {
+                            "name": "Color_state",
+                            "kind": "TypeAlias",
+                            "addr": 93965271351168,
+                            "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+                          },
+                          "symbol": "93965271372096 Color_next_state",
+                          "isHierarchical": false
+                        },
+                        "isNonBlocking": true
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "",
+          "kind": "ProceduralBlock",
+          "addr": 93965271351704,
+          "procedureKind": "AlwaysComb",
+          "body": {
+            "kind": "Block",
+            "blockKind": "Sequential",
+            "body": {
+              "kind": "List",
+              "list": [
+                {
+                  "kind": "Case",
+                  "condition": "Normal",
+                  "check": "Unique",
+                  "expr": {
+                    "kind": "NamedValue",
+                    "type": {
+                      "name": "Color_state",
+                      "kind": "TypeAlias",
+                      "addr": 93965271351168,
+                      "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+                    },
+                    "symbol": "93965271371928 Color_current_state",
+                    "isHierarchical": false
+                  },
+                  "items": [
+                    {
+                      "expressions": [
+                        {
+                          "kind": "NamedValue",
+                          "type": "enum{Blue=1'd0,Red=1'd1}mod.e$2",
+                          "constant": "1'b0",
+                          "symbol": "93965271368776 Blue",
+                          "isHierarchical": false
+                        }
+                      ],
+                      "stmt": {
+                        "kind": "Conditional",
+                        "cond": {
+                          "kind": "BinaryOp",
+                          "type": "logic",
+                          "op": "Equality",
+                          "left": {
+                            "kind": "NamedValue",
+                            "type": "logic[1:0]",
+                            "symbol": "93965271370304 in",
+                            "isHierarchical": false
+                          },
+                          "right": {
+                            "kind": "Conversion",
+                            "type": "logic[1:0]",
+                            "constant": "2'b1",
+                            "operand": {
+                              "kind": "IntegerLiteral",
+                              "type": "bit[1:0]",
+                              "constant": "2'b1"
+                            }
+                          }
+                        },
+                        "ifTrue": {
+                          "kind": "Block",
+                          "blockKind": "Sequential",
+                          "body": {
+                            "kind": "List",
+                            "list": [
+                              {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "Color_state",
+                                    "kind": "TypeAlias",
+                                    "addr": 93965271351168,
+                                    "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "Color_state",
+                                      "kind": "TypeAlias",
+                                      "addr": 93965271351168,
+                                      "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+                                    },
+                                    "symbol": "93965271372096 Color_next_state",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{Blue=1'd0,Red=1'd1}mod.e$2",
+                                    "constant": "1'b1",
+                                    "symbol": "93965271369144 Red",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": false
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "ifFalse": {
+                          "kind": "ExpressionStatement",
+                          "expr": {
+                            "kind": "Assignment",
+                            "type": {
+                              "name": "Color_state",
+                              "kind": "TypeAlias",
+                              "addr": 93965271351168,
+                              "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+                            },
+                            "left": {
+                              "kind": "NamedValue",
+                              "type": {
+                                "name": "Color_state",
+                                "kind": "TypeAlias",
+                                "addr": 93965271351168,
+                                "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+                              },
+                              "symbol": "93965271372096 Color_next_state",
+                              "isHierarchical": false
+                            },
+                            "right": {
+                              "kind": "NamedValue",
+                              "type": "enum{Blue=1'd0,Red=1'd1}mod.e$2",
+                              "constant": "1'b0",
+                              "symbol": "93965271368776 Blue",
+                              "isHierarchical": false
+                            },
+                            "isNonBlocking": false
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "expressions": [
+                        {
+                          "kind": "NamedValue",
+                          "type": "enum{Blue=1'd0,Red=1'd1}mod.e$2",
+                          "constant": "1'b1",
+                          "symbol": "93965271369144 Red",
+                          "isHierarchical": false
+                        }
+                      ],
+                      "stmt": {
+                        "kind": "Conditional",
+                        "cond": {
+                          "kind": "BinaryOp",
+                          "type": "logic",
+                          "op": "Equality",
+                          "left": {
+                            "kind": "NamedValue",
+                            "type": "logic[1:0]",
+                            "symbol": "93965271370304 in",
+                            "isHierarchical": false
+                          },
+                          "right": {
+                            "kind": "Conversion",
+                            "type": "logic[1:0]",
+                            "constant": "2'b1",
+                            "operand": {
+                              "kind": "IntegerLiteral",
+                              "type": "bit[1:0]",
+                              "constant": "2'b1"
+                            }
+                          }
+                        },
+                        "ifTrue": {
+                          "kind": "Block",
+                          "blockKind": "Sequential",
+                          "body": {
+                            "kind": "List",
+                            "list": [
+                              {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "Color_state",
+                                    "kind": "TypeAlias",
+                                    "addr": 93965271351168,
+                                    "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "Color_state",
+                                      "kind": "TypeAlias",
+                                      "addr": 93965271351168,
+                                      "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+                                    },
+                                    "symbol": "93965271372096 Color_next_state",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{Blue=1'd0,Red=1'd1}mod.e$2",
+                                    "constant": "1'b0",
+                                    "symbol": "93965271368776 Blue",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": false
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "ifFalse": {
+                          "kind": "Conditional",
+                          "cond": {
+                            "kind": "BinaryOp",
+                            "type": "logic",
+                            "op": "Equality",
+                            "left": {
+                              "kind": "NamedValue",
+                              "type": "logic[1:0]",
+                              "symbol": "93965271370304 in",
+                              "isHierarchical": false
+                            },
+                            "right": {
+                              "kind": "Conversion",
+                              "type": "logic[1:0]",
+                              "constant": "2'b0",
+                              "operand": {
+                                "kind": "IntegerLiteral",
+                                "type": "bit[1:0]",
+                                "constant": "2'b0"
+                              }
+                            }
+                          },
+                          "ifTrue": {
+                            "kind": "Block",
+                            "blockKind": "Sequential",
+                            "body": {
+                              "kind": "List",
+                              "list": [
+                                {
+                                  "kind": "ExpressionStatement",
+                                  "expr": {
+                                    "kind": "Assignment",
+                                    "type": {
+                                      "name": "Color_state",
+                                      "kind": "TypeAlias",
+                                      "addr": 93965271351168,
+                                      "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+                                    },
+                                    "left": {
+                                      "kind": "NamedValue",
+                                      "type": {
+                                        "name": "Color_state",
+                                        "kind": "TypeAlias",
+                                        "addr": 93965271351168,
+                                        "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+                                      },
+                                      "symbol": "93965271372096 Color_next_state",
+                                      "isHierarchical": false
+                                    },
+                                    "right": {
+                                      "kind": "NamedValue",
+                                      "type": "enum{Blue=1'd0,Red=1'd1}mod.e$2",
+                                      "constant": "1'b1",
+                                      "symbol": "93965271369144 Red",
+                                      "isHierarchical": false
+                                    },
+                                    "isNonBlocking": false
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "ifFalse": {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "Color_state",
+                                "kind": "TypeAlias",
+                                "addr": 93965271351168,
+                                "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "Color_state",
+                                  "kind": "TypeAlias",
+                                  "addr": 93965271351168,
+                                  "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+                                },
+                                "symbol": "93965271372096 Color_next_state",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": "enum{Blue=1'd0,Red=1'd1}mod.e$2",
+                                "constant": "1'b1",
+                                "symbol": "93965271369144 Red",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": false
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Color_Blue_Output",
+          "kind": "StatementBlock",
+          "addr": 93965271354392
+        },
+        {
+          "name": "Color_Red_Output",
+          "kind": "StatementBlock",
+          "addr": 93965271354624
+        },
+        {
+          "name": "",
+          "kind": "ProceduralBlock",
+          "addr": 93965271354208,
+          "procedureKind": "AlwaysComb",
+          "body": {
+            "kind": "Block",
+            "blockKind": "Sequential",
+            "body": {
+              "kind": "List",
+              "list": [
+                {
+                  "kind": "Case",
+                  "condition": "Normal",
+                  "check": "Unique",
+                  "expr": {
+                    "kind": "NamedValue",
+                    "type": {
+                      "name": "Color_state",
+                      "kind": "TypeAlias",
+                      "addr": 93965271351168,
+                      "target": "enum{Blue=1'd0,Red=1'd1}mod.e$2"
+                    },
+                    "symbol": "93965271371928 Color_current_state",
+                    "isHierarchical": false
+                  },
+                  "items": [
+                    {
+                      "expressions": [
+                        {
+                          "kind": "NamedValue",
+                          "type": "enum{Blue=1'd0,Red=1'd1}mod.e$2",
+                          "constant": "1'b0",
+                          "symbol": "93965271368776 Blue",
+                          "isHierarchical": false
+                        }
+                      ],
+                      "stmt": {
+                        "kind": "Block",
+                        "blockKind": "Sequential",
+                        "block": "93965271354392 Color_Blue_Output",
+                        "body": {
+                          "kind": "ExpressionStatement",
+                          "expr": {
+                            "kind": "Assignment",
+                            "type": "logic[1:0]",
+                            "left": {
+                              "kind": "NamedValue",
+                              "type": "logic[1:0]",
+                              "symbol": "93965271370696 out",
+                              "isHierarchical": false
+                            },
+                            "right": {
+                              "kind": "Conversion",
+                              "type": "logic[1:0]",
+                              "constant": "2'b1",
+                              "operand": {
+                                "kind": "IntegerLiteral",
+                                "type": "bit[1:0]",
+                                "constant": "2'b1"
+                              }
+                            },
+                            "isNonBlocking": false
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "expressions": [
+                        {
+                          "kind": "NamedValue",
+                          "type": "enum{Blue=1'd0,Red=1'd1}mod.e$2",
+                          "constant": "1'b1",
+                          "symbol": "93965271369144 Red",
+                          "isHierarchical": false
+                        }
+                      ],
+                      "stmt": {
+                        "kind": "Block",
+                        "blockKind": "Sequential",
+                        "block": "93965271354624 Color_Red_Output",
+                        "body": {
+                          "kind": "ExpressionStatement",
+                          "expr": {
+                            "kind": "Assignment",
+                            "type": "logic[1:0]",
+                            "left": {
+                              "kind": "NamedValue",
+                              "type": "logic[1:0]",
+                              "symbol": "93965271370696 out",
+                              "isHierarchical": false
+                            },
+                            "right": {
+                              "kind": "Conversion",
+                              "type": "logic[1:0]",
+                              "constant": "2'b10",
+                              "operand": {
+                                "kind": "IntegerLiteral",
+                                "type": "bit[1:0]",
+                                "constant": "2'b10"
+                              }
+                            },
+                            "isNonBlocking": false
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "definition": "93965271203920 mod"
+    }
+  ]
+}

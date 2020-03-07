@@ -1,13 +1,12 @@
-#include "gtest/gtest.h"
-#include <memory>
 #include <filesystem>
-#include "../src/parser.hh"
+#include <memory>
 
-class ParserTest: public ::testing::Test {
+#include "../src/parser.hh"
+#include "gtest/gtest.h"
+
+class ParserTest : public ::testing::Test {
 protected:
-    void SetUp() override {
-        p = std::make_unique<Parser>(&g);
-    }
+    void SetUp() override { p = std::make_unique<Parser>(&g); }
 
     void parse(const std::string &json_filename) {
         EXPECT_TRUE(std::filesystem::exists(json_filename));
@@ -18,7 +17,7 @@ protected:
     std::unique_ptr<Parser> p;
 };
 
-TEST_F(ParserTest, hierarchy) {   // NOLINT
+TEST_F(ParserTest, hierarchy) {  // NOLINT
     parse("hierarchy.json");
     auto top_in = g.select("top.in");
     EXPECT_NE(top_in, nullptr);
@@ -27,7 +26,7 @@ TEST_F(ParserTest, hierarchy) {   // NOLINT
     EXPECT_TRUE(g.has_path(top_in, top_out));
 }
 
-TEST_F(ParserTest, param) {   // NOLINT
+TEST_F(ParserTest, param) {  // NOLINT
     parse("param.json");
     auto in = g.select("mod.in");
     auto out = g.select("mod.out");
@@ -39,7 +38,7 @@ TEST_F(ParserTest, param) {   // NOLINT
     EXPECT_TRUE(g.has_path(local_param_value, out));
 }
 
-TEST_F(ParserTest, reg) {   // NOLINT
+TEST_F(ParserTest, reg) {  // NOLINT
     parse("reg.json");
     auto rst = g.select("register.rst");
     auto out = g.select("register.out");
@@ -49,7 +48,7 @@ TEST_F(ParserTest, reg) {   // NOLINT
     EXPECT_TRUE(g.has_path(rst, out));
 }
 
-TEST_F(ParserTest, case_) {   // NOLINT
+TEST_F(ParserTest, case_) {  // NOLINT
     parse("case.json");
     auto in = g.select("switch_test.in");
     auto out = g.select("switch_test.out");
@@ -59,8 +58,7 @@ TEST_F(ParserTest, case_) {   // NOLINT
     EXPECT_TRUE(g.has_path(in, out));
 }
 
-
-TEST_F(ParserTest, enum_) {   // NOLINT
+TEST_F(ParserTest, enum_) {  // NOLINT
     parse("enum.json");
     auto in = g.select("mod.in");
     auto out = g.select("mod.out");
@@ -70,7 +68,7 @@ TEST_F(ParserTest, enum_) {   // NOLINT
     EXPECT_TRUE(g.has_path(in, out));
 }
 
-TEST_F(ParserTest, op) {   // NOLINT
+TEST_F(ParserTest, op) {  // NOLINT
     parse("op.json");
     auto a = g.select("mod.a");
     auto b = g.select("mod.b");
@@ -94,4 +92,21 @@ TEST_F(ParserTest, op) {   // NOLINT
     EXPECT_TRUE(g.has_path(f, b));
     EXPECT_TRUE(g.has_path(a, b));
     EXPECT_TRUE(g.has_path(c, b));
+    EXPECT_TRUE(g.has_path(a, f));
+}
+
+TEST_F(ParserTest, fsm1) {  // NOLINT
+    parse("fsm1.json");
+
+    // should be able to select without the top
+    auto next_state = g.select("Color_next_state");
+    auto current_state = g.select("Color_current_state");
+    auto in = g.select("in");
+    EXPECT_NE(next_state, nullptr);
+    EXPECT_NE(current_state, nullptr);
+    EXPECT_NE(in, nullptr);
+
+    EXPECT_TRUE(g.has_path(in, next_state));
+    EXPECT_TRUE(g.has_path(next_state, current_state));
+    EXPECT_TRUE(g.has_path(current_state, next_state));
 }
