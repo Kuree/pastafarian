@@ -58,3 +58,14 @@ TEST_F(ParserTest, case_) {   // NOLINT
 
     EXPECT_TRUE(g.has_path(in, out));
 }
+
+
+TEST_F(ParserTest, enum_) {   // NOLINT
+    parse("enum.json");
+    auto in = g.select("mod.in");
+    auto out = g.select("mod.out");
+    EXPECT_NE(in, nullptr);
+    EXPECT_NE(out, nullptr);
+
+    EXPECT_TRUE(g.has_path(in, out));
+}

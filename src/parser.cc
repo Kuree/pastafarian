@@ -13,6 +13,7 @@ constexpr auto SUCCESS = simdjson::error_code::SUCCESS;
 
 template <class T>
 Node *parse_dispatch(T value, Graph *g, Node *parent);
+int64_t parse_num_literal(std::string_view str);
 
 template <class T>
 uint64_t get_address(T value) {
@@ -30,11 +31,22 @@ uint64_t parse_internal_symbol(std::string_view symbol) {
 
 template <class T>
 Node *parse_named_value(T value, Graph *g) {
+    // if it is a constant symbol
+    auto constant = value["constant"];
+
     auto symbol = value["symbol"].as_string().value;
     auto symbol_addr = parse_internal_symbol(symbol);
-    // if the symbol doesn't exist, the graph will create one
-    auto node = g->get_node(symbol_addr);
-    return node;
+
+    if (!g->has_node(symbol_addr) && constant.error == SUCCESS) {
+        auto c = parse_num_literal(constant.as_string().value);
+        auto node = g->add_node(symbol_addr, "", NodeType::Constant);
+        node->value = c;
+        return node;
+    } else {
+        // if the symbol doesn't exist, the graph will create one
+        auto node = g->get_node(symbol_addr);
+        return node;
+    }
 }
 
 int64_t parse_num_literal(std::string_view str) {
@@ -95,7 +107,6 @@ Node *parse_conversion(T value, Graph *g) {
     auto operand = value["operand"];
     assert(operand.error == SUCCESS);
     return parse_dispatch(operand, g, nullptr);
-
 }
 
 template <class T>
@@ -308,6 +319,8 @@ Node *parse_net(T value, Graph *g, Node *parent) {
     return n;
 }
 
+static std::unordered_set<std::string> don_t_care_kind = {"TransparentMember", "TypeAlias"};
+
 template <class T>
 Node *parse_dispatch(T value, Graph *g, Node *parent) {
     assert(value["kind"].error == SUCCESS);
@@ -347,6 +360,8 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
         return parse_num_literal(value, g);
     } else if (ast_kind == "Case") {
         parse_case(value, g, parent);
+    } else if (don_t_care_kind.find(ast_kind) != don_t_care_kind.end()) {
+        // don't care
     } else {
         std::cout << "Unable to parse AST node kind " << ast_kind << std::endl;
     }
