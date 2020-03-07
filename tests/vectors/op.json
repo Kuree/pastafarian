@@ -1,0 +1,554 @@
+{
+  "name": "$root",
+  "kind": "Root",
+  "addr": 93914828663072,
+  "members": [
+    {
+      "name": "",
+      "kind": "CompilationUnit",
+      "addr": 93914828667968,
+      "members": [
+        {
+          "name": "mod",
+          "kind": "Definition",
+          "addr": 93914828668224,
+          "members": [
+            {
+              "name": "a",
+              "kind": "Variable",
+              "addr": 93914828668520,
+              "type": "logic[3:0]",
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "b",
+              "kind": "Variable",
+              "addr": 93914828668688,
+              "type": "logic[3:0][1:0]",
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "c",
+              "kind": "Variable",
+              "addr": 93914828668856,
+              "type": "logic[1:0]",
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "e",
+              "kind": "Variable",
+              "addr": 93914828669024,
+              "type": "logic",
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "f",
+              "kind": "Variable",
+              "addr": 93914828669192,
+              "type": "logic",
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "",
+              "kind": "ContinuousAssign",
+              "addr": 93914828669712,
+              "assignment": {
+                "kind": "Assignment",
+                "type": "logic[1:0]",
+                "left": {
+                  "kind": "NamedValue",
+                  "type": "logic[1:0]",
+                  "symbol": "93914828668856 c",
+                  "isHierarchical": false
+                },
+                "right": {
+                  "kind": "RangeSelect",
+                  "type": "logic[1:0]",
+                  "selectionKind": "Simple",
+                  "value": {
+                    "kind": "NamedValue",
+                    "type": "logic[3:0]",
+                    "symbol": "93914828668520 a",
+                    "isHierarchical": false
+                  },
+                  "left": {
+                    "kind": "IntegerLiteral",
+                    "type": "int",
+                    "constant": "1"
+                  },
+                  "right": {
+                    "kind": "IntegerLiteral",
+                    "type": "int",
+                    "constant": "0"
+                  }
+                },
+                "isNonBlocking": false
+              }
+            },
+            {
+              "name": "",
+              "kind": "ContinuousAssign",
+              "addr": 93914828669800,
+              "assignment": {
+                "kind": "Assignment",
+                "type": "logic[3:0]",
+                "left": {
+                  "kind": "NamedValue",
+                  "type": "logic[3:0]",
+                  "symbol": "93914828668520 a",
+                  "isHierarchical": false
+                },
+                "right": {
+                  "kind": "Conversion",
+                  "type": "logic[3:0]",
+                  "operand": {
+                    "kind": "Concatenation",
+                    "type": "logic[96:0]",
+                    "operands": [
+                      {
+                        "kind": "IntegerLiteral",
+                        "type": "int",
+                        "constant": "1"
+                      },
+                      {
+                        "kind": "IntegerLiteral",
+                        "type": "int",
+                        "constant": "1"
+                      },
+                      {
+                        "kind": "IntegerLiteral",
+                        "type": "int",
+                        "constant": "1"
+                      },
+                      {
+                        "kind": "ElementSelect",
+                        "type": "logic",
+                        "value": {
+                          "kind": "ElementSelect",
+                          "type": "logic[1:0]",
+                          "value": {
+                            "kind": "NamedValue",
+                            "type": "logic[3:0][1:0]",
+                            "symbol": "93914828668688 b",
+                            "isHierarchical": false
+                          },
+                          "selector": {
+                            "kind": "IntegerLiteral",
+                            "type": "int",
+                            "constant": "0"
+                          }
+                        },
+                        "selector": {
+                          "kind": "IntegerLiteral",
+                          "type": "int",
+                          "constant": "0"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "isNonBlocking": false
+              }
+            },
+            {
+              "name": "",
+              "kind": "ContinuousAssign",
+              "addr": 93914828669888,
+              "assignment": {
+                "kind": "Assignment",
+                "type": "logic",
+                "left": {
+                  "kind": "ElementSelect",
+                  "type": "logic",
+                  "value": {
+                    "kind": "ElementSelect",
+                    "type": "logic[1:0]",
+                    "value": {
+                      "kind": "NamedValue",
+                      "type": "logic[3:0][1:0]",
+                      "symbol": "93914828668688 b",
+                      "isHierarchical": false
+                    },
+                    "selector": {
+                      "kind": "IntegerLiteral",
+                      "type": "int",
+                      "constant": "0"
+                    }
+                  },
+                  "selector": {
+                    "kind": "IntegerLiteral",
+                    "type": "int",
+                    "constant": "1"
+                  }
+                },
+                "right": {
+                  "kind": "ConditionalOp",
+                  "type": "logic",
+                  "pred": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "93914828669192 f",
+                    "isHierarchical": false
+                  },
+                  "left": {
+                    "kind": "ElementSelect",
+                    "type": "logic",
+                    "value": {
+                      "kind": "NamedValue",
+                      "type": "logic[3:0]",
+                      "symbol": "93914828668520 a",
+                      "isHierarchical": false
+                    },
+                    "selector": {
+                      "kind": "IntegerLiteral",
+                      "type": "int",
+                      "constant": "1"
+                    }
+                  },
+                  "right": {
+                    "kind": "ElementSelect",
+                    "type": "logic",
+                    "value": {
+                      "kind": "NamedValue",
+                      "type": "logic[1:0]",
+                      "symbol": "93914828668856 c",
+                      "isHierarchical": false
+                    },
+                    "selector": {
+                      "kind": "IntegerLiteral",
+                      "type": "int",
+                      "constant": "0"
+                    }
+                  }
+                },
+                "isNonBlocking": false
+              }
+            },
+            {
+              "name": "",
+              "kind": "ContinuousAssign",
+              "addr": 93914828669976,
+              "assignment": {
+                "kind": "Assignment",
+                "type": "logic[1:0]",
+                "left": {
+                  "kind": "ElementSelect",
+                  "type": "logic[1:0]",
+                  "value": {
+                    "kind": "NamedValue",
+                    "type": "logic[3:0][1:0]",
+                    "symbol": "93914828668688 b",
+                    "isHierarchical": false
+                  },
+                  "selector": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "93914828669024 e",
+                    "isHierarchical": false
+                  }
+                },
+                "right": {
+                  "kind": "Conversion",
+                  "type": "logic[1:0]",
+                  "constant": "2'b1",
+                  "operand": {
+                    "kind": "Conversion",
+                    "type": "logic[31:0]",
+                    "constant": "32'd1",
+                    "operand": {
+                      "kind": "IntegerLiteral",
+                      "type": "int",
+                      "constant": "1"
+                    }
+                  }
+                },
+                "isNonBlocking": false
+              }
+            }
+          ],
+          "definitionKind": "Module"
+        }
+      ]
+    },
+    {
+      "name": "mod",
+      "kind": "ModuleInstance",
+      "addr": 93914828799360,
+      "members": [
+        {
+          "name": "a",
+          "kind": "Variable",
+          "addr": 93914828799528,
+          "type": "logic[3:0]",
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "b",
+          "kind": "Variable",
+          "addr": 93914828799696,
+          "type": "logic[3:0][1:0]",
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "c",
+          "kind": "Variable",
+          "addr": 93914828799864,
+          "type": "logic[1:0]",
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "e",
+          "kind": "Variable",
+          "addr": 93914828800032,
+          "type": "logic",
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "f",
+          "kind": "Variable",
+          "addr": 93914828800200,
+          "type": "logic",
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "",
+          "kind": "ContinuousAssign",
+          "addr": 93914828808104,
+          "assignment": {
+            "kind": "Assignment",
+            "type": "logic[1:0]",
+            "left": {
+              "kind": "NamedValue",
+              "type": "logic[1:0]",
+              "symbol": "93914828799864 c",
+              "isHierarchical": false
+            },
+            "right": {
+              "kind": "RangeSelect",
+              "type": "logic[1:0]",
+              "selectionKind": "Simple",
+              "value": {
+                "kind": "NamedValue",
+                "type": "logic[3:0]",
+                "symbol": "93914828799528 a",
+                "isHierarchical": false
+              },
+              "left": {
+                "kind": "IntegerLiteral",
+                "type": "int",
+                "constant": "1"
+              },
+              "right": {
+                "kind": "IntegerLiteral",
+                "type": "int",
+                "constant": "0"
+              }
+            },
+            "isNonBlocking": false
+          }
+        },
+        {
+          "name": "",
+          "kind": "ContinuousAssign",
+          "addr": 93914828808192,
+          "assignment": {
+            "kind": "Assignment",
+            "type": "logic[3:0]",
+            "left": {
+              "kind": "NamedValue",
+              "type": "logic[3:0]",
+              "symbol": "93914828799528 a",
+              "isHierarchical": false
+            },
+            "right": {
+              "kind": "Conversion",
+              "type": "logic[3:0]",
+              "operand": {
+                "kind": "Concatenation",
+                "type": "logic[96:0]",
+                "operands": [
+                  {
+                    "kind": "IntegerLiteral",
+                    "type": "int",
+                    "constant": "1"
+                  },
+                  {
+                    "kind": "IntegerLiteral",
+                    "type": "int",
+                    "constant": "1"
+                  },
+                  {
+                    "kind": "IntegerLiteral",
+                    "type": "int",
+                    "constant": "1"
+                  },
+                  {
+                    "kind": "ElementSelect",
+                    "type": "logic",
+                    "value": {
+                      "kind": "ElementSelect",
+                      "type": "logic[1:0]",
+                      "value": {
+                        "kind": "NamedValue",
+                        "type": "logic[3:0][1:0]",
+                        "symbol": "93914828799696 b",
+                        "isHierarchical": false
+                      },
+                      "selector": {
+                        "kind": "IntegerLiteral",
+                        "type": "int",
+                        "constant": "0"
+                      }
+                    },
+                    "selector": {
+                      "kind": "IntegerLiteral",
+                      "type": "int",
+                      "constant": "0"
+                    }
+                  }
+                ]
+              }
+            },
+            "isNonBlocking": false
+          }
+        },
+        {
+          "name": "",
+          "kind": "ContinuousAssign",
+          "addr": 93914828808280,
+          "assignment": {
+            "kind": "Assignment",
+            "type": "logic",
+            "left": {
+              "kind": "ElementSelect",
+              "type": "logic",
+              "value": {
+                "kind": "ElementSelect",
+                "type": "logic[1:0]",
+                "value": {
+                  "kind": "NamedValue",
+                  "type": "logic[3:0][1:0]",
+                  "symbol": "93914828799696 b",
+                  "isHierarchical": false
+                },
+                "selector": {
+                  "kind": "IntegerLiteral",
+                  "type": "int",
+                  "constant": "0"
+                }
+              },
+              "selector": {
+                "kind": "IntegerLiteral",
+                "type": "int",
+                "constant": "1"
+              }
+            },
+            "right": {
+              "kind": "ConditionalOp",
+              "type": "logic",
+              "pred": {
+                "kind": "NamedValue",
+                "type": "logic",
+                "symbol": "93914828800200 f",
+                "isHierarchical": false
+              },
+              "left": {
+                "kind": "ElementSelect",
+                "type": "logic",
+                "value": {
+                  "kind": "NamedValue",
+                  "type": "logic[3:0]",
+                  "symbol": "93914828799528 a",
+                  "isHierarchical": false
+                },
+                "selector": {
+                  "kind": "IntegerLiteral",
+                  "type": "int",
+                  "constant": "1"
+                }
+              },
+              "right": {
+                "kind": "ElementSelect",
+                "type": "logic",
+                "value": {
+                  "kind": "NamedValue",
+                  "type": "logic[1:0]",
+                  "symbol": "93914828799864 c",
+                  "isHierarchical": false
+                },
+                "selector": {
+                  "kind": "IntegerLiteral",
+                  "type": "int",
+                  "constant": "0"
+                }
+              }
+            },
+            "isNonBlocking": false
+          }
+        },
+        {
+          "name": "",
+          "kind": "ContinuousAssign",
+          "addr": 93914828808368,
+          "assignment": {
+            "kind": "Assignment",
+            "type": "logic[1:0]",
+            "left": {
+              "kind": "ElementSelect",
+              "type": "logic[1:0]",
+              "value": {
+                "kind": "NamedValue",
+                "type": "logic[3:0][1:0]",
+                "symbol": "93914828799696 b",
+                "isHierarchical": false
+              },
+              "selector": {
+                "kind": "NamedValue",
+                "type": "logic",
+                "symbol": "93914828800032 e",
+                "isHierarchical": false
+              }
+            },
+            "right": {
+              "kind": "Conversion",
+              "type": "logic[1:0]",
+              "constant": "2'b1",
+              "operand": {
+                "kind": "Conversion",
+                "type": "logic[31:0]",
+                "constant": "32'd1",
+                "operand": {
+                  "kind": "IntegerLiteral",
+                  "type": "int",
+                  "constant": "1"
+                }
+              }
+            },
+            "isNonBlocking": false
+          }
+        }
+      ],
+      "definition": "93914828668224 mod"
+    }
+  ]
+}

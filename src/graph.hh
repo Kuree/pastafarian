@@ -1,12 +1,27 @@
 #ifndef PASTAFARIAN_GRAPH_HH
 #define PASTAFARIAN_GRAPH_HH
 
+#include <memory>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include <memory>
 
-enum class NodeType { Constant, Register, Net, Control, Module, Assign };
+enum class NodeType {
+    Constant = 1u << 0u,
+    Register = 1u << 1u,
+    Net = 1u << 2u,
+    Control = 1u << 3u,
+    Module = 1u << 4u,
+    Assign = 1u << 5u
+};
+
+inline NodeType operator|(NodeType a, NodeType b) {
+    return static_cast<NodeType>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b));
+}
+inline NodeType operator&(NodeType a, NodeType b) {
+    return static_cast<NodeType>(static_cast<uint32_t>(a) & static_cast<uint32_t>(b));
+}
+
 enum class EdgeType { Blocking, NonBlocking };
 
 struct Edge;
@@ -56,6 +71,8 @@ public:
         return e;
     }
 
+    inline bool has_type(NodeType t) { return static_cast<bool>(t & type); }
+
 private:
     static void update() {}
 };
@@ -98,7 +115,7 @@ public:
 
     static bool has_path(Node* from, Node* to, uint64_t max_depth = 1u << 20u);
 
-    Node *select(const std::string &name);
+    Node* select(const std::string& name);
 
     uint64_t get_free_id() { return free_id_ptr_--; }
 

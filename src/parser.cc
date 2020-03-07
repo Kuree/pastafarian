@@ -203,6 +203,84 @@ Node *parse_conditional(T value, Graph *g, Node *parent) {
 }
 
 template <class T>
+Node *parse_range_select(T value, Graph *g) {
+    auto v = value["value"];
+    auto left = value["left"];
+    auto right = value["right"];
+    auto v_node = parse_dispatch(v, g, nullptr);
+    auto left_node = parse_dispatch(left, g, nullptr);
+    auto right_node = parse_dispatch(right, g, nullptr);
+
+    auto node = g->add_node(g->get_free_id(), "");
+
+    v_node->add_edge(node);
+    left_node->add_edge(node);
+    right_node->add_edge(node);
+
+    return node;
+}
+
+template <class T>
+Node *parse_concat(T value, Graph *g) {
+    auto operands = value["operands"];
+    auto const &array = operands.as_array();
+
+    auto node = g->add_node(g->get_free_id(), "");
+
+    for (auto const &operand : array) {
+        auto n = parse_dispatch(operand, g, nullptr);
+        assert(n != nullptr);
+        n->add_edge(node);
+    }
+
+    return node;
+}
+
+template <class T>
+Node *parse_ternary(T value, Graph *g) {
+    auto pred = value["pred"];
+    assert(pred.error == SUCCESS);
+
+    auto left = value["left"];
+    auto right = value["right"];
+    assert(left.error == SUCCESS && right.error == SUCCESS);
+
+    auto pred_node = parse_dispatch(pred, g, nullptr);
+    auto left_node = parse_dispatch(left, g, nullptr);
+    auto right_node = parse_dispatch(right, g, nullptr);
+
+    // create a control node
+    auto node = g->add_node(g->get_free_id(), "", NodeType::Control);
+    pred_node->add_edge(node);
+
+    auto control_assign_node =
+        g->add_node(g->get_free_id(), "", NodeType::Control | NodeType::Assign);
+    node->add_edge(control_assign_node);
+
+    left_node->add_edge(control_assign_node);
+    right_node->add_edge(control_assign_node);
+
+    return control_assign_node;
+}
+
+template <class T>
+Node *parse_element_select(T value, Graph *g) {
+    auto v = value["value"];
+    auto selector = value["selector"];
+
+    auto v_node = parse_dispatch(v, g, nullptr);
+    assert(v_node != nullptr);
+    auto selector_node = parse_dispatch(selector, g, nullptr);
+    assert(v_node != nullptr);
+
+    auto node = g->add_node(g->get_free_id(), "");
+    v_node->add_edge(node);
+    selector_node->add_edge(node);
+
+    return node;
+}
+
+template <class T>
 Node *parse_case(T value, Graph *g, Node *parent) {
     auto items = value["items"];
     assert(items.error == SUCCESS);
@@ -274,7 +352,7 @@ Node *parse_assignment(T value, Graph *g, Node *parent) {
     // create an assignment node
     auto n = g->add_node(addr, "", NodeType::Assign);
     right_node->add_edge(n, EdgeType::Blocking);
-    if (right_node != parent && parent && parent->type == NodeType::Control) {
+    if (right_node != parent && parent && parent->has_type(NodeType::Control)) {
         parent->add_edge(n, EdgeType::Blocking);
     }
     auto non_blocking = value["isNonBlocking"].as_bool();
@@ -319,13 +397,14 @@ Node *parse_net(T value, Graph *g, Node *parent) {
     return n;
 }
 
-static std::unordered_set<std::string> don_t_care_kind = {"TransparentMember", "TypeAlias"};
+static std::unordered_set<std::string> don_t_care_kind = {"TransparentMember",  // NOLINT
+                                                          "TypeAlias"};
 
 template <class T>
 Node *parse_dispatch(T value, Graph *g, Node *parent) {
     assert(value["kind"].error == SUCCESS);
     auto ast_kind = std::string(value["kind"].as_string());
-    if (ast_kind == "CompilationUnit") {
+    if (ast_kind == "CompilationUnit" || don_t_care_kind.find(ast_kind) != don_t_care_kind.end()) {
         // don't care
     } else if (ast_kind == "ModuleInstance") {
         // this is a module
@@ -359,11 +438,17 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
     } else if (ast_kind == "IntegerLiteral") {
         return parse_num_literal(value, g);
     } else if (ast_kind == "Case") {
-        parse_case(value, g, parent);
-    } else if (don_t_care_kind.find(ast_kind) != don_t_care_kind.end()) {
-        // don't care
+        return parse_case(value, g, parent);
+    } else if (ast_kind == "RangeSelect") {
+        return parse_range_select(value, g);
+    } else if (ast_kind == "Concatenation") {
+        return parse_concat(value, g);
+    } else if (ast_kind == "ElementSelect") {
+        return parse_element_select(value, g);
+    } else if (ast_kind == "ConditionalOp") {
+        return parse_ternary(value, g);
     } else {
-        std::cout << "Unable to parse AST node kind " << ast_kind << std::endl;
+        std::cerr << "Unable to parse AST node kind " << ast_kind << std::endl;
     }
     return nullptr;
 }

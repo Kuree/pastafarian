@@ -69,3 +69,24 @@ TEST_F(ParserTest, enum_) {   // NOLINT
 
     EXPECT_TRUE(g.has_path(in, out));
 }
+
+TEST_F(ParserTest, op) {   // NOLINT
+    parse("op.json");
+    auto a = g.select("mod.a");
+    auto b = g.select("mod.b");
+    auto c = g.select("mod.c");
+    auto e = g.select("mod.e");
+    auto f = g.select("mod.f");
+
+    EXPECT_NE(a, nullptr);
+    EXPECT_NE(b, nullptr);
+    EXPECT_NE(c, nullptr);
+    EXPECT_NE(e, nullptr);
+    EXPECT_NE(f, nullptr);
+
+    EXPECT_TRUE(g.has_path(a, c));
+    EXPECT_TRUE(g.has_path(b, a));
+    EXPECT_TRUE(g.has_path(f, b));
+    EXPECT_TRUE(g.has_path(a, b));
+    EXPECT_TRUE(g.has_path(c, b));
+}
