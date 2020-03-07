@@ -389,7 +389,13 @@ Node *parse_net(T value, Graph *g, Node *parent) {
     auto name = std::string(name_json.as_string());
     auto addr = get_address(value);
 
-    auto n = g->add_node(addr, name, NodeType::Net, parent);
+    auto kind_str = std::string(value["kind"].as_string());
+    NodeType type = NodeType::Net;
+    if (kind_str == "Variable") {
+        type = NodeType::Variable;
+    }
+
+    auto n = g->add_node(addr, name, type, parent);
     if (value["internalSymbol"].error == SUCCESS) {
         auto symbol = value["internalSymbol"].as_string();
         auto symbol_addr = parse_internal_symbol(symbol);

@@ -10,9 +10,10 @@ enum class NodeType {
     Constant = 1u << 0u,
     Register = 1u << 1u,
     Net = 1u << 2u,
-    Control = 1u << 3u,
-    Module = 1u << 4u,
-    Assign = 1u << 5u
+    Variable = 1u << 3u,
+    Control = 1u << 4u,
+    Module = 1u << 5u,
+    Assign = 1u << 6u
 };
 
 inline NodeType operator|(NodeType a, NodeType b) {
@@ -109,7 +110,7 @@ public:
     }
     inline void alias_node(uint64_t key, Node* node) { nodes_map_.emplace(key, node); }
 
-    bool has_node(uint64_t key) { return nodes_map_.find(key) != nodes_map_.end(); }
+    bool has_node(uint64_t key) const { return nodes_map_.find(key) != nodes_map_.end(); }
 
     Node* get_node(uint64_t key);
 
