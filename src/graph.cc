@@ -19,18 +19,22 @@ Node *Graph::get_node(uint64_t key) {
 bool Graph::has_path(Node *from, Node *to, uint64_t max_depth) {
     // DFS based search
     std::stack<Node *> nodes;
+    std::unordered_set<Node *> visited;
     nodes.emplace(from);
     uint64_t count = 0;
     while (!nodes.empty() && ((count++) < max_depth)) {
         auto n = nodes.top();
         nodes.pop();
-        if (n == to) {
+        if (n->id == to->id) {
             return true;
         }
         auto const &edges = n->edges_to;
         for (auto const &nn : edges) {
+            if (visited.find(nn->to) != visited.end())
+                continue;
             nodes.push(nn->to);
         }
+        visited.emplace(n);
     }
     return false;
 }

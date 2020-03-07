@@ -211,13 +211,10 @@ Node *parse_range_select(T value, Graph *g) {
     auto left_node = parse_dispatch(left, g, nullptr);
     auto right_node = parse_dispatch(right, g, nullptr);
 
-    auto node = g->add_node(g->get_free_id(), "");
+    left_node->add_edge(v_node, EdgeType::Slice);
+    right_node->add_edge(v_node, EdgeType::Slice);
 
-    v_node->add_edge(node);
-    left_node->add_edge(node);
-    right_node->add_edge(node);
-
-    return node;
+    return v_node;
 }
 
 template <class T>
@@ -273,11 +270,9 @@ Node *parse_element_select(T value, Graph *g) {
     auto selector_node = parse_dispatch(selector, g, nullptr);
     assert(v_node != nullptr);
 
-    auto node = g->add_node(g->get_free_id(), "");
-    v_node->add_edge(node);
-    selector_node->add_edge(node);
+    selector_node->add_edge(v_node, EdgeType::Slice);
 
-    return node;
+    return v_node;
 }
 
 template <class T>

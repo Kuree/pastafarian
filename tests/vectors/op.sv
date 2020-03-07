@@ -3,9 +3,10 @@ module mod;
 logic [3:0] a;
 logic [3:0][1:0] b;
 logic [1:0] c;
-logic e, f;
+logic e, f, h, i;
 
 // slicing
+assign i = e? f: h;
 assign c = a[1:0];
 assign a = {1, 1, 1, b[0][0]};
 

@@ -1,0 +1,353 @@
+{
+  "name": "$root",
+  "kind": "Root",
+  "addr": 93932265752704,
+  "members": [
+    {
+      "name": "",
+      "kind": "CompilationUnit",
+      "addr": 93932265744880,
+      "members": [
+        {
+          "name": "IDLE",
+          "kind": "TransparentMember",
+          "addr": 93932265879232
+        },
+        {
+          "name": "WAIT",
+          "kind": "TransparentMember",
+          "addr": 93932265879320
+        },
+        {
+          "name": "WORK",
+          "kind": "TransparentMember",
+          "addr": 93932265879408
+        },
+        {
+          "name": "State",
+          "kind": "TypeAlias",
+          "addr": 93932265745136,
+          "target": "enum{IDLE=2'd0,WAIT=2'd1,WORK=2'd2}e$1"
+        },
+        {
+          "name": "mod",
+          "kind": "Definition",
+          "addr": 93932265745312,
+          "members": [
+            {
+              "name": "in",
+              "kind": "Port",
+              "addr": 93932265880776,
+              "type": {
+                "name": "State",
+                "kind": "TypeAlias",
+                "addr": 93932265745136,
+                "target": "enum{IDLE=2'd0,WAIT=2'd1,WORK=2'd2}e$1"
+              },
+              "direction": "In",
+              "internalSymbol": "93932265881000 in"
+            },
+            {
+              "name": "in",
+              "kind": "Net",
+              "addr": 93932265881000,
+              "type": {
+                "name": "State",
+                "kind": "TypeAlias",
+                "addr": 93932265745136,
+                "target": "enum{IDLE=2'd0,WAIT=2'd1,WORK=2'd2}e$1"
+              }
+            },
+            {
+              "name": "out",
+              "kind": "Port",
+              "addr": 93932265881168,
+              "type": {
+                "name": "State",
+                "kind": "TypeAlias",
+                "addr": 93932265745136,
+                "target": "enum{IDLE=2'd0,WAIT=2'd1,WORK=2'd2}e$1"
+              },
+              "direction": "Out",
+              "internalSymbol": "93932265881392 out"
+            },
+            {
+              "name": "out",
+              "kind": "Variable",
+              "addr": 93932265881392,
+              "type": {
+                "name": "State",
+                "kind": "TypeAlias",
+                "addr": 93932265745136,
+                "target": "enum{IDLE=2'd0,WAIT=2'd1,WORK=2'd2}e$1"
+              },
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "red",
+              "kind": "TransparentMember",
+              "addr": 93932265880600
+            },
+            {
+              "name": "green",
+              "kind": "TransparentMember",
+              "addr": 93932265880688
+            },
+            {
+              "name": "color",
+              "kind": "TypeAlias",
+              "addr": 93932265745696,
+              "target": "enum{red=2'd1,green=2'd2}mod.e$2"
+            },
+            {
+              "name": "c",
+              "kind": "Variable",
+              "addr": 93932265881560,
+              "type": {
+                "name": "color",
+                "kind": "TypeAlias",
+                "addr": 93932265745696,
+                "target": "enum{red=2'd1,green=2'd2}mod.e$2"
+              },
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "",
+              "kind": "ContinuousAssign",
+              "addr": 93932265881728,
+              "assignment": {
+                "kind": "Assignment",
+                "type": {
+                  "name": "color",
+                  "kind": "TypeAlias",
+                  "addr": 93932265745696,
+                  "target": "enum{red=2'd1,green=2'd2}mod.e$2"
+                },
+                "left": {
+                  "kind": "NamedValue",
+                  "type": {
+                    "name": "color",
+                    "kind": "TypeAlias",
+                    "addr": 93932265745696,
+                    "target": "enum{red=2'd1,green=2'd2}mod.e$2"
+                  },
+                  "symbol": "93932265881560 c",
+                  "isHierarchical": false
+                },
+                "right": {
+                  "kind": "NamedValue",
+                  "type": "enum{red=2'd1,green=2'd2}mod.e$2",
+                  "constant": "2'b1",
+                  "symbol": "93932265879864 red",
+                  "isHierarchical": false
+                },
+                "isNonBlocking": false
+              }
+            },
+            {
+              "name": "",
+              "kind": "ContinuousAssign",
+              "addr": 93932265881816,
+              "assignment": {
+                "kind": "Assignment",
+                "type": {
+                  "name": "State",
+                  "kind": "TypeAlias",
+                  "addr": 93932265745136,
+                  "target": "enum{IDLE=2'd0,WAIT=2'd1,WORK=2'd2}e$1"
+                },
+                "left": {
+                  "kind": "NamedValue",
+                  "type": {
+                    "name": "State",
+                    "kind": "TypeAlias",
+                    "addr": 93932265745136,
+                    "target": "enum{IDLE=2'd0,WAIT=2'd1,WORK=2'd2}e$1"
+                  },
+                  "symbol": "93932265881392 out",
+                  "isHierarchical": false
+                },
+                "right": {
+                  "kind": "NamedValue",
+                  "type": {
+                    "name": "State",
+                    "kind": "TypeAlias",
+                    "addr": 93932265745136,
+                    "target": "enum{IDLE=2'd0,WAIT=2'd1,WORK=2'd2}e$1"
+                  },
+                  "symbol": "93932265881000 in",
+                  "isHierarchical": false
+                },
+                "isNonBlocking": false
+              }
+            }
+          ],
+          "definitionKind": "Module"
+        }
+      ]
+    },
+    {
+      "name": "mod",
+      "kind": "ModuleInstance",
+      "addr": 93932265881904,
+      "members": [
+        {
+          "name": "in",
+          "kind": "Port",
+          "addr": 93932265890600,
+          "type": {
+            "name": "State",
+            "kind": "TypeAlias",
+            "addr": 93932265745136,
+            "target": "enum{IDLE=2'd0,WAIT=2'd1,WORK=2'd2}e$1"
+          },
+          "direction": "In",
+          "internalSymbol": "93932265890824 in"
+        },
+        {
+          "name": "in",
+          "kind": "Net",
+          "addr": 93932265890824,
+          "type": {
+            "name": "State",
+            "kind": "TypeAlias",
+            "addr": 93932265745136,
+            "target": "enum{IDLE=2'd0,WAIT=2'd1,WORK=2'd2}e$1"
+          }
+        },
+        {
+          "name": "out",
+          "kind": "Port",
+          "addr": 93932265890992,
+          "type": {
+            "name": "State",
+            "kind": "TypeAlias",
+            "addr": 93932265745136,
+            "target": "enum{IDLE=2'd0,WAIT=2'd1,WORK=2'd2}e$1"
+          },
+          "direction": "Out",
+          "internalSymbol": "93932265891216 out"
+        },
+        {
+          "name": "out",
+          "kind": "Variable",
+          "addr": 93932265891216,
+          "type": {
+            "name": "State",
+            "kind": "TypeAlias",
+            "addr": 93932265745136,
+            "target": "enum{IDLE=2'd0,WAIT=2'd1,WORK=2'd2}e$1"
+          },
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "red",
+          "kind": "TransparentMember",
+          "addr": 93932265890424
+        },
+        {
+          "name": "green",
+          "kind": "TransparentMember",
+          "addr": 93932265890512
+        },
+        {
+          "name": "color",
+          "kind": "TypeAlias",
+          "addr": 93932265882160,
+          "target": "enum{red=2'd1,green=2'd2}mod.e$3"
+        },
+        {
+          "name": "c",
+          "kind": "Variable",
+          "addr": 93932265891384,
+          "type": {
+            "name": "color",
+            "kind": "TypeAlias",
+            "addr": 93932265882160,
+            "target": "enum{red=2'd1,green=2'd2}mod.e$3"
+          },
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "",
+          "kind": "ContinuousAssign",
+          "addr": 93932265891552,
+          "assignment": {
+            "kind": "Assignment",
+            "type": {
+              "name": "color",
+              "kind": "TypeAlias",
+              "addr": 93932265882160,
+              "target": "enum{red=2'd1,green=2'd2}mod.e$3"
+            },
+            "left": {
+              "kind": "NamedValue",
+              "type": {
+                "name": "color",
+                "kind": "TypeAlias",
+                "addr": 93932265882160,
+                "target": "enum{red=2'd1,green=2'd2}mod.e$3"
+              },
+              "symbol": "93932265891384 c",
+              "isHierarchical": false
+            },
+            "right": {
+              "kind": "NamedValue",
+              "type": "enum{red=2'd1,green=2'd2}mod.e$3",
+              "constant": "2'b1",
+              "symbol": "93932265889688 red",
+              "isHierarchical": false
+            },
+            "isNonBlocking": false
+          }
+        },
+        {
+          "name": "",
+          "kind": "ContinuousAssign",
+          "addr": 93932265891640,
+          "assignment": {
+            "kind": "Assignment",
+            "type": {
+              "name": "State",
+              "kind": "TypeAlias",
+              "addr": 93932265745136,
+              "target": "enum{IDLE=2'd0,WAIT=2'd1,WORK=2'd2}e$1"
+            },
+            "left": {
+              "kind": "NamedValue",
+              "type": {
+                "name": "State",
+                "kind": "TypeAlias",
+                "addr": 93932265745136,
+                "target": "enum{IDLE=2'd0,WAIT=2'd1,WORK=2'd2}e$1"
+              },
+              "symbol": "93932265891216 out",
+              "isHierarchical": false
+            },
+            "right": {
+              "kind": "NamedValue",
+              "type": {
+                "name": "State",
+                "kind": "TypeAlias",
+                "addr": 93932265745136,
+                "target": "enum{IDLE=2'd0,WAIT=2'd1,WORK=2'd2}e$1"
+              },
+              "symbol": "93932265890824 in",
+              "isHierarchical": false
+            },
+            "isNonBlocking": false
+          }
+        }
+      ],
+      "definition": "93932265745312 mod"
+    }
+  ]
+}

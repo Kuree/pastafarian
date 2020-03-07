@@ -1,22 +1,22 @@
 {
   "name": "$root",
   "kind": "Root",
-  "addr": 93914828663072,
+  "addr": 94220254214528,
   "members": [
     {
       "name": "",
       "kind": "CompilationUnit",
-      "addr": 93914828667968,
+      "addr": 94220254206704,
       "members": [
         {
           "name": "mod",
           "kind": "Definition",
-          "addr": 93914828668224,
+          "addr": 94220254206960,
           "members": [
             {
               "name": "a",
               "kind": "Variable",
-              "addr": 93914828668520,
+              "addr": 94220254207256,
               "type": "logic[3:0]",
               "lifetime": "Static",
               "isConstant": false,
@@ -25,7 +25,7 @@
             {
               "name": "b",
               "kind": "Variable",
-              "addr": 93914828668688,
+              "addr": 94220254207424,
               "type": "logic[3:0][1:0]",
               "lifetime": "Static",
               "isConstant": false,
@@ -34,7 +34,7 @@
             {
               "name": "c",
               "kind": "Variable",
-              "addr": 93914828668856,
+              "addr": 94220254207592,
               "type": "logic[1:0]",
               "lifetime": "Static",
               "isConstant": false,
@@ -43,7 +43,7 @@
             {
               "name": "e",
               "kind": "Variable",
-              "addr": 93914828669024,
+              "addr": 94220254207760,
               "type": "logic",
               "lifetime": "Static",
               "isConstant": false,
@@ -52,7 +52,25 @@
             {
               "name": "f",
               "kind": "Variable",
-              "addr": 93914828669192,
+              "addr": 94220254207928,
+              "type": "logic",
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "h",
+              "kind": "Variable",
+              "addr": 94220254208096,
+              "type": "logic",
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "i",
+              "kind": "Variable",
+              "addr": 94220254208264,
               "type": "logic",
               "lifetime": "Static",
               "isConstant": false,
@@ -61,14 +79,52 @@
             {
               "name": "",
               "kind": "ContinuousAssign",
-              "addr": 93914828669712,
+              "addr": 94220254342528,
+              "assignment": {
+                "kind": "Assignment",
+                "type": "logic",
+                "left": {
+                  "kind": "NamedValue",
+                  "type": "logic",
+                  "symbol": "94220254208264 i",
+                  "isHierarchical": false
+                },
+                "right": {
+                  "kind": "ConditionalOp",
+                  "type": "logic",
+                  "pred": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "94220254207760 e",
+                    "isHierarchical": false
+                  },
+                  "left": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "94220254207928 f",
+                    "isHierarchical": false
+                  },
+                  "right": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "94220254208096 h",
+                    "isHierarchical": false
+                  }
+                },
+                "isNonBlocking": false
+              }
+            },
+            {
+              "name": "",
+              "kind": "ContinuousAssign",
+              "addr": 94220254342616,
               "assignment": {
                 "kind": "Assignment",
                 "type": "logic[1:0]",
                 "left": {
                   "kind": "NamedValue",
                   "type": "logic[1:0]",
-                  "symbol": "93914828668856 c",
+                  "symbol": "94220254207592 c",
                   "isHierarchical": false
                 },
                 "right": {
@@ -78,7 +134,7 @@
                   "value": {
                     "kind": "NamedValue",
                     "type": "logic[3:0]",
-                    "symbol": "93914828668520 a",
+                    "symbol": "94220254207256 a",
                     "isHierarchical": false
                   },
                   "left": {
@@ -98,14 +154,14 @@
             {
               "name": "",
               "kind": "ContinuousAssign",
-              "addr": 93914828669800,
+              "addr": 94220254342704,
               "assignment": {
                 "kind": "Assignment",
                 "type": "logic[3:0]",
                 "left": {
                   "kind": "NamedValue",
                   "type": "logic[3:0]",
-                  "symbol": "93914828668520 a",
+                  "symbol": "94220254207256 a",
                   "isHierarchical": false
                 },
                 "right": {
@@ -139,7 +195,7 @@
                           "value": {
                             "kind": "NamedValue",
                             "type": "logic[3:0][1:0]",
-                            "symbol": "93914828668688 b",
+                            "symbol": "94220254207424 b",
                             "isHierarchical": false
                           },
                           "selector": {
@@ -163,7 +219,7 @@
             {
               "name": "",
               "kind": "ContinuousAssign",
-              "addr": 93914828669888,
+              "addr": 94220254342792,
               "assignment": {
                 "kind": "Assignment",
                 "type": "logic",
@@ -176,7 +232,7 @@
                     "value": {
                       "kind": "NamedValue",
                       "type": "logic[3:0][1:0]",
-                      "symbol": "93914828668688 b",
+                      "symbol": "94220254207424 b",
                       "isHierarchical": false
                     },
                     "selector": {
@@ -197,7 +253,7 @@
                   "pred": {
                     "kind": "NamedValue",
                     "type": "logic",
-                    "symbol": "93914828669192 f",
+                    "symbol": "94220254207928 f",
                     "isHierarchical": false
                   },
                   "left": {
@@ -206,7 +262,7 @@
                     "value": {
                       "kind": "NamedValue",
                       "type": "logic[3:0]",
-                      "symbol": "93914828668520 a",
+                      "symbol": "94220254207256 a",
                       "isHierarchical": false
                     },
                     "selector": {
@@ -221,7 +277,7 @@
                     "value": {
                       "kind": "NamedValue",
                       "type": "logic[1:0]",
-                      "symbol": "93914828668856 c",
+                      "symbol": "94220254207592 c",
                       "isHierarchical": false
                     },
                     "selector": {
@@ -237,7 +293,7 @@
             {
               "name": "",
               "kind": "ContinuousAssign",
-              "addr": 93914828669976,
+              "addr": 94220254342880,
               "assignment": {
                 "kind": "Assignment",
                 "type": "logic[1:0]",
@@ -247,13 +303,13 @@
                   "value": {
                     "kind": "NamedValue",
                     "type": "logic[3:0][1:0]",
-                    "symbol": "93914828668688 b",
+                    "symbol": "94220254207424 b",
                     "isHierarchical": false
                   },
                   "selector": {
                     "kind": "NamedValue",
                     "type": "logic",
-                    "symbol": "93914828669024 e",
+                    "symbol": "94220254207760 e",
                     "isHierarchical": false
                   }
                 },
@@ -283,12 +339,12 @@
     {
       "name": "mod",
       "kind": "ModuleInstance",
-      "addr": 93914828799360,
+      "addr": 94220254342968,
       "members": [
         {
           "name": "a",
           "kind": "Variable",
-          "addr": 93914828799528,
+          "addr": 94220254343136,
           "type": "logic[3:0]",
           "lifetime": "Static",
           "isConstant": false,
@@ -297,7 +353,7 @@
         {
           "name": "b",
           "kind": "Variable",
-          "addr": 93914828799696,
+          "addr": 94220254343304,
           "type": "logic[3:0][1:0]",
           "lifetime": "Static",
           "isConstant": false,
@@ -306,7 +362,7 @@
         {
           "name": "c",
           "kind": "Variable",
-          "addr": 93914828799864,
+          "addr": 94220254343472,
           "type": "logic[1:0]",
           "lifetime": "Static",
           "isConstant": false,
@@ -315,7 +371,7 @@
         {
           "name": "e",
           "kind": "Variable",
-          "addr": 93914828800032,
+          "addr": 94220254343640,
           "type": "logic",
           "lifetime": "Static",
           "isConstant": false,
@@ -324,7 +380,25 @@
         {
           "name": "f",
           "kind": "Variable",
-          "addr": 93914828800200,
+          "addr": 94220254343808,
+          "type": "logic",
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "h",
+          "kind": "Variable",
+          "addr": 94220254343976,
+          "type": "logic",
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "i",
+          "kind": "Variable",
+          "addr": 94220254344144,
           "type": "logic",
           "lifetime": "Static",
           "isConstant": false,
@@ -333,14 +407,52 @@
         {
           "name": "",
           "kind": "ContinuousAssign",
-          "addr": 93914828808104,
+          "addr": 94220254356960,
+          "assignment": {
+            "kind": "Assignment",
+            "type": "logic",
+            "left": {
+              "kind": "NamedValue",
+              "type": "logic",
+              "symbol": "94220254344144 i",
+              "isHierarchical": false
+            },
+            "right": {
+              "kind": "ConditionalOp",
+              "type": "logic",
+              "pred": {
+                "kind": "NamedValue",
+                "type": "logic",
+                "symbol": "94220254343640 e",
+                "isHierarchical": false
+              },
+              "left": {
+                "kind": "NamedValue",
+                "type": "logic",
+                "symbol": "94220254343808 f",
+                "isHierarchical": false
+              },
+              "right": {
+                "kind": "NamedValue",
+                "type": "logic",
+                "symbol": "94220254343976 h",
+                "isHierarchical": false
+              }
+            },
+            "isNonBlocking": false
+          }
+        },
+        {
+          "name": "",
+          "kind": "ContinuousAssign",
+          "addr": 94220254357048,
           "assignment": {
             "kind": "Assignment",
             "type": "logic[1:0]",
             "left": {
               "kind": "NamedValue",
               "type": "logic[1:0]",
-              "symbol": "93914828799864 c",
+              "symbol": "94220254343472 c",
               "isHierarchical": false
             },
             "right": {
@@ -350,7 +462,7 @@
               "value": {
                 "kind": "NamedValue",
                 "type": "logic[3:0]",
-                "symbol": "93914828799528 a",
+                "symbol": "94220254343136 a",
                 "isHierarchical": false
               },
               "left": {
@@ -370,14 +482,14 @@
         {
           "name": "",
           "kind": "ContinuousAssign",
-          "addr": 93914828808192,
+          "addr": 94220254357136,
           "assignment": {
             "kind": "Assignment",
             "type": "logic[3:0]",
             "left": {
               "kind": "NamedValue",
               "type": "logic[3:0]",
-              "symbol": "93914828799528 a",
+              "symbol": "94220254343136 a",
               "isHierarchical": false
             },
             "right": {
@@ -411,7 +523,7 @@
                       "value": {
                         "kind": "NamedValue",
                         "type": "logic[3:0][1:0]",
-                        "symbol": "93914828799696 b",
+                        "symbol": "94220254343304 b",
                         "isHierarchical": false
                       },
                       "selector": {
@@ -435,7 +547,7 @@
         {
           "name": "",
           "kind": "ContinuousAssign",
-          "addr": 93914828808280,
+          "addr": 94220254357224,
           "assignment": {
             "kind": "Assignment",
             "type": "logic",
@@ -448,7 +560,7 @@
                 "value": {
                   "kind": "NamedValue",
                   "type": "logic[3:0][1:0]",
-                  "symbol": "93914828799696 b",
+                  "symbol": "94220254343304 b",
                   "isHierarchical": false
                 },
                 "selector": {
@@ -469,7 +581,7 @@
               "pred": {
                 "kind": "NamedValue",
                 "type": "logic",
-                "symbol": "93914828800200 f",
+                "symbol": "94220254343808 f",
                 "isHierarchical": false
               },
               "left": {
@@ -478,7 +590,7 @@
                 "value": {
                   "kind": "NamedValue",
                   "type": "logic[3:0]",
-                  "symbol": "93914828799528 a",
+                  "symbol": "94220254343136 a",
                   "isHierarchical": false
                 },
                 "selector": {
@@ -493,7 +605,7 @@
                 "value": {
                   "kind": "NamedValue",
                   "type": "logic[1:0]",
-                  "symbol": "93914828799864 c",
+                  "symbol": "94220254343472 c",
                   "isHierarchical": false
                 },
                 "selector": {
@@ -509,7 +621,7 @@
         {
           "name": "",
           "kind": "ContinuousAssign",
-          "addr": 93914828808368,
+          "addr": 94220254357312,
           "assignment": {
             "kind": "Assignment",
             "type": "logic[1:0]",
@@ -519,13 +631,13 @@
               "value": {
                 "kind": "NamedValue",
                 "type": "logic[3:0][1:0]",
-                "symbol": "93914828799696 b",
+                "symbol": "94220254343304 b",
                 "isHierarchical": false
               },
               "selector": {
                 "kind": "NamedValue",
                 "type": "logic",
-                "symbol": "93914828800032 e",
+                "symbol": "94220254343640 e",
                 "isHierarchical": false
               }
             },
@@ -548,7 +660,7 @@
           }
         }
       ],
-      "definition": "93914828668224 mod"
+      "definition": "94220254206960 mod"
     }
   ]
 }

@@ -77,13 +77,18 @@ TEST_F(ParserTest, op) {   // NOLINT
     auto c = g.select("mod.c");
     auto e = g.select("mod.e");
     auto f = g.select("mod.f");
+    auto h = g.select("mod.h");
+    auto i = g.select("mod.i");
 
     EXPECT_NE(a, nullptr);
     EXPECT_NE(b, nullptr);
     EXPECT_NE(c, nullptr);
     EXPECT_NE(e, nullptr);
     EXPECT_NE(f, nullptr);
+    EXPECT_NE(h, nullptr);
+    EXPECT_NE(i, nullptr);
 
+    EXPECT_TRUE(g.has_path(e, i));
     EXPECT_TRUE(g.has_path(a, c));
     EXPECT_TRUE(g.has_path(b, a));
     EXPECT_TRUE(g.has_path(f, b));

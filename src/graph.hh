@@ -22,7 +22,7 @@ inline NodeType operator&(NodeType a, NodeType b) {
     return static_cast<NodeType>(static_cast<uint32_t>(a) & static_cast<uint32_t>(b));
 }
 
-enum class EdgeType { Blocking, NonBlocking };
+enum class EdgeType { Blocking, NonBlocking, Slice };
 
 struct Edge;
 
