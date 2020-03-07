@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 #include <memory>
-#include <fstream>
 #include <filesystem>
 #include "../src/parser.hh"
 
@@ -34,6 +33,10 @@ TEST_F(ParserTest, param) {   // NOLINT
     auto out = g.select("mod.out");
     EXPECT_TRUE(in && out);
     EXPECT_TRUE(g.has_path(in, out));
+
+    auto local_param_value = g.select("mod.value");
+    EXPECT_NE(local_param_value, nullptr);
+    EXPECT_TRUE(g.has_path(local_param_value, out));
 }
 
 TEST_F(ParserTest, reg) {   // NOLINT
@@ -44,4 +47,14 @@ TEST_F(ParserTest, reg) {   // NOLINT
     EXPECT_NE(out, nullptr);
 
     EXPECT_TRUE(g.has_path(rst, out));
+}
+
+TEST_F(ParserTest, case_) {   // NOLINT
+    parse("case.json");
+    auto in = g.select("switch_test.in");
+    auto out = g.select("switch_test.out");
+    EXPECT_NE(in, nullptr);
+    EXPECT_NE(out, nullptr);
+
+    EXPECT_TRUE(g.has_path(in, out));
 }

@@ -59,7 +59,7 @@ int64_t parse_num_literal(std::string_view str) {
 }
 
 template <class T>
-Node *parse_param(T value, Graph *g) {
+Node *parse_param(T value, Graph *g, Node *parent) {
     auto addr = get_address(value);
 
     auto name_json = value["name"];
@@ -71,20 +71,31 @@ Node *parse_param(T value, Graph *g) {
     auto v_str = v_json.as_string();
     auto v = parse_num_literal(v_str);
 
-    auto node = g->add_node(addr, name, NodeType::Constant);
+    auto node = g->add_node(addr, name, NodeType::Constant, parent);
     node->value = v;
     return node;
 }
 
 template <class T>
-Node *parse_conversion(T value, Graph *g) {
-    // this is a constant node
+Node *parse_num_literal(T value, Graph *g) {
     auto constant_json = value["constant"];
     assert(constant_json.error == SUCCESS);
     auto v = parse_num_literal(constant_json.as_string());
     auto node = g->add_node(g->get_free_id(), "", NodeType::Constant);
     node->value = v;
     return node;
+}
+
+template <class T>
+Node *parse_conversion(T value, Graph *g) {
+    // we need to keep track of the conversion
+    // for our purpose, we don't care about the actual resizing etc
+    // and only care about the connectivity
+
+    auto operand = value["operand"];
+    assert(operand.error == SUCCESS);
+    return parse_dispatch(operand, g, nullptr);
+
 }
 
 template <class T>
@@ -128,7 +139,7 @@ Node *parse_block(T value, Graph *g, Node *parent) {
     auto node = g->add_node(addr, "", parent);
 
     auto body = value["body"];
-    parse_dispatch(body, g, node);
+    parse_dispatch(body, g, parent);
     return node;
 }
 
@@ -178,6 +189,61 @@ Node *parse_conditional(T value, Graph *g, Node *parent) {
         parse_dispatch(if_false, g, cond_node);
     }
     return cond_node;
+}
+
+template <class T>
+Node *parse_case(T value, Graph *g, Node *parent) {
+    auto items = value["items"];
+    assert(items.error == SUCCESS);
+
+    auto cond_node = value["expr"];
+    assert(cond_node.error == SUCCESS);
+    auto cond = parse_dispatch(cond_node, g, parent);
+
+    auto const &item_array = items.as_array();
+    for (auto const &item : item_array) {
+        auto expressions = item["expressions"];
+        assert(expressions.error == SUCCESS);
+        auto const &exprs = expressions.as_array();
+        std::vector<Node *> nodes;
+        for (auto const &expr : exprs) {
+            auto expr_node = parse_dispatch(expr, g, parent);
+            expr_node->type = NodeType::Control;
+            assert(expr_node != nullptr);
+            nodes.emplace_back(expr_node);
+        }
+        assert(!nodes.empty());
+
+        auto expr_node = nodes[0];
+        if (nodes.size() > 1) {
+            expr_node = g->add_node(g->get_free_id(), "", parent);
+
+            // then link them
+            for (auto const &e : nodes) {
+                e->add_edge(expr_node);
+            }
+        }
+        // control node with the condition variable
+        auto control_node = g->add_node(g->get_free_id(), "", parent);
+        control_node->type = NodeType::Control;
+        expr_node->add_edge(control_node);
+        cond->add_edge(control_node);
+
+        // stmt
+        auto stmt = item["stmt"];
+        assert(stmt.error == SUCCESS);
+        parse_dispatch(stmt, g, control_node);
+    }
+    // default case
+    auto default_case = value["defaultCase"];
+    if (default_case.error == SUCCESS) {
+        auto control_node = g->add_node(g->get_free_id(), "", parent);
+        control_node->type = NodeType::Control;
+        cond->add_edge(control_node);
+
+        parse_dispatch(default_case, g, control_node);
+    }
+    return nullptr;
 }
 
 template <class T>
@@ -262,7 +328,7 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
     } else if (ast_kind == "ContinuousAssign") {
         return parse_continuous_assignment(value, g, parent);
     } else if (ast_kind == "Parameter") {
-        return parse_param(value, g);
+        return parse_param(value, g, parent);
     } else if (ast_kind == "BinaryOp") {
         return parse_binary_op(value, g);
     } else if (ast_kind == "Conversion") {
@@ -277,6 +343,10 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
         return parse_list(value, g, parent);
     } else if (ast_kind == "Conditional") {
         return parse_conditional(value, g, parent);
+    } else if (ast_kind == "IntegerLiteral") {
+        return parse_num_literal(value, g);
+    } else if (ast_kind == "Case") {
+        parse_case(value, g, parent);
     } else {
         std::cout << "Unable to parse AST node kind " << ast_kind << std::endl;
     }

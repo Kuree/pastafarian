@@ -1,0 +1,348 @@
+{
+  "name": "$root",
+  "kind": "Root",
+  "addr": 94805898033664,
+  "members": [
+    {
+      "name": "",
+      "kind": "CompilationUnit",
+      "addr": 94805898026048,
+      "members": [
+        {
+          "name": "switch_test",
+          "kind": "Definition",
+          "addr": 94805898026304,
+          "members": [
+            {
+              "name": "in",
+              "kind": "Port",
+              "addr": 94805898026872,
+              "type": "logic[2:0]",
+              "direction": "In",
+              "internalSymbol": "94805898027096 in"
+            },
+            {
+              "name": "in",
+              "kind": "Net",
+              "addr": 94805898027096,
+              "type": "logic[2:0]"
+            },
+            {
+              "name": "out",
+              "kind": "Port",
+              "addr": 94805898027264,
+              "type": "logic[2:0]",
+              "direction": "Out",
+              "internalSymbol": "94805898027488 out"
+            },
+            {
+              "name": "out",
+              "kind": "Variable",
+              "addr": 94805898027488,
+              "type": "logic[2:0]",
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "",
+              "kind": "ProceduralBlock",
+              "addr": 94805898026688,
+              "procedureKind": "AlwaysComb",
+              "body": {
+                "kind": "Block",
+                "blockKind": "Sequential",
+                "body": {
+                  "kind": "List",
+                  "list": [
+                    {
+                      "kind": "Case",
+                      "condition": "Normal",
+                      "check": "Unique",
+                      "expr": {
+                        "kind": "NamedValue",
+                        "type": "logic[2:0]",
+                        "symbol": "94805898027096 in",
+                        "isHierarchical": false
+                      },
+                      "items": [
+                        {
+                          "expressions": [
+                            {
+                              "kind": "Conversion",
+                              "type": "logic[2:0]",
+                              "constant": "3'b0",
+                              "operand": {
+                                "kind": "IntegerLiteral",
+                                "type": "bit[2:0]",
+                                "constant": "3'b0"
+                              }
+                            }
+                          ],
+                          "stmt": {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": "logic[2:0]",
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": "logic[2:0]",
+                                "symbol": "94805898027488 out",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "Conversion",
+                                "type": "logic[2:0]",
+                                "constant": "3'b0",
+                                "operand": {
+                                  "kind": "IntegerLiteral",
+                                  "type": "bit[2:0]",
+                                  "constant": "3'b0"
+                                }
+                              },
+                              "isNonBlocking": false
+                            }
+                          }
+                        },
+                        {
+                          "expressions": [
+                            {
+                              "kind": "Conversion",
+                              "type": "logic[2:0]",
+                              "constant": "3'b1",
+                              "operand": {
+                                "kind": "IntegerLiteral",
+                                "type": "bit[2:0]",
+                                "constant": "3'b1"
+                              }
+                            }
+                          ],
+                          "stmt": {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": "logic[2:0]",
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": "logic[2:0]",
+                                "symbol": "94805898027488 out",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "Conversion",
+                                "type": "logic[2:0]",
+                                "constant": "3'b1",
+                                "operand": {
+                                  "kind": "IntegerLiteral",
+                                  "type": "bit[2:0]",
+                                  "constant": "3'b1"
+                                }
+                              },
+                              "isNonBlocking": false
+                            }
+                          }
+                        }
+                      ],
+                      "defaultCase": {
+                        "kind": "ExpressionStatement",
+                        "expr": {
+                          "kind": "Assignment",
+                          "type": "logic[2:0]",
+                          "left": {
+                            "kind": "NamedValue",
+                            "type": "logic[2:0]",
+                            "symbol": "94805898027488 out",
+                            "isHierarchical": false
+                          },
+                          "right": {
+                            "kind": "Conversion",
+                            "type": "logic[2:0]",
+                            "constant": "3'b10",
+                            "operand": {
+                              "kind": "IntegerLiteral",
+                              "type": "bit[2:0]",
+                              "constant": "3'b10"
+                            }
+                          },
+                          "isNonBlocking": false
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "definitionKind": "Module"
+        }
+      ]
+    },
+    {
+      "name": "switch_test",
+      "kind": "ModuleInstance",
+      "addr": 94805898027656,
+      "members": [
+        {
+          "name": "in",
+          "kind": "Port",
+          "addr": 94805898157712,
+          "type": "logic[2:0]",
+          "direction": "In",
+          "internalSymbol": "94805898157936 in"
+        },
+        {
+          "name": "in",
+          "kind": "Net",
+          "addr": 94805898157936,
+          "type": "logic[2:0]"
+        },
+        {
+          "name": "out",
+          "kind": "Port",
+          "addr": 94805898158104,
+          "type": "logic[2:0]",
+          "direction": "Out",
+          "internalSymbol": "94805898158328 out"
+        },
+        {
+          "name": "out",
+          "kind": "Variable",
+          "addr": 94805898158328,
+          "type": "logic[2:0]",
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "",
+          "kind": "ProceduralBlock",
+          "addr": 94805898027912,
+          "procedureKind": "AlwaysComb",
+          "body": {
+            "kind": "Block",
+            "blockKind": "Sequential",
+            "body": {
+              "kind": "List",
+              "list": [
+                {
+                  "kind": "Case",
+                  "condition": "Normal",
+                  "check": "Unique",
+                  "expr": {
+                    "kind": "NamedValue",
+                    "type": "logic[2:0]",
+                    "symbol": "94805898157936 in",
+                    "isHierarchical": false
+                  },
+                  "items": [
+                    {
+                      "expressions": [
+                        {
+                          "kind": "Conversion",
+                          "type": "logic[2:0]",
+                          "constant": "3'b0",
+                          "operand": {
+                            "kind": "IntegerLiteral",
+                            "type": "bit[2:0]",
+                            "constant": "3'b0"
+                          }
+                        }
+                      ],
+                      "stmt": {
+                        "kind": "ExpressionStatement",
+                        "expr": {
+                          "kind": "Assignment",
+                          "type": "logic[2:0]",
+                          "left": {
+                            "kind": "NamedValue",
+                            "type": "logic[2:0]",
+                            "symbol": "94805898158328 out",
+                            "isHierarchical": false
+                          },
+                          "right": {
+                            "kind": "Conversion",
+                            "type": "logic[2:0]",
+                            "constant": "3'b0",
+                            "operand": {
+                              "kind": "IntegerLiteral",
+                              "type": "bit[2:0]",
+                              "constant": "3'b0"
+                            }
+                          },
+                          "isNonBlocking": false
+                        }
+                      }
+                    },
+                    {
+                      "expressions": [
+                        {
+                          "kind": "Conversion",
+                          "type": "logic[2:0]",
+                          "constant": "3'b1",
+                          "operand": {
+                            "kind": "IntegerLiteral",
+                            "type": "bit[2:0]",
+                            "constant": "3'b1"
+                          }
+                        }
+                      ],
+                      "stmt": {
+                        "kind": "ExpressionStatement",
+                        "expr": {
+                          "kind": "Assignment",
+                          "type": "logic[2:0]",
+                          "left": {
+                            "kind": "NamedValue",
+                            "type": "logic[2:0]",
+                            "symbol": "94805898158328 out",
+                            "isHierarchical": false
+                          },
+                          "right": {
+                            "kind": "Conversion",
+                            "type": "logic[2:0]",
+                            "constant": "3'b1",
+                            "operand": {
+                              "kind": "IntegerLiteral",
+                              "type": "bit[2:0]",
+                              "constant": "3'b1"
+                            }
+                          },
+                          "isNonBlocking": false
+                        }
+                      }
+                    }
+                  ],
+                  "defaultCase": {
+                    "kind": "ExpressionStatement",
+                    "expr": {
+                      "kind": "Assignment",
+                      "type": "logic[2:0]",
+                      "left": {
+                        "kind": "NamedValue",
+                        "type": "logic[2:0]",
+                        "symbol": "94805898158328 out",
+                        "isHierarchical": false
+                      },
+                      "right": {
+                        "kind": "Conversion",
+                        "type": "logic[2:0]",
+                        "constant": "3'b10",
+                        "operand": {
+                          "kind": "IntegerLiteral",
+                          "type": "bit[2:0]",
+                          "constant": "3'b10"
+                        }
+                      },
+                      "isNonBlocking": false
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "definition": "94805898026304 switch_test"
+    }
+  ]
+}

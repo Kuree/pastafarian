@@ -1,22 +1,22 @@
 {
   "name": "$root",
   "kind": "Root",
-  "addr": 94903708383744,
+  "addr": 94471722039808,
   "members": [
     {
       "name": "",
       "kind": "CompilationUnit",
-      "addr": 94903708376128,
+      "addr": 94471722032192,
       "members": [
         {
           "name": "mod",
           "kind": "Definition",
-          "addr": 94903708376384,
+          "addr": 94471722032448,
           "members": [
             {
               "name": "P",
               "kind": "Parameter",
-              "addr": 94903708376680,
+              "addr": 94471722032744,
               "type": "bit[3:0]",
               "initializer": {
                 "kind": "IntegerLiteral",
@@ -31,7 +31,7 @@
             {
               "name": "P2",
               "kind": "Parameter",
-              "addr": 94903708376864,
+              "addr": 94471722032928,
               "type": "bit[3:0]",
               "initializer": {
                 "kind": "IntegerLiteral",
@@ -46,45 +46,62 @@
             {
               "name": "in",
               "kind": "Port",
-              "addr": 94903708377496,
+              "addr": 94471722033752,
               "type": "<error>",
               "direction": "In",
-              "internalSymbol": "94903708377720 in"
+              "internalSymbol": "94471722033976 in"
             },
             {
               "name": "in",
               "kind": "Net",
-              "addr": 94903708377720,
+              "addr": 94471722033976,
               "type": "<error>"
             },
             {
               "name": "out",
               "kind": "Port",
-              "addr": 94903708377888,
+              "addr": 94471722034144,
               "type": "<error>",
               "direction": "Out",
-              "internalSymbol": "94903708378112 out"
+              "internalSymbol": "94471722163968 out"
             },
             {
               "name": "out",
               "kind": "Variable",
-              "addr": 94903708378112,
+              "addr": 94471722163968,
               "type": "<error>",
-              "lifetime": "Automatic",
-              "isConst": false
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "value",
+              "kind": "Parameter",
+              "addr": 94471722033200,
+              "type": "bit[3:0]",
+              "initializer": {
+                "kind": "IntegerLiteral",
+                "type": "bit[3:0]",
+                "constant": "4'b10"
+              },
+              "value": "4'b10",
+              "isLocal": true,
+              "isPort": false,
+              "isBody": true
             },
             {
               "name": "v",
               "kind": "Variable",
-              "addr": 94903708377136,
+              "addr": 94471722033384,
               "type": "<error>",
-              "lifetime": "Automatic",
-              "isConst": false
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
             },
             {
               "name": "",
               "kind": "ContinuousAssign",
-              "addr": 94903708507872,
+              "addr": 94471722164136,
               "assignment": {
                 "kind": "Invalid",
                 "type": "<error>",
@@ -94,13 +111,13 @@
                   "left": {
                     "kind": "NamedValue",
                     "type": "<error>",
-                    "symbol": "94903708377136 v",
+                    "symbol": "94471722033384 v",
                     "isHierarchical": false
                   },
                   "right": {
                     "kind": "NamedValue",
                     "type": "<error>",
-                    "symbol": "94903708377720 in",
+                    "symbol": "94471722033976 in",
                     "isHierarchical": false
                   },
                   "isNonBlocking": false
@@ -110,7 +127,7 @@
             {
               "name": "",
               "kind": "ContinuousAssign",
-              "addr": 94903708507960,
+              "addr": 94471722164224,
               "assignment": {
                 "kind": "Invalid",
                 "type": "<error>",
@@ -120,7 +137,7 @@
                   "left": {
                     "kind": "NamedValue",
                     "type": "<error>",
-                    "symbol": "94903708378112 out",
+                    "symbol": "94471722163968 out",
                     "isHierarchical": false
                   },
                   "right": {
@@ -133,12 +150,14 @@
                       "left": {
                         "kind": "NamedValue",
                         "type": "<error>",
-                        "symbol": "94903708377136 v",
+                        "symbol": "94471722033384 v",
                         "isHierarchical": false
                       },
                       "right": {
-                        "kind": "IntegerLiteral",
-                        "type": "bit[3:0]"
+                        "kind": "NamedValue",
+                        "type": "bit[3:0]",
+                        "symbol": "94471722033200 value",
+                        "isHierarchical": false
                       }
                     }
                   },
@@ -154,12 +173,12 @@
     {
       "name": "mod",
       "kind": "ModuleInstance",
-      "addr": 94903708508048,
+      "addr": 94471722164312,
       "members": [
         {
           "name": "P",
           "kind": "Parameter",
-          "addr": 94903708508216,
+          "addr": 94471722164480,
           "type": "bit[3:0]",
           "initializer": {
             "kind": "IntegerLiteral",
@@ -174,7 +193,7 @@
         {
           "name": "P2",
           "kind": "Parameter",
-          "addr": 94903708508400,
+          "addr": 94471722164664,
           "type": "bit[3:0]",
           "initializer": {
             "kind": "IntegerLiteral",
@@ -189,58 +208,75 @@
         {
           "name": "in",
           "kind": "Port",
-          "addr": 94903708518488,
+          "addr": 94471722170968,
           "type": "logic[3:0]",
           "direction": "In",
-          "internalSymbol": "94903708518712 in"
+          "internalSymbol": "94471722171192 in"
         },
         {
           "name": "in",
           "kind": "Net",
-          "addr": 94903708518712,
+          "addr": 94471722171192,
           "type": "logic[3:0]"
         },
         {
           "name": "out",
           "kind": "Port",
-          "addr": 94903708518880,
+          "addr": 94471722171360,
           "type": "logic[3:0]",
           "direction": "Out",
-          "internalSymbol": "94903708519104 out"
+          "internalSymbol": "94471722171584 out"
         },
         {
           "name": "out",
           "kind": "Variable",
-          "addr": 94903708519104,
+          "addr": 94471722171584,
           "type": "logic[3:0]",
-          "lifetime": "Automatic",
-          "isConst": false
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "value",
+          "kind": "Parameter",
+          "addr": 94471722164936,
+          "type": "bit[3:0]",
+          "initializer": {
+            "kind": "IntegerLiteral",
+            "type": "bit[3:0]",
+            "constant": "4'b10"
+          },
+          "value": "4'b10",
+          "isLocal": true,
+          "isPort": false,
+          "isBody": true
         },
         {
           "name": "v",
           "kind": "Variable",
-          "addr": 94903708508672,
+          "addr": 94471722165120,
           "type": "logic[3:0]",
-          "lifetime": "Automatic",
-          "isConst": false
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
         },
         {
           "name": "",
           "kind": "ContinuousAssign",
-          "addr": 94903708519272,
+          "addr": 94471722171752,
           "assignment": {
             "kind": "Assignment",
             "type": "logic[3:0]",
             "left": {
               "kind": "NamedValue",
               "type": "logic[3:0]",
-              "symbol": "94903708508672 v",
+              "symbol": "94471722165120 v",
               "isHierarchical": false
             },
             "right": {
               "kind": "NamedValue",
               "type": "logic[3:0]",
-              "symbol": "94903708518712 in",
+              "symbol": "94471722171192 in",
               "isHierarchical": false
             },
             "isNonBlocking": false
@@ -249,14 +285,14 @@
         {
           "name": "",
           "kind": "ContinuousAssign",
-          "addr": 94903708519360,
+          "addr": 94471722171840,
           "assignment": {
             "kind": "Assignment",
             "type": "logic[3:0]",
             "left": {
               "kind": "NamedValue",
               "type": "logic[3:0]",
-              "symbol": "94903708519104 out",
+              "symbol": "94471722171584 out",
               "isHierarchical": false
             },
             "right": {
@@ -266,7 +302,7 @@
               "left": {
                 "kind": "NamedValue",
                 "type": "logic[3:0]",
-                "symbol": "94903708508672 v",
+                "symbol": "94471722165120 v",
                 "isHierarchical": false
               },
               "right": {
@@ -274,9 +310,11 @@
                 "type": "logic[3:0]",
                 "constant": "4'b10",
                 "operand": {
-                  "kind": "IntegerLiteral",
+                  "kind": "NamedValue",
                   "type": "bit[3:0]",
-                  "constant": "4'b10"
+                  "constant": "4'b10",
+                  "symbol": "94471722164936 value",
+                  "isHierarchical": false
                 }
               }
             },
@@ -284,7 +322,7 @@
           }
         }
       ],
-      "definition": "94903708376384 mod"
+      "definition": "94471722032448 mod"
     }
   ]
 }
