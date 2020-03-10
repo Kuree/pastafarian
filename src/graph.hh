@@ -117,6 +117,8 @@ public:
     static bool has_path(Node* from, Node* to, uint64_t max_depth = 1u << 20u);
 
     Node* select(const std::string& name);
+    void identify_registers();
+    [[nodiscard]] std::vector<Node*> get_registers() const;
 
     uint64_t get_free_id() { return free_id_ptr_--; }
 

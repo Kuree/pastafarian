@@ -3,19 +3,8 @@
 
 #include "../src/parser.hh"
 #include "gtest/gtest.h"
+#include "util.hh"
 
-class ParserTest : public ::testing::Test {
-protected:
-    void SetUp() override { p = std::make_unique<Parser>(&g); }
-
-    void parse(const std::string &json_filename) {
-        EXPECT_TRUE(std::filesystem::exists(json_filename));
-        p->parse(json_filename);
-    }
-
-    Graph g;
-    std::unique_ptr<Parser> p;
-};
 
 TEST_F(ParserTest, hierarchy) {  // NOLINT
     parse("hierarchy.json");

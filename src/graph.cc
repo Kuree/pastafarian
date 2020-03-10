@@ -1,6 +1,7 @@
 #include "graph.hh"
 
 #include <algorithm>
+#include <cmath>
 #include <queue>
 #include <stack>
 
@@ -30,8 +31,7 @@ bool Graph::has_path(Node *from, Node *to, uint64_t max_depth) {
         }
         auto const &edges = n->edges_to;
         for (auto const &nn : edges) {
-            if (visited.find(nn->to) != visited.end())
-                continue;
+            if (visited.find(nn->to) != visited.end()) continue;
             nodes.push(nn->to);
         }
         visited.emplace(n);
@@ -74,4 +74,31 @@ Node *Graph::select(const std::string &name) {
     }
 
     return nullptr;
+}
+
+void Graph::identify_registers() {
+    for (auto &node : nodes_) {
+        if (node->type != NodeType::Net) continue;
+        for (auto const &edge : node->edges_from) {
+            if (edge->type == EdgeType::Blocking) {
+                break;
+            }
+        }
+        if (!node->edges_from.empty()) {
+            // this is a registers
+            node->type = NodeType::Register;
+        }
+    }
+}
+
+std::vector<Node *> Graph::get_registers() const {
+    std::vector<Node*> result;
+    // this is just a approximation
+    result.reserve(static_cast<uint64_t>(std::sqrt(nodes_.size())));
+    for (auto const &node: nodes_) {
+        if (node->type == NodeType::Register) {
+            result.emplace_back(node.get());
+        }
+    }
+    return result;
 }
