@@ -78,7 +78,10 @@ Node *Graph::select(const std::string &name) {
 
 void Graph::identify_registers() {
     for (auto &node : nodes_) {
-        if (node->type != NodeType::Net) continue;
+        // it has to be named
+        if (node->name.empty()) continue;
+        // has to be an variable
+        if (node->type != NodeType::Net && node->type != NodeType::Variable) continue;
         for (auto const &edge : node->edges_from) {
             if (edge->type == EdgeType::Blocking) {
                 break;
