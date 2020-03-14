@@ -119,6 +119,7 @@ public:
     Node* select(const std::string& name);
     void identify_registers();
     [[nodiscard]] std::vector<Node*> get_registers() const;
+    static bool constant_driver(Node *node);
 
     uint64_t get_free_id() { return free_id_ptr_--; }
 

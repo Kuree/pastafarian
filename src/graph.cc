@@ -95,13 +95,28 @@ void Graph::identify_registers() {
 }
 
 std::vector<Node *> Graph::get_registers() const {
-    std::vector<Node*> result;
+    std::vector<Node *> result;
     // this is just a approximation
     result.reserve(static_cast<uint64_t>(std::sqrt(nodes_.size())));
-    for (auto const &node: nodes_) {
+    for (auto const &node : nodes_) {
         if (node->type == NodeType::Register) {
             result.emplace_back(node.get());
         }
     }
     return result;
+}
+
+bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_assignment_nodes) {
+    // we allow self loop
+    self_assignment_nodes.emplace(node);
+    auto const &edges = node->edges_from;
+    for (auto const &edge : edges) {
+        auto const node_from = edge->from;
+
+    }
+}
+
+bool Graph::constant_driver(Node *node) {
+    std::unordered_set<const Node *> self_nodes;
+    return ::constant_driver(node, self_nodes);
 }
