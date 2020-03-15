@@ -8,11 +8,19 @@ add_subdirectory(extern/simdjson)
 add_subdirectory(extern/googletest)
 add_subdirectory(extern/fmt)
 
+# strict compile options
+if (MSVC)
+    add_compile_options(/W4 /WX)
+else ()
+    add_compile_options(-Wall -Wextra -Werror)
+endif ()
+
+
 # adding src
 add_subdirectory(src)
 
 include(GoogleTest)
-include (CTest)
+include(CTest)
 
 
 add_subdirectory(tests)

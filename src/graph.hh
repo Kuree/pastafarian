@@ -54,12 +54,15 @@ public:
         name = n;
         update(std::forward<Args>(args)...);
     }
+
     template <typename... Args>
     void update(NodeType t, Args... args) {
+        sink{args...};
         type = t;
     }
     template <typename... Args>
     void update(Node* p, Args... args) {
+        sink{args...};
         parent = p;
     }
 
@@ -76,6 +79,10 @@ public:
 
 private:
     static void update() {}
+    struct sink {
+        template <typename... Args>
+        sink(Args const&...) {}
+    };
 };
 
 struct Edge {
@@ -119,7 +126,10 @@ public:
     Node* select(const std::string& name);
     void identify_registers();
     [[nodiscard]] std::vector<Node*> get_registers() const;
-    static bool constant_driver(Node *node);
+    static bool constant_driver(Node* node);
+
+    using Loop = std::vector<Node*>;
+    static std::vector<Loop> get_loops(Node* node);
 
     uint64_t get_free_id() { return free_id_ptr_--; }
 

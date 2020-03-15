@@ -151,3 +151,11 @@ bool Graph::constant_driver(Node *node) {
     std::unordered_set<const Node *> self_nodes;
     return ::constant_driver(node, self_nodes);
 }
+
+std::vector<Graph::Loop> Graph::get_loops(Node *node) {
+    // currently this is a naive implementation
+    std::vector<Graph::Loop> result;
+    (void)node;
+
+    return result;
+}
