@@ -72,7 +72,7 @@ public:
         return e;
     }
 
-    inline bool has_type(NodeType t) { return static_cast<bool>(t & type); }
+    inline bool has_type(NodeType t) const { return static_cast<bool>(t & type); }
 
 private:
     static void update() {}

@@ -82,11 +82,16 @@ void Graph::identify_registers() {
         if (node->name.empty()) continue;
         // has to be an variable
         if (node->type != NodeType::Net && node->type != NodeType::Variable) continue;
+        bool non_blocking = true;
         for (auto const &edge : node->edges_from) {
             if (edge->type == EdgeType::Blocking) {
+                non_blocking = false;
                 break;
             }
         }
+        // it has to be non-blocking
+        if (!non_blocking) continue;
+
         if (!node->edges_from.empty()) {
             // this is a registers
             node->type = NodeType::Register;
@@ -110,10 +115,36 @@ bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_as
     // we allow self loop
     self_assignment_nodes.emplace(node);
     auto const &edges = node->edges_from;
+    if (edges.empty()) {
+        // no visible driver
+        return false;
+    }
+    bool result = true;
     for (auto const &edge : edges) {
         auto const node_from = edge->from;
-
+        // this is part of the loop group
+        if (self_assignment_nodes.find(node_from) != self_assignment_nodes.end()) {
+            continue;
+        }
+        if (node_from->has_type(NodeType::Assign) || node_from->has_type(NodeType::Net) ||
+            node_from->has_type(NodeType::Variable)) {
+            // need to figure out the source
+            auto node_result = constant_driver(node_from, self_assignment_nodes);
+            if (!node_result) {
+                result = false;
+                break;
+            }
+        } else if (node->has_type(NodeType::Assign) && node_from->has_type(NodeType::Control)) {
+            // this is allowed as this is the node that controls whether to assign or not
+            // but no recursive call
+            continue;
+        } else if (!node_from->has_type(NodeType::Constant)) {
+            result = false;
+            break;
+        }
     }
+
+    return result;
 }
 
 bool Graph::constant_driver(Node *node) {

@@ -2,6 +2,7 @@
 
 #include "../src/parser.hh"
 #include "gtest/gtest.h"
+#include <filesystem>
 
 class LoadFile : public ::testing::Test {
 public:
