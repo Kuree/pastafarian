@@ -85,7 +85,9 @@ TEST_F(GraphTest, check_control_loop) {    // NOLINT
     parse("fsm1.json");
 
     auto current_state = g.select("mod.Color_current_state");
-    //auto next_state = g.select("mod.Color_next_state");
+    auto next_state = g.select("mod.Color_next_state");
+    auto out = g.select("mod.out");
     EXPECT_TRUE(Graph::has_control_loop(current_state));
-    //EXPECT_TRUE(Graph::has_control_loop(next_state));
+    EXPECT_TRUE(Graph::has_control_loop(next_state));
+    EXPECT_FALSE(Graph::has_control_loop(out));
 }
