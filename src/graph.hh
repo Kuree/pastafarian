@@ -129,7 +129,9 @@ public:
     static bool constant_driver(Node* node);
 
     using Loop = std::vector<Node*>;
-    static std::vector<Loop> get_loops(Node* node);
+    static bool reachable(const Node* from, const Node *to);
+    static bool has_loop(const Node *node);
+    static bool has_control_loop(const Node *node);
 
     uint64_t get_free_id() { return free_id_ptr_--; }
 

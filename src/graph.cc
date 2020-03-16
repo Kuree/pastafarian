@@ -152,10 +152,102 @@ bool Graph::constant_driver(Node *node) {
     return ::constant_driver(node, self_nodes);
 }
 
-std::vector<Graph::Loop> Graph::get_loops(Node *node) {
-    // currently this is a naive implementation
-    std::vector<Graph::Loop> result;
-    (void)node;
+void search_loop(Node *node, std::vector<Graph::Loop> &result) {
+    // Finding simple path between two nodes in a cyclic direct path is an NP-hard problem
+    // as a result, brute-force may not be the best option
+    // see: https://cs.stackexchange.com/a/118697
+    // however, we are actually not interested in finding out all the possible path
+    std::unordered_map<Node *, std::unordered_set<Node *>> visited_trace;
+    std::queue<Graph::Loop> queue;
+    queue.emplace(Graph::Loop{node});
+    while (!queue.empty()) {
+        auto current_path = queue.front();
+        queue.pop();
+        auto n = current_path.back();
+        if (n == node) {
+            // this is a loop
+            result.emplace_back(current_path);
+        } else {
+            for (auto const &edge : n->edges_to) {
+                (void)edge;
+            }
+        }
+    }
+}
 
-    return result;
+bool Graph::reachable(const Node *from, const Node *to) {
+    // BFS search
+    std::queue<Node *> working_set;
+    std::unordered_set<Node *> visited;
+    working_set.emplace(from);
+    while (!working_set.empty()) {
+        auto n = working_set.front();
+        working_set.pop();
+        if (n == to) return true;
+        if (visited.find(n) != visited.end()) continue;
+        visited.emplace(n);
+        for (auto const &edge : n->edges_to) {
+            working_set.emplace(edge->to);
+        }
+    }
+    return false;
+}
+
+bool Graph::has_loop(const Node *node) { return reachable(node, node); }
+
+bool reachable_control_loop(const Node *from, const Node *to) {
+    // modified BFS search that contains at least one control node
+    // to avoid memory blow up, this is done through two parts
+    // 1. label all control nodes reachable from the origin nodes, and put all the control node
+    //    into a set (unordered_set for fast query)
+    // 2. do a BFS that check the path
+    //    if the current head is a in the control node set, put all the new edges into the control
+    //    node set as well. By doing so we don't have to keep trace of all the path traces.
+    //    this is effectively union find by collapsing path trace
+    std::unordered_set<Node *> reachable_control_nodes;
+    std::queue<Node *> working_set;
+    std::unordered_set<Node *> visited;
+    working_set.emplace(from);
+    while (!working_set.empty()) {
+        auto n = working_set.front();
+        working_set.pop();
+        if (n->has_type(NodeType::Control)) {
+            reachable_control_nodes.emplace(n);
+        }
+        if (visited.find(n) != visited.end()) continue;
+        visited.emplace(n);
+        for (auto const &edge : n->edges_to) {
+            working_set.emplace(edge->to);
+        }
+    }
+
+    // second pass
+    working_set = std::queue<Node *>();
+    visited = std::unordered_set<Node *>();
+    working_set.emplace(from);
+    while (working_set.empty()) {
+        auto n = working_set.front();
+        working_set.pop();
+        if (n == to && reachable_control_nodes.find(n) != reachable_control_nodes.end()) {
+            return true;
+            // if not, continue the search
+        } else {
+            if (visited.find(n) != visited.end()) continue;
+            visited.emplace(n);
+            for (auto const &edge: n->edges_to) {
+                auto nn = edge->to;
+                if (reachable_control_nodes.find(n) != reachable_control_nodes.end()) {
+                    // flatten the set
+                    reachable_control_nodes.emplace(nn);
+                }
+                working_set.emplace(nn);
+            }
+        }
+    }
+
+    return false;
+}
+
+bool Graph::has_control_loop(const Node *node) {
+    return reachable_control_loop(node, node);
 }
