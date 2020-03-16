@@ -152,29 +152,6 @@ bool Graph::constant_driver(Node *node) {
     return ::constant_driver(node, self_nodes);
 }
 
-void search_loop(Node *node, std::vector<Graph::Loop> &result) {
-    // Finding simple path between two nodes in a cyclic direct path is an NP-hard problem
-    // as a result, brute-force may not be the best option
-    // see: https://cs.stackexchange.com/a/118697
-    // however, we are actually not interested in finding out all the possible path
-    std::unordered_map<Node *, std::unordered_set<Node *>> visited_trace;
-    std::queue<Graph::Loop> queue;
-    queue.emplace(Graph::Loop{node});
-    while (!queue.empty()) {
-        auto current_path = queue.front();
-        queue.pop();
-        auto n = current_path.back();
-        if (n == node) {
-            // this is a loop
-            result.emplace_back(current_path);
-        } else {
-            for (auto const &edge : n->edges_to) {
-                (void)edge;
-            }
-        }
-    }
-}
-
 bool Graph::reachable(const Node *from, const Node *to) {
     // BFS search
     std::queue<const Node *> working_set;
@@ -241,7 +218,7 @@ bool reachable_control_loop(const Node *from, const Node *to) {
         } else {
             if (visited.find(n) != visited.end()) continue;
             visited.emplace(n);
-            for (auto const &edge: n->edges_to) {
+            for (auto const &edge : n->edges_to) {
                 auto nn = edge->to;
                 if (reachable_control_nodes.find(n) != reachable_control_nodes.end()) {
                     // flatten the set
@@ -255,6 +232,29 @@ bool reachable_control_loop(const Node *from, const Node *to) {
     return false;
 }
 
-bool Graph::has_control_loop(const Node *node) {
-    return reachable_control_loop(node, node);
+bool Graph::has_control_loop(const Node *node) { return reachable_control_loop(node, node); }
+
+std::unordered_set<const Node *> Graph::get_constant_source(const Node *node) {
+    std::unordered_set<const Node *> result;
+    std::queue<const Node*> working_set;
+    std::unordered_set<const Node*> visited;
+    working_set.emplace(node);
+
+    while (!working_set.empty()) {
+        auto n = working_set.front();
+        working_set.pop();
+
+        if (visited.find(n) != visited.end()) continue;
+        visited.emplace(n);
+
+        if (n->has_type(NodeType::Constant)) {
+            result.emplace(n);
+        } else if (n->has_type(NodeType::Assign)) {
+            for (auto const &edge: n->edges_from) {
+                working_set.emplace(edge->from);
+            }
+        }
+    }
+
+    return result;
 }

@@ -128,10 +128,11 @@ public:
     [[nodiscard]] std::vector<Node*> get_registers() const;
     static bool constant_driver(Node* node);
 
-    using Loop = std::vector<Node*>;
     static bool reachable(const Node* from, const Node *to);
     static bool has_loop(const Node *node);
     static bool has_control_loop(const Node *node);
+    [[nodiscard]]
+    static std::unordered_set<const Node*> get_constant_source(const Node *node);
 
     uint64_t get_free_id() { return free_id_ptr_--; }
 
