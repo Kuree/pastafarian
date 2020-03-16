@@ -177,9 +177,12 @@ void search_loop(Node *node, std::vector<Graph::Loop> &result) {
 
 bool Graph::reachable(const Node *from, const Node *to) {
     // BFS search
-    std::queue<Node *> working_set;
-    std::unordered_set<Node *> visited;
+    std::queue<const Node *> working_set;
+    std::unordered_set<const Node *> visited;
     working_set.emplace(from);
+    // edge case
+    if (from->edges_to.empty()) return false;
+
     while (!working_set.empty()) {
         auto n = working_set.front();
         working_set.pop();
@@ -204,10 +207,14 @@ bool reachable_control_loop(const Node *from, const Node *to) {
     //    if the current head is a in the control node set, put all the new edges into the control
     //    node set as well. By doing so we don't have to keep trace of all the path traces.
     //    this is effectively union find by collapsing path trace
-    std::unordered_set<Node *> reachable_control_nodes;
-    std::queue<Node *> working_set;
-    std::unordered_set<Node *> visited;
+    std::unordered_set<const Node *> reachable_control_nodes;
+    std::queue<const Node *> working_set;
+    std::unordered_set<const Node *> visited;
     working_set.emplace(from);
+
+    // edge case
+    if (from->edges_to.empty()) return false;
+
     while (!working_set.empty()) {
         auto n = working_set.front();
         working_set.pop();
@@ -222,8 +229,8 @@ bool reachable_control_loop(const Node *from, const Node *to) {
     }
 
     // second pass
-    working_set = std::queue<Node *>();
-    visited = std::unordered_set<Node *>();
+    working_set = std::queue<const Node *>();
+    visited = std::unordered_set<const Node *>();
     working_set.emplace(from);
     while (working_set.empty()) {
         auto n = working_set.front();

@@ -59,3 +59,21 @@ TEST_F(GraphTest, check_const_driver) {  // NOLINT
     EXPECT_TRUE(Graph::constant_driver(f));
     EXPECT_TRUE(Graph::constant_driver(g_));
 }
+
+TEST_F(GraphTest, check_reachable) {    // NOLINT
+    parse("const_driver.json");
+
+    auto a = g.select("mod.a");
+    auto b = g.select("mod.b");
+    auto c = g.select("mod.c");
+    auto d = g.select("mod.d");
+
+    EXPECT_TRUE(Graph::has_loop(a));
+    EXPECT_FALSE(Graph::has_loop(b));
+    EXPECT_TRUE(Graph::reachable(a, b));
+    EXPECT_TRUE(Graph::has_loop(c));
+    EXPECT_TRUE(Graph::has_loop(d));
+    EXPECT_FALSE(Graph::reachable(a, d));
+
+    EXPECT_FALSE(Graph::has_control_loop(a));
+}
