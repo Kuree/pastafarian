@@ -76,4 +76,16 @@ TEST_F(GraphTest, check_reachable) {    // NOLINT
     EXPECT_FALSE(Graph::reachable(a, d));
 
     EXPECT_FALSE(Graph::has_control_loop(a));
+    EXPECT_FALSE(Graph::has_control_loop(b));
+    EXPECT_FALSE(Graph::has_control_loop(c));
+    EXPECT_FALSE(Graph::has_control_loop(d));
+}
+
+TEST_F(GraphTest, check_control_loop) {    // NOLINT
+    parse("fsm1.json");
+
+    auto current_state = g.select("mod.Color_current_state");
+    //auto next_state = g.select("mod.Color_next_state");
+    EXPECT_TRUE(Graph::has_control_loop(current_state));
+    //EXPECT_TRUE(Graph::has_control_loop(next_state));
 }

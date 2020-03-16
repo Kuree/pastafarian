@@ -232,7 +232,7 @@ bool reachable_control_loop(const Node *from, const Node *to) {
     working_set = std::queue<const Node *>();
     visited = std::unordered_set<const Node *>();
     working_set.emplace(from);
-    while (working_set.empty()) {
+    while (!working_set.empty()) {
         auto n = working_set.front();
         working_set.pop();
         if (n == to && reachable_control_nodes.find(n) != reachable_control_nodes.end()) {
