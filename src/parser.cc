@@ -30,6 +30,12 @@ uint64_t parse_internal_symbol(std::string_view symbol) {
     return static_cast<uint64_t>(std::stoll(tokens[0]));
 }
 
+std::string parse_internal_symbol_name(std::string_view symbol) {
+    auto tokens = string::get_tokens(symbol, " ");
+    assert_(tokens.size() == 2);
+    return tokens[1];
+}
+
 template <class T>
 Node *parse_named_value(T value, Graph *g) {
     // if it is a constant symbol
@@ -40,7 +46,11 @@ Node *parse_named_value(T value, Graph *g) {
 
     if (!g->has_node(symbol_addr) && constant.error == SUCCESS) {
         auto c = parse_num_literal(constant.as_string().value);
-        auto node = g->add_node(symbol_addr, "", NodeType::Constant);
+        // this is a named constant
+        // use the name for the name so that when we reconstruct the FSM state transition graph
+        // the name will be there
+        auto name = parse_internal_symbol_name(symbol);
+        auto node = g->add_node(symbol_addr, name, NodeType::Constant);
         node->value = c;
         return node;
     } else {

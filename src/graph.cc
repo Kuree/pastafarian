@@ -96,7 +96,7 @@ void Graph::identify_registers() {
 
         if (!node->edges_from.empty()) {
             // this is a registers
-            node->type = NodeType::Register;
+            node->type = node->type | NodeType::Register;
         }
     }
 }
@@ -106,7 +106,7 @@ std::vector<Node *> Graph::get_registers() const {
     // this is just a approximation
     result.reserve(static_cast<uint64_t>(std::sqrt(nodes_.size())));
     for (auto const &node : nodes_) {
-        if (node->type == NodeType::Register) {
+        if (node->has_type(NodeType::Register)) {
             result.emplace_back(node.get());
         }
     }
@@ -114,7 +114,7 @@ std::vector<Node *> Graph::get_registers() const {
 }
 
 bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_assignment_nodes,
-                     std::unordered_set<const Node *> &const_sources) {
+                     std::unordered_set<const Edge *> &const_sources) {
     // we allow self loop
     self_assignment_nodes.emplace(node);
     auto const &edges = node->edges_from;
@@ -146,7 +146,7 @@ bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_as
             break;
         } else {
             assert_(node_from->type == NodeType::Constant, "node type has to be constant");
-            const_sources.emplace(node_from);
+            const_sources.emplace(edge);
         }
     }
 
@@ -161,7 +161,7 @@ bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_as
 
 bool Graph::constant_driver(const Node *node) {
     std::unordered_set<const Node *> self_nodes;
-    std::unordered_set<const Node *> const_nodes;
+    std::unordered_set<const Edge *> const_nodes;
     return fsm::constant_driver(node, self_nodes, const_nodes);
 }
 
@@ -254,11 +254,66 @@ bool reachable_control_loop(const Node *from, const Node *to) {
 
 bool Graph::has_control_loop(const Node *node) { return reachable_control_loop(node, node); }
 
-std::unordered_set<const Node *> Graph::get_constant_source(const Node *node) {
+std::unordered_set<const Edge *> Graph::get_constant_source(const Node *node) {
     std::unordered_set<const Node *> self_nodes;
-    std::unordered_set<const Node *> result;
+    std::unordered_set<const Edge *> result;
     ::fsm::constant_driver(node, self_nodes, result);
     return result;
+}
+
+bool Graph::is_counter(const Node *node, const std::unordered_set<const Edge *> &edges) {
+    for (auto const &edge : edges) {
+        assert_(edge->from->type == NodeType::Constant, "fsm state has to be driven by constant");
+        auto assign_to = edge->to;
+        // net is only created
+        if (assign_to->type == NodeType::Net) {
+            return true;
+        }
+        assert_(assign_to->type == NodeType::Assign);
+        assert_(assign_to->edges_to.size() == 1);
+        auto edge_to = assign_to->edges_to.front().get();
+        auto n = edge_to->to;
+        if (!n->has_type(NodeType::Variable)) {
+            return true;
+        } else {
+            // make sure it has to be a direct assignment, otherwise it is a net
+            if (n != node && !Graph::in_direct_assign_chain(n, node)) {
+                return true;
+            } else if (n == node) {
+                continue;
+            }
+        }
+    }
+    return false;
+}
+
+bool Graph::in_direct_assign_chain(const Node *from, const Node *to) {
+    std::queue<const Node *> working_set;
+    std::unordered_set<const Node *> visited;
+    working_set.emplace(from);
+
+    while (!working_set.empty()) {
+        auto node = working_set.front();
+        working_set.pop();
+        for (auto const &edge : node->edges_to) {
+            if (!edge->has_type(EdgeType::Control)) {
+                auto n = edge->to;
+                if (n == to) return true;
+                if (n->has_type(NodeType::Assign)) {
+                    // just to make sure that this is the only assignment we have
+                    uint32_t num_direct_assign = 0;
+                    for (auto edge_from : n->edges_from) {
+                        if (edge_from->has_type(EdgeType::Blocking) ||
+                            edge_from->has_type(EdgeType::NonBlocking))
+                            num_direct_assign++;
+                    }
+                    if (num_direct_assign == 1) working_set.emplace(n);
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
 }  // namespace fsm

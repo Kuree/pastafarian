@@ -151,7 +151,12 @@ public:
     // notice that get_constant_source uses the same algorithm as constant_driver
     // in practice we can just use get_constant_source since if it's not constant driver
     // an empty set will be returned
-    [[nodiscard]] static std::unordered_set<const Node*> get_constant_source(const Node* node);
+    // the reason to return an edge is that in case of a counter, the constant is not directly
+    // driving the state variable; rather, it drives a net (expression)
+    [[nodiscard]] static std::unordered_set<const Edge*> get_constant_source(const Node* node);
+    // given the output of get_constant_source, this function calculate if it is a counter type
+    static bool is_counter(const Node *node, const std::unordered_set<const Edge*> &edges);
+    static bool in_direct_assign_chain(const Node* from, const Node *to);
 
     uint64_t get_free_id() { return free_id_ptr_--; }
 

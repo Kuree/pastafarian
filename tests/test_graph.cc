@@ -94,12 +94,65 @@ TEST_F(GraphTest, check_control_loop) {    // NOLINT
     EXPECT_FALSE(Graph::has_control_loop(out));
 }
 
-TEST_F(GraphTest, const_source_values_fsm) {    // NOLINT
+TEST_F(GraphTest, in_assign_chain) {    // NOLINT
+    parse("const_driver.json");
+    auto a = g.select("mod.a");
+    auto b = g.select("mod.b");
+
+    EXPECT_TRUE(Graph::in_direct_assign_chain(a, b));
+
+}
+
+TEST_F(GraphTest, const_source_values_fsm1) {    // NOLINT
     parse("fsm1.json");
 
     auto state = g.select("Color_current_state");
     EXPECT_NE(state, nullptr);
 
     auto state_values = Graph::get_constant_source(state);
-    EXPECT_FALSE(state_values.empty());
+    std::unordered_map<int64_t, std::string> names;
+    for (auto edge: state_values) {
+        auto n = edge->from;
+        EXPECT_EQ(n->type, fsm::NodeType::Constant);
+        names.emplace(n->value, n->name);
+    }
+    // no name conflicts
+    EXPECT_EQ(names.size(), 2);
+    EXPECT_EQ(names.at(1), "Red");
+
+    EXPECT_FALSE(Graph::is_counter(state, state_values));
+}
+
+TEST_F(GraphTest, const_source_values_const_driver) {   // NOLINT
+    parse("const_driver.json");
+
+    auto a = g.select("mod.a");
+    auto b = g.select("mod.b");
+    auto f = g.select("mod.f");
+    auto g_ = g.select("mod.g");
+
+    {
+        auto values = Graph::get_constant_source(a);
+        EXPECT_FALSE(values.empty());
+        EXPECT_TRUE(Graph::is_counter(a, values));
+    }
+
+    {
+        auto values = Graph::get_constant_source(b);
+        EXPECT_FALSE(values.empty());
+        EXPECT_TRUE(Graph::is_counter(b, values));
+    }
+
+    {
+        auto values = Graph::get_constant_source(f);
+        EXPECT_FALSE(values.empty());
+        EXPECT_TRUE(Graph::is_counter(f, values));
+    }
+
+    {
+        auto values = Graph::get_constant_source(g_);
+        EXPECT_FALSE(values.empty());
+        EXPECT_FALSE(Graph::is_counter(g_, values));
+    }
+
 }
