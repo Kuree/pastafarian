@@ -2,6 +2,8 @@
 
 #include "util.hh"
 
+using fsm::Graph;
+
 TEST_F(GraphTest, get_registers_fsm1) {  // NOLINT
     parse("fsm1.json");
     g.identify_registers();

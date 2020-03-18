@@ -6,6 +6,8 @@
 #include <unordered_set>
 #include <vector>
 
+namespace fsm {
+
 enum class NodeType {
     Constant = 1u << 0u,
     Register = 1u << 1u,
@@ -160,4 +162,5 @@ private:
     uint64_t free_id_ptr_ = 0xFFFFFFFFFFFFFFFF;
 };
 
+}  // namespace fsm
 #endif  // PASTAFARIAN_GRAPH_HH

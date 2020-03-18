@@ -11,6 +11,8 @@ using fmt::format;
 // we only support Linux
 #define INCLUDE_FILESYSTEM
 
+namespace fsm {
+
 std::string parse_verilog(const std::string &filename) {
     std::vector<std::string> name = {filename};
     return parse_verilog(name);
@@ -62,7 +64,7 @@ std::string parse_verilog(const std::vector<std::string> &filenames,
 
 static void assert(bool condition, const std::string &what = "") {
     if (!condition) {
-        throw std::runtime_error("Assert failed. Reason: " +(what.empty()? "null": what));
+        throw std::runtime_error("Assert failed. Reason: " + (what.empty() ? "null" : what));
     }
 }
 
@@ -218,3 +220,4 @@ std::vector<std::string> get_tokens(std::string_view line, const std::string &de
 }
 
 }  // namespace string
+}  // namespace fsm

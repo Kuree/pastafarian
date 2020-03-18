@@ -10,6 +10,8 @@ using fmt::format;
 
 constexpr auto SUCCESS = simdjson::error_code::SUCCESS;
 
+namespace fsm {
+
 template <class T>
 Node *parse_dispatch(T value, Graph *g, Node *parent);
 int64_t parse_num_literal(std::string_view str);
@@ -417,8 +419,7 @@ Node *parse_net(T value, Graph *g, Node *parent) {
 }
 
 static std::unordered_set<std::string> don_t_care_kind = {"TransparentMember",  // NOLINT
-                                                          "TypeAlias",
-                                                          "StatementBlock"};
+                                                          "TypeAlias", "StatementBlock"};
 
 template <class T>
 Node *parse_dispatch(T value, Graph *g, Node *parent) {
@@ -487,3 +488,5 @@ void Parser::parse(const std::string &filename) {
         parse_dispatch(member, graph_, nullptr);
     }
 }
+
+}  // namespace fsm

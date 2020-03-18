@@ -3,8 +3,10 @@
 
 #include <sstream>
 #include <string>
-#include <vector>
 #include <string_view>
+#include <vector>
+
+namespace fsm {
 
 std::string parse_verilog(const std::string &filename);
 std::string parse_verilog(const std::vector<std::string> &filenames);
@@ -39,5 +41,6 @@ std::string static join(Iter begin, Iter end, const std::string &sep) {
     return stream.str();
 }
 }  // namespace string
+}  // namespace fsm
 
 #endif  // PASTAFARIAN_UTIL_HH
