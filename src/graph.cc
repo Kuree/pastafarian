@@ -220,9 +220,16 @@ bool reachable_control_loop(const Node *from, const Node *to) {
             visited.emplace(n);
             for (auto const &edge : n->edges_to) {
                 auto nn = edge->to;
-                if (reachable_control_nodes.find(n) != reachable_control_nodes.end()) {
+                // if we reached a control node and its connected nodes are not, we need to
+                // add its connected nodes back to working set, that is, recolor the node
+                if (reachable_control_nodes.find(n) != reachable_control_nodes.end() &&
+                    reachable_control_nodes.find(nn) == reachable_control_nodes.end()) {
                     // flatten the set
                     reachable_control_nodes.emplace(nn);
+                    // going to revisit the node since we have changed the path
+                    if (visited.find(nn) != visited.end()) {
+                        visited.erase(nn);
+                    }
                 }
                 working_set.emplace(nn);
             }
@@ -236,8 +243,8 @@ bool Graph::has_control_loop(const Node *node) { return reachable_control_loop(n
 
 std::unordered_set<const Node *> Graph::get_constant_source(const Node *node) {
     std::unordered_set<const Node *> result;
-    std::queue<const Node*> working_set;
-    std::unordered_set<const Node*> visited;
+    std::queue<const Node *> working_set;
+    std::unordered_set<const Node *> visited;
     working_set.emplace(node);
 
     while (!working_set.empty()) {
@@ -250,7 +257,7 @@ std::unordered_set<const Node *> Graph::get_constant_source(const Node *node) {
         if (n->has_type(NodeType::Constant)) {
             result.emplace(n);
         } else if (n->has_type(NodeType::Assign)) {
-            for (auto const &edge: n->edges_from) {
+            for (auto const &edge : n->edges_from) {
                 working_set.emplace(edge->from);
             }
         }
