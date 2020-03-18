@@ -91,3 +91,13 @@ TEST_F(GraphTest, check_control_loop) {    // NOLINT
     EXPECT_TRUE(Graph::has_control_loop(next_state));
     EXPECT_FALSE(Graph::has_control_loop(out));
 }
+
+TEST_F(GraphTest, const_source_values_fsm) {    // NOLINT
+    parse("fsm1.json");
+
+    auto state = g.select("Color_current_state");
+    EXPECT_NE(state, nullptr);
+
+    auto state_values = Graph::get_constant_source(state);
+    EXPECT_FALSE(state_values.empty());
+}

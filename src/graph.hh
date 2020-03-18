@@ -23,7 +23,20 @@ inline NodeType operator&(NodeType a, NodeType b) {
     return static_cast<NodeType>(static_cast<uint32_t>(a) & static_cast<uint32_t>(b));
 }
 
-enum class EdgeType { Blocking, NonBlocking, Slice };
+enum class EdgeType {
+    Blocking = 1u << 0u,
+    NonBlocking = 1u << 1u,
+    Slice = 1u << 2u,
+    Control = 1u << 3u
+};
+
+inline EdgeType operator|(EdgeType a, EdgeType b) {
+    return static_cast<EdgeType>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b));
+}
+
+inline EdgeType operator&(EdgeType a, EdgeType b) {
+    return static_cast<EdgeType>(static_cast<uint32_t>(a) & static_cast<uint32_t>(b));
+}
 
 struct Edge;
 
@@ -93,6 +106,8 @@ public:
 
     Edge(Node* from, Node* to) : from(from), to(to) {}
     Edge(Node* from, Node* to, EdgeType type) : from(from), to(to), type(type) {}
+
+    inline bool has_type(EdgeType t) const { return static_cast<bool>(t & type); }
 };
 
 class Graph {
@@ -128,11 +143,10 @@ public:
     [[nodiscard]] std::vector<Node*> get_registers() const;
     static bool constant_driver(Node* node);
 
-    static bool reachable(const Node* from, const Node *to);
-    static bool has_loop(const Node *node);
-    static bool has_control_loop(const Node *node);
-    [[nodiscard]]
-    static std::unordered_set<const Node*> get_constant_source(const Node *node);
+    static bool reachable(const Node* from, const Node* to);
+    static bool has_loop(const Node* node);
+    static bool has_control_loop(const Node* node);
+    [[nodiscard]] static std::unordered_set<const Node*> get_constant_source(const Node* node);
 
     uint64_t get_free_id() { return free_id_ptr_--; }
 

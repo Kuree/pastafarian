@@ -1,6 +1,5 @@
 #include "parser.hh"
 
-#include <cassert>
 #include <iostream>
 
 #include "fmt/format.h"
@@ -366,7 +365,8 @@ Node *parse_assignment(T value, Graph *g, Node *parent) {
     auto n = g->add_node(addr, "", NodeType::Assign);
     right_node->add_edge(n, EdgeType::Blocking);
     if (right_node != parent && parent && parent->has_type(NodeType::Control)) {
-        parent->add_edge(n, EdgeType::Blocking);
+        // it's both blocking and control edge
+        parent->add_edge(n, EdgeType::Control | EdgeType::Blocking);
     }
     auto non_blocking = value["isNonBlocking"].as_bool();
     auto edge_type = non_blocking ? EdgeType::NonBlocking : EdgeType::Blocking;
