@@ -306,21 +306,17 @@ Node *parse_case(T value, Graph *g, Node *parent) {
         std::vector<Node *> nodes;
         for (auto const &expr : exprs) {
             auto expr_node = parse_dispatch(expr, g, parent);
-            expr_node->type = NodeType::Control;
             assert_(expr_node != nullptr);
             nodes.emplace_back(expr_node);
         }
         assert_(!nodes.empty());
 
-        auto expr_node = nodes[0];
-        if (nodes.size() > 1) {
-            expr_node = g->add_node(g->get_free_id(), "", parent);
-
-            // then link them
-            for (auto const &e : nodes) {
-                e->add_edge(expr_node);
-            }
+        // link all the expressions with the new control node
+        auto expr_node = g->add_node(g->get_free_id(), "", parent);
+        for (auto const &e : nodes) {
+            e->add_edge(expr_node);
         }
+
         // control node with the condition variable
         auto control_node = g->add_node(g->get_free_id(), "", parent);
         control_node->type = NodeType::Control;
@@ -367,8 +363,8 @@ Node *parse_assignment(T value, Graph *g, Node *parent) {
     auto n = g->add_node(addr, "", NodeType::Assign);
     right_node->add_edge(n, EdgeType::Blocking);
     if (right_node != parent && parent && parent->has_type(NodeType::Control)) {
-        // it's both blocking and control edge
-        parent->add_edge(n, EdgeType::Control | EdgeType::Blocking);
+        // it's a control edge
+        parent->add_edge(n, EdgeType::Control);
     }
     auto non_blocking = value["isNonBlocking"].as_bool();
     auto edge_type = non_blocking ? EdgeType::NonBlocking : EdgeType::Blocking;

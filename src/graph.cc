@@ -113,7 +113,8 @@ std::vector<Node *> Graph::get_registers() const {
     return result;
 }
 
-bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_assignment_nodes) {
+bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_assignment_nodes,
+                     std::unordered_set<const Node *> &const_sources) {
     // we allow self loop
     self_assignment_nodes.emplace(node);
     auto const &edges = node->edges_from;
@@ -131,7 +132,7 @@ bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_as
         if (node_from->has_type(NodeType::Assign) || node_from->has_type(NodeType::Net) ||
             node_from->has_type(NodeType::Variable)) {
             // need to figure out the source
-            auto node_result = constant_driver(node_from, self_assignment_nodes);
+            auto node_result = constant_driver(node_from, self_assignment_nodes, const_sources);
             if (!node_result) {
                 result = false;
                 break;
@@ -143,15 +144,25 @@ bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_as
         } else if (!node_from->has_type(NodeType::Constant)) {
             result = false;
             break;
+        } else {
+            assert_(node_from->type == NodeType::Constant, "node type has to be constant");
+            const_sources.emplace(node_from);
         }
+    }
+
+    if (result) {
+        assert_(!const_sources.empty());
+    } else {
+        const_sources.clear();
     }
 
     return result;
 }
 
-bool Graph::constant_driver(Node *node) {
+bool Graph::constant_driver(const Node *node) {
     std::unordered_set<const Node *> self_nodes;
-    return fsm::constant_driver(node, self_nodes);
+    std::unordered_set<const Node *> const_nodes;
+    return fsm::constant_driver(node, self_nodes, const_nodes);
 }
 
 bool Graph::reachable(const Node *from, const Node *to) {
@@ -244,28 +255,9 @@ bool reachable_control_loop(const Node *from, const Node *to) {
 bool Graph::has_control_loop(const Node *node) { return reachable_control_loop(node, node); }
 
 std::unordered_set<const Node *> Graph::get_constant_source(const Node *node) {
+    std::unordered_set<const Node *> self_nodes;
     std::unordered_set<const Node *> result;
-    std::queue<const Node *> working_set;
-    std::unordered_set<const Node *> visited;
-    working_set.emplace(node);
-
-    while (!working_set.empty()) {
-        auto n = working_set.front();
-        working_set.pop();
-
-        if (visited.find(n) != visited.end()) continue;
-        visited.emplace(n);
-
-        if (n->has_type(NodeType::Constant)) {
-            result.emplace(n);
-        } else if (n->has_type(NodeType::Assign) || n == node) {
-            for (auto const &edge : n->edges_from) {
-                if (!edge->has_type(EdgeType::Control))
-                    working_set.emplace(edge->from);
-            }
-        }
-    }
-
+    ::fsm::constant_driver(node, self_nodes, result);
     return result;
 }
 

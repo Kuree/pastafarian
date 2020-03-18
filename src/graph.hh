@@ -143,11 +143,14 @@ public:
     Node* select(const std::string& name);
     void identify_registers();
     [[nodiscard]] std::vector<Node*> get_registers() const;
-    static bool constant_driver(Node* node);
+    static bool constant_driver(const Node* node);
 
     static bool reachable(const Node* from, const Node* to);
     static bool has_loop(const Node* node);
     static bool has_control_loop(const Node* node);
+    // notice that get_constant_source uses the same algorithm as constant_driver
+    // in practice we can just use get_constant_source since if it's not constant driver
+    // an empty set will be returned
     [[nodiscard]] static std::unordered_set<const Node*> get_constant_source(const Node* node);
 
     uint64_t get_free_id() { return free_id_ptr_--; }
