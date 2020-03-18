@@ -13,7 +13,7 @@ std::string parse_verilog(const std::vector<std::string> &filenames);
 std::string parse_verilog(const std::vector<std::string> &filenames,
                           const std::vector<std::string> &include_dirs);
 
-static void assert(bool condition, const std::string &what = "");
+void assert_(bool condition, const std::string &what = "");
 
 // this is from kratos
 namespace fs {

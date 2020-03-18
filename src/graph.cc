@@ -139,7 +139,6 @@ bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_as
         } else if (node->has_type(NodeType::Assign) && node_from->has_type(NodeType::Control)) {
             // this is allowed as this is the node that controls whether to assign or not
             // but no recursive call
-            assert(edge->has_type(EdgeType::Control));
             continue;
         } else if (!node_from->has_type(NodeType::Constant)) {
             result = false;
@@ -152,7 +151,7 @@ bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_as
 
 bool Graph::constant_driver(Node *node) {
     std::unordered_set<const Node *> self_nodes;
-    return ::constant_driver(node, self_nodes);
+    return fsm::constant_driver(node, self_nodes);
 }
 
 bool Graph::reachable(const Node *from, const Node *to) {
@@ -261,7 +260,8 @@ std::unordered_set<const Node *> Graph::get_constant_source(const Node *node) {
             result.emplace(n);
         } else if (n->has_type(NodeType::Assign) || n == node) {
             for (auto const &edge : n->edges_from) {
-                if (!edge->has_type(EdgeType::Control)) working_set.emplace(edge->from);
+                if (!edge->has_type(EdgeType::Control))
+                    working_set.emplace(edge->from);
             }
         }
     }

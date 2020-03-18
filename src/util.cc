@@ -62,7 +62,7 @@ std::string parse_verilog(const std::vector<std::string> &filenames,
     return buffer;
 }
 
-static void assert(bool condition, const std::string &what = "") {
+void assert_(bool condition, const std::string &what) {
     if (!condition) {
         throw std::runtime_error("Assert failed. Reason: " + (what.empty() ? "null" : what));
     }
