@@ -93,6 +93,9 @@ public:
 
     inline bool has_type(NodeType t) const { return static_cast<bool>(t & type); }
 
+    [[nodiscard]]
+    std::string handle_name() const;
+
 private:
     static void update() {}
     struct sink {

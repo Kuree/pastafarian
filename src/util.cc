@@ -25,9 +25,13 @@ std::string parse_verilog(const std::vector<std::string> &filenames,
                           const std::vector<std::string> &include_dirs) {
     // need to run slang to get the ast json
     // make sure slang exists
-    auto slang = fs::which("slang");
+    // if SLANG is set in the env
+    std::string slang = std::getenv("SLANG");
     if (slang.empty()) {
-        slang = fs::which("slang-driver");
+        slang = fs::which("slang");
+        if (slang.empty()) {
+            slang = fs::which("slang-driver");
+        }
     }
     if (slang.empty()) throw std::runtime_error("Unable to find slang driver");
     // prepare for the slang arguments
@@ -48,18 +52,11 @@ std::string parse_verilog(const std::vector<std::string> &filenames,
     args.emplace_back(temp_filename);
     auto command = string::join(args.begin(), args.end(), " ");
     auto ret = std::system(command.c_str());
-    if (!ret) {
+    if (ret) {
         throw std::runtime_error(
             ::format("Unable to parse {0}", string::join(filenames.begin(), filenames.end(), " ")));
     }
-    // read the file back
-    std::ifstream t(temp_filename);
-    t.seekg(0, std::ios::end);
-    size_t size = t.tellg();
-    std::string buffer(size, ' ');
-    t.seekg(0);
-    t.read(&buffer[0], size);
-    return buffer;
+    return temp_filename;
 }
 
 void assert_(bool condition, const std::string &what) {

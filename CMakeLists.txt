@@ -18,6 +18,8 @@ endif ()
 
 # adding src
 add_subdirectory(src)
+# tools
+add_subdirectory(tools)
 
 include(GoogleTest)
 include(CTest)

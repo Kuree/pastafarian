@@ -10,6 +10,23 @@
 
 namespace fsm {
 
+std::string Node::handle_name() const {
+    std::stack<std::string> names;
+    auto node = this;
+    while (node) {
+        assert_(!node->name.empty(), "node name empty");
+        names.emplace(node->name);
+        node = node->parent;
+    }
+    std::vector<std::string> reorder_names;
+    reorder_names.reserve(names.size());
+    while (!names.empty()) {
+        reorder_names.emplace_back(names.top());
+        names.pop();
+    }
+    return string::join(reorder_names.begin(), reorder_names.end(), ".");
+}
+
 Node *Graph::get_node(uint64_t key) {
     if (has_node(key)) {
         return nodes_map_.at(key);
@@ -340,18 +357,18 @@ std::vector<FSMResult> Graph::identify_fsms() {
     return result;
 }
 
-Node * Graph::copy_node(const Node *node, bool copy_connection) {
+Node *Graph::copy_node(const Node *node, bool copy_connection) {
     auto n = add_node(get_free_id(), node->name);
     n->type = node->type;
     n->value = node->value;
 
     if (copy_connection) {
         // copy the connections as well, if specified
-        for (auto const &edge: node->edges_to) {
+        for (auto const &edge : node->edges_to) {
             auto nn = edge->to;
             n->add_edge(nn, edge->type);
         }
-        for (auto const edge: node->edges_from) {
+        for (auto const edge : node->edges_from) {
             auto nn = edge->from;
             nn->add_edge(n, edge->type);
         }
