@@ -292,6 +292,23 @@ Node *parse_unary(T value, Graph *g) {
 }
 
 template <class T>
+Node *parse_replication(T value, Graph *g) {
+    auto count = value["count"];
+    assert_(count.error == SUCCESS);
+    auto num = parse_dispatch(count, g, nullptr);
+    assert_(num->type == NodeType::Constant, "count has to be a number");
+
+    auto concat_json = value["concat"];
+    assert_(concat_json.error == SUCCESS);
+    auto var = parse_dispatch(concat_json, g, nullptr);
+    if (var->type == NodeType::Constant) {
+        // TODO: get the width from the design and do proper calculation
+        std::cerr << "WARNING: constant replication not supported";
+    }
+    return var;
+}
+
+template <class T>
 Node *parse_element_select(T value, Graph *g) {
     auto v = value["value"];
     auto selector = value["selector"];
@@ -469,7 +486,7 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
         return parse_list(value, g, parent);
     } else if (ast_kind == "Conditional") {
         return parse_conditional(value, g, parent);
-    } else if (ast_kind == "IntegerLiteral") {
+    } else if (ast_kind == "IntegerLiteral" || ast_kind == "StringLiteral") {
         return parse_num_literal(value, g);
     } else if (ast_kind == "Case") {
         return parse_case(value, g, parent);
@@ -483,6 +500,8 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
         return parse_ternary(value, g);
     } else if (ast_kind == "UnaryOp") {
         return parse_unary(value, g);
+    } else if (ast_kind == "Replication") {
+        return parse_replication(value, g);
     } else {
         std::cerr << "Unable to parse AST node kind " << ast_kind << std::endl;
     }
