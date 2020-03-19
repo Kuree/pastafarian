@@ -156,12 +156,14 @@ public:
     // driving the state variable; rather, it drives a net (expression)
     [[nodiscard]] static std::unordered_set<const Edge*> get_constant_source(const Node* node);
     // given the output of get_constant_source, this function calculate if it is a counter type
-    static bool is_counter(const Node *node, const std::unordered_set<const Edge*> &edges);
-    static bool in_direct_assign_chain(const Node* from, const Node *to);
+    static bool is_counter(const Node* node, const std::unordered_set<const Edge*>& edges);
+    static bool in_direct_assign_chain(const Node* from, const Node* to);
 
     std::vector<FSMResult> identify_fsms();
 
     uint64_t get_free_id() { return free_id_ptr_--; }
+
+    Node* copy_node(const Node* node, bool copy_connection = true);
 
 private:
     std::unordered_map<uint64_t, Node*> nodes_map_;

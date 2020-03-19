@@ -340,4 +340,24 @@ std::vector<FSMResult> Graph::identify_fsms() {
     return result;
 }
 
+Node * Graph::copy_node(const Node *node, bool copy_connection) {
+    auto n = add_node(get_free_id(), node->name);
+    n->type = node->type;
+    n->value = node->value;
+
+    if (copy_connection) {
+        // copy the connections as well, if specified
+        for (auto const &edge: node->edges_to) {
+            auto nn = edge->to;
+            n->add_edge(nn, edge->type);
+        }
+        for (auto const edge: node->edges_from) {
+            auto nn = edge->from;
+            nn->add_edge(n, edge->type);
+        }
+    }
+
+    return n;
+}
+
 }  // namespace fsm
