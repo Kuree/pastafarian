@@ -12,4 +12,6 @@ TEST_F(GraphTest, fsm_extract_fsm1) {  // NOLINT
 
     auto arcs = fsm.self_arc();
     EXPECT_EQ(arcs.size(), 2);
+
+    EXPECT_FALSE(fsm.is_counter());
 }

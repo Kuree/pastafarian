@@ -9,11 +9,13 @@ namespace fsm {
 
 class FSMResult {
 public:
-    FSMResult(const Node *node, const std::unordered_set<const Edge *> &const_src)
-        : node_(node), const_src_(const_src) {}
+    FSMResult(const Node *node, std::unordered_set<const Edge *> const_src);
 
-    inline const Node *node() const { return node_; }
-    inline const std::unordered_set<const Edge *> &const_src() const { return const_src_; }
+    [[nodiscard]] inline const Node *node() const { return node_; }
+    [[nodiscard]] inline const std::unordered_set<const Edge *> &const_src() const {
+        return const_src_;
+    }
+    [[nodiscard]] inline bool is_counter() const { return is_counter_; }
 
     [[nodiscard]] std::set<std::pair<const Node *, const Node *>> self_arc() const;
 
@@ -22,6 +24,7 @@ public:
 private:
     const Node *node_;
     std::unordered_set<const Edge *> const_src_;
+    bool is_counter_;
 };
 
 };  // namespace fsm

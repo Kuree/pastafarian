@@ -1,6 +1,13 @@
+#include <utility>
+
 #include "fsm.hh"
 
 namespace fsm {
+
+FSMResult::FSMResult(const fsm::Node *node, std::unordered_set<const Edge *> const_src)
+    : node_(node), const_src_(std::move(const_src)) {
+    is_counter_ = Graph::is_counter(node_, const_src_);
+}
 
 std::set<std::pair<const Node *, const Node *>> FSMResult::self_arc() const {
     std::set<std::pair<const Node *, const Node *>> result;
@@ -22,9 +29,13 @@ std::set<std::pair<const Node *, const Node *>> FSMResult::self_arc() const {
         edge_states.emplace(edge->from, edge->to);
     }
 
+    std::set<std::pair<const Node*, const Node*>> visited;
+
     for (auto const [from_node, from_node_next] : edge_states) {
         for (auto const [to_node, to_node_next] : edge_states) {
             if (from_node == to_node) continue;
+            if (visited.find({from_node_next, to_node_next}) != visited.end())
+                continue;
             // if one current state influence another
             // then from_node_next should have a route to to_node_next
             // in most cases
@@ -32,6 +43,7 @@ std::set<std::pair<const Node *, const Node *>> FSMResult::self_arc() const {
             if (Graph::reachable(from_node_next, to_node_next)) {
                 result.emplace(std::make_pair(from_node, to_node));
             }
+            visited.emplace(std::make_pair(from_node_next, to_node_next));
         }
     }
 
