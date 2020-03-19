@@ -74,8 +74,15 @@ int64_t parse_num_literal(std::string_view str) {
     } else if (name_str[0] == 'o') {
         base = 8;
         name_str = name_str.substr(1);
+    } else if (name_str[0] == 'd') {
+        base = 10;
+        name_str = name_str.substr(1);
     } else {
         base = 10;
+    }
+    if (name_str.find('x') != std::string::npos || name_str.find('z') != std::string::npos) {
+        // don't care for now?
+        return 0;
     }
     auto r = std::stoll(name_str, nullptr, base);
     return r;
