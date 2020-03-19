@@ -196,26 +196,35 @@ template <class T>
 Node *parse_conditional(T value, Graph *g, Node *parent) {
     auto cond = value["cond"];
     assert_(cond.error == SUCCESS);
-    auto cond_node = parse_dispatch(cond, g, parent);
-    assert_(cond_node != nullptr);
+    auto true_cond_node = parse_dispatch(cond, g, parent);
+    assert_(true_cond_node != nullptr);
     // this will be a control node
-    cond_node->type = NodeType::Control;
+    true_cond_node->type = NodeType::Control;
+    // this is true branch
+    true_cond_node->value = 1;
 
     // true part
     auto if_true = value["ifTrue"];
     assert_(if_true.error == SUCCESS);
-    parse_dispatch(if_true, g, cond_node);
+    parse_dispatch(if_true, g, true_cond_node);
 
     auto if_false = value["ifFalse"];
+    Node *false_cond_node = nullptr;
     if (if_false.error == SUCCESS) {
-        parse_dispatch(if_false, g, cond_node);
+        false_cond_node = g->copy_node(true_cond_node);
+        // false branch
+        false_cond_node->value = 0;
+        parse_dispatch(if_false, g, false_cond_node);
     }
 
     if (parent && parent->has_type(NodeType::Control)) {
-        parent->add_edge(cond_node);
+        parent->add_edge(true_cond_node);
+        if (false_cond_node) {
+            parent->add_edge(false_cond_node);
+        }
     }
 
-    return cond_node;
+    return true_cond_node;
 }
 
 template <class T>
@@ -269,6 +278,9 @@ Node *parse_ternary(T value, Graph *g) {
     auto control_assign_node =
         g->add_node(g->get_free_id(), "", NodeType::Control | NodeType::Assign);
     node->add_edge(control_assign_node);
+    // since no matter the pred is true or not, the two path merge with each other
+    // so we label the control path as true
+    control_assign_node->value = 1;
 
     left_node->add_edge(control_assign_node);
     right_node->add_edge(control_assign_node);
@@ -330,6 +342,7 @@ Node *parse_case(T value, Graph *g, Node *parent) {
         // control node with the condition variable
         auto control_node = g->add_node(g->get_free_id(), "", parent);
         control_node->type = NodeType::Control;
+        control_node->value = 1;
         expr_node->add_edge(control_node);
         cond->add_edge(control_node);
 
@@ -343,6 +356,7 @@ Node *parse_case(T value, Graph *g, Node *parent) {
     if (default_case.error == SUCCESS) {
         auto control_node = g->add_node(g->get_free_id(), "", parent);
         control_node->type = NodeType::Control;
+        control_node->value = 1;
         cond->add_edge(control_node);
 
         parse_dispatch(default_case, g, control_node);
