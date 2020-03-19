@@ -16,7 +16,10 @@ TEST_F(GraphTest, fsm_extract_fsm1) {  // NOLINT
     // Red -> Blue
     // Blue -> Blue
     // Blue ->Red
-    EXPECT_EQ(arcs.size(), 4);
+    //EXPECT_EQ(arcs.size(), 4);
+
+    auto states = fsm.unique_states();
+    EXPECT_EQ(states.size(), 2);
 
     EXPECT_FALSE(fsm.is_counter());
 }
@@ -37,7 +40,10 @@ TEST_F(GraphTest, fsm_extract_fsm2) {  // NOLINT
     // 1 -> 0
     // 2 -> 2
     // 2 -> 0
-    EXPECT_EQ(arcs.size(), 6);
+    //EXPECT_EQ(arcs.size(), 6);
+
+    auto states = fsm.unique_states();
+    EXPECT_EQ(states.size(), 3);
 
     EXPECT_FALSE(fsm.is_counter());
 }

@@ -1,6 +1,6 @@
-#include <utility>
-
 #include "fsm.hh"
+
+#include <utility>
 
 namespace fsm {
 
@@ -29,13 +29,12 @@ std::set<std::pair<const Node *, const Node *>> FSMResult::self_arc() const {
         edge_states.emplace(edge->from, edge->to);
     }
 
-    std::set<std::pair<const Node*, const Node*>> visited;
+    std::set<std::pair<const Node *, const Node *>> visited;
 
     for (auto const [from_node, from_node_next] : edge_states) {
         for (auto const [to_node, to_node_next] : edge_states) {
             if (from_node == to_node) continue;
-            if (visited.find({from_node_next, to_node_next}) != visited.end())
-                continue;
+            if (visited.find({from_node_next, to_node_next}) != visited.end()) continue;
             // if one current state influence another
             // then from_node_next should have a route to to_node_next
             // in most cases
@@ -47,6 +46,21 @@ std::set<std::pair<const Node *, const Node *>> FSMResult::self_arc() const {
         }
     }
 
+    return result;
+}
+
+std::unordered_set<const Node *> FSMResult::unique_states() const {
+    std::unordered_set<int64_t> values;
+    std::unordered_set<const Node *> result;
+
+    for (auto const &edge: const_src_) {
+        auto n = edge->from;
+        auto v = n->value;
+        if (values.find(v) == values.end()) {
+            result.emplace(n);
+            values.emplace(v);
+        }
+    }
     return result;
 }
 
