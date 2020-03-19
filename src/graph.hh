@@ -41,6 +41,7 @@ inline EdgeType operator&(EdgeType a, EdgeType b) {
 }
 
 struct Edge;
+class FSMResult;
 
 struct Node {
 public:
@@ -96,7 +97,7 @@ private:
     static void update() {}
     struct sink {
         template <typename... Args>
-        sink(Args const&...) {}
+        explicit sink(Args const&...) {}
     };
 };
 
@@ -157,6 +158,8 @@ public:
     // given the output of get_constant_source, this function calculate if it is a counter type
     static bool is_counter(const Node *node, const std::unordered_set<const Edge*> &edges);
     static bool in_direct_assign_chain(const Node* from, const Node *to);
+
+    std::vector<FSMResult> identify_fsms();
 
     uint64_t get_free_id() { return free_id_ptr_--; }
 

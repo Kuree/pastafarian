@@ -154,5 +154,4 @@ TEST_F(GraphTest, const_source_values_const_driver) {   // NOLINT
         EXPECT_FALSE(values.empty());
         EXPECT_FALSE(Graph::is_counter(g_, values));
     }
-
 }

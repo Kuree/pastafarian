@@ -5,6 +5,7 @@
 #include <queue>
 #include <stack>
 
+#include "fsm.hh"
 #include "util.hh"
 
 namespace fsm {
@@ -314,6 +315,29 @@ bool Graph::in_direct_assign_chain(const Node *from, const Node *to) {
     }
 
     return false;
+}
+
+std::vector<FSMResult> Graph::identify_fsms() {
+    std::vector<FSMResult> result;
+
+    // first it has to be a register
+    identify_registers();
+    auto registers = get_registers();
+
+    for (auto reg : registers) {
+        // I think the constant driver is faster?
+        auto const_src = Graph::get_constant_source(reg);
+        if (!const_src.empty()) {
+            // next one is to check if there is a constant loop
+            bool control_loop = Graph::has_control_loop(reg);
+            if (control_loop) {
+                // this is the fsm
+                result.emplace_back(FSMResult(reg, const_src));
+            }
+        }
+    }
+
+    return result;
 }
 
 }  // namespace fsm
