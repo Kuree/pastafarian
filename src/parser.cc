@@ -459,6 +459,20 @@ Node *parse_continuous_assignment(T value, Graph *g, Node *parent) {
     return parse_assignment(assignment, g, parent);
 }
 
+template<class T>
+Node *parse_generate_block(T value, Graph *g, Node *parent) {
+    auto instantiated = value["isInstantiated"];
+    auto instantiated_value = instantiated.as_bool();
+    if (!instantiated_value) return nullptr;
+    auto members = value["members"].as_array();
+
+    for (auto const &stmt: members) {
+        parse_dispatch(stmt, g, parent);
+    }
+
+    return nullptr;
+}
+
 template <class T>
 Node *parse_net(T value, Graph *g, Node *parent) {
     auto name_json = value["name"];
@@ -553,6 +567,8 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
         return parse_for_loop(value, g, parent);
     } else if (ast_kind == "Call") {
         return parse_call(value, g, parent);
+    } else if (ast_kind == "GenerateBlock") {
+        parse_generate_block(value, g, parent);
     } else {
         std::cerr << "Unable to parse AST node kind " << ast_kind << std::endl;
     }
