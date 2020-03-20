@@ -7,12 +7,16 @@
 
 void print_out_fsm(const fsm::FSMResult &fsm_result) {
     std::cout << "State variable name: " << fsm_result.node()->handle_name() << std::endl;
-    auto states = fsm_result.unique_states();
-    for (auto const &state: states) {
-        if (!state->name.empty()) {
-            std::cout << "  State: " << state->name << " (" << state->value << ")" << std::endl;
-        } else {
-            std::cout << "  State: " << state->value << std::endl;
+    if (fsm_result.is_counter()) {
+        std::cout << "  State: counter" << std::endl;
+    } else {
+        auto states = fsm_result.unique_states();
+        for (auto const &state: states) {
+            if (!state->name.empty()) {
+                std::cout << "  State: " << state->name << " (" << state->value << ")" << std::endl;
+            } else {
+                std::cout << "  State: " << state->value << std::endl;
+            }
         }
     }
 }
