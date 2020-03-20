@@ -339,12 +339,18 @@ bool is_system_task(std::string_view subroutine_name) {
 
 template <class T>
 Node *parse_call(T value, Graph *g, Node *parent) {
+    static std::unordered_set<std::string> checked_subroutines;
     // if it's not built-in tasks, we need to inline the function. However, it is not worth the
     // effort for now. we will just wire them together
     auto subroutine = value["subroutine"];
     auto subroutine_name = subroutine.as_string();
     if (!is_system_task(subroutine_name)) {
-        std::cerr << "Custom task/function " << std::string(subroutine_name) << " not supported" << std::endl;
+        auto tokens = string::get_tokens(subroutine_name, " ");
+        auto name = tokens.back();
+        if (checked_subroutines.find(name) == checked_subroutines.end()) {
+            std::cerr << "Custom task/function " << name << " not supported" << std::endl;
+            checked_subroutines.emplace(name);
+        }
     }
 
     auto call_node = g->get_node(g->get_free_id());
