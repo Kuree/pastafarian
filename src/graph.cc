@@ -142,6 +142,11 @@ bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_as
     }
     bool result = true;
     for (auto const &edge : edges) {
+        // if it is a slice, we need to go a skip?
+        if (edge->has_type(EdgeType::Slice)) {
+            continue;
+        }
+
         auto const node_from = edge->from;
         // this is part of the loop group
         if (self_assignment_nodes.find(node_from) != self_assignment_nodes.end()) {
@@ -169,7 +174,7 @@ bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_as
     }
 
     if (result) {
-        assert_(!const_sources.empty());
+        if (const_sources.empty()) result = false;
     } else {
         const_sources.clear();
     }
@@ -287,7 +292,7 @@ bool Graph::is_counter(const Node *node, const std::unordered_set<const Edge *> 
         if (assign_to->type == NodeType::Net) {
             return true;
         }
-        assert_(assign_to->type == NodeType::Assign);
+        assert_(assign_to->has_type(NodeType::Assign));
         assert_(assign_to->edges_to.size() == 1);
         auto edge_to = assign_to->edges_to.front().get();
         auto n = edge_to->to;

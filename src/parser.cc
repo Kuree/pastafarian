@@ -324,6 +324,46 @@ Node *parse_element_select(T value, Graph *g) {
 }
 
 template <class T>
+Node *parse_for_loop(T value, Graph *g, Node *parent) {
+    // since we don't keep track of slices, we don't actually need to expand the loop body
+    // this is because if a sub-value is selected, the whole signal will be used to construct
+    // the graph
+    auto body = value["body"];
+    return parse_dispatch(body, g, parent);
+}
+
+bool is_system_task(std::string_view subroutine_name) {
+    auto tokens = string::get_tokens(subroutine_name, " ");
+    return tokens.size() == 1 && tokens[0][0] == '$';
+}
+
+template <class T>
+Node *parse_call(T value, Graph *g, Node *parent) {
+    // if it's not built-in tasks, we need to inline the function. However, it is not worth the
+    // effort for now. we will just wire them together
+    auto subroutine = value["subroutine"];
+    auto subroutine_name = subroutine.as_string();
+    if (!is_system_task(subroutine_name)) {
+        std::cerr << "Custom task/function " << std::string(subroutine_name) << " not supported" << std::endl;
+    }
+
+    auto call_node = g->get_node(g->get_free_id());
+    call_node->parent = parent;
+
+    // get the arguments
+    auto raw_arguments = value["arguments"];
+    if (raw_arguments.error == SUCCESS) {
+        auto arguments = raw_arguments.as_array();
+        for (auto const &arg: arguments) {
+            auto arg_node = parse_dispatch(arg, g, call_node);
+            arg_node->add_edge(call_node);
+        }
+    }
+
+    return call_node;
+}
+
+template <class T>
 Node *parse_case(T value, Graph *g, Node *parent) {
     auto items = value["items"];
     assert_(items.error == SUCCESS);
@@ -449,7 +489,8 @@ Node *parse_net(T value, Graph *g, Node *parent) {
 }
 
 static std::unordered_set<std::string> don_t_care_kind = {"TransparentMember",  // NOLINT
-                                                          "TypeAlias", "StatementBlock"};
+                                                          "TypeAlias", "StatementBlock",
+                                                          "Subroutine"};
 
 template <class T>
 Node *parse_dispatch(T value, Graph *g, Node *parent) {
@@ -502,6 +543,10 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
         return parse_unary(value, g);
     } else if (ast_kind == "Replication") {
         return parse_replication(value, g);
+    } else if (ast_kind == "ForLoop") {
+        return parse_for_loop(value, g, parent);
+    } else if (ast_kind == "Call") {
+        return parse_call(value, g, parent);
     } else {
         std::cerr << "Unable to parse AST node kind " << ast_kind << std::endl;
     }
