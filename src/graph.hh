@@ -18,6 +18,12 @@ enum class NodeType {
     Assign = 1u << 6u
 };
 
+enum class NetOpType {
+    Ignore,
+    Add,
+    Subtract
+};
+
 inline NodeType operator|(NodeType a, NodeType b) {
     return static_cast<NodeType>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b));
 }
@@ -54,6 +60,9 @@ public:
 
     Node* parent = nullptr;
     std::vector<Node*> children;
+
+    // by default we don't care. only needed if it's a net and uses certain op
+    NetOpType op = NetOpType::Ignore;
 
     // only used when it's a constant node
     int64_t value = 0;

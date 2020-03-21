@@ -139,6 +139,18 @@ Node *parse_binary_op(T value, Graph *g) {
     auto node = g->add_node(g->get_free_id(), "");
     left->add_edge(node);
     right->add_edge(node);
+
+    // get the op
+    auto op_json = value["op"];
+    if (op_json.error == SUCCESS) {
+        auto op = std::string(op_json.as_string());
+        if (op == "Add") {
+            node->op = NetOpType::Add;
+        } else if (op == "Subtract") {
+            node->op = NetOpType::Subtract;
+        }
+    }
+
     return node;
 }
 
@@ -288,7 +300,9 @@ Node *parse_unary(T value, Graph *g) {
     auto op = value["operand"];
     assert_(op.error == SUCCESS);
     auto op_node = parse_dispatch(op, g, nullptr);
-    return op_node;
+    auto node = g->add_node(g->get_free_id(), "");
+    op_node->add_edge(node);
+    return node;
 }
 
 template <class T>

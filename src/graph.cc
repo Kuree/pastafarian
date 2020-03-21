@@ -152,11 +152,25 @@ bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_as
         if (self_assignment_nodes.find(node_from) != self_assignment_nodes.end()) {
             continue;
         }
-        if (node_from->has_type(NodeType::Assign) || node_from->has_type(NodeType::Net) ||
-            node_from->has_type(NodeType::Variable)) {
+        if (node_from->has_type(NodeType::Assign) || node_from->has_type(NodeType::Variable)) {
             // need to figure out the source
             auto node_result = constant_driver(node_from, self_assignment_nodes, const_sources);
             if (!node_result) {
+                result = false;
+                break;
+            }
+        } else if (node_from->has_type(NodeType::Net)) {
+            // NOTE::
+            // this is a herustics on how people write FSM that doesn't follow traditional
+            // convention, e.g., additions
+            // we only allow self loop with limited ops, such as add, and subtract
+            if (node_from->op != NetOpType::Ignore && node_from->edges_from.size() <= 2) {
+                auto node_result = constant_driver(node_from, self_assignment_nodes, const_sources);
+                if (!node_result) {
+                    result = false;
+                    break;
+                }
+            } else {
                 result = false;
                 break;
             }
