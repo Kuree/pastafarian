@@ -18,11 +18,7 @@ enum class NodeType {
     Assign = 1u << 6u
 };
 
-enum class NetOpType {
-    Ignore,
-    Add,
-    Subtract
-};
+enum class NetOpType { Ignore, Add, Subtract };
 
 inline NodeType operator|(NodeType a, NodeType b) {
     return static_cast<NodeType>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b));
@@ -102,8 +98,7 @@ public:
 
     inline bool has_type(NodeType t) const { return static_cast<bool>(t & type); }
 
-    [[nodiscard]]
-    std::string handle_name() const;
+    [[nodiscard]] std::string handle_name() const;
 
 private:
     static void update() {}
@@ -172,6 +167,8 @@ public:
     static bool in_direct_assign_chain(const Node* from, const Node* to);
 
     std::vector<FSMResult> identify_fsms();
+    static std::unordered_map<const Node*, std::unordered_set<const Node*>> group_fsms(
+        const std::vector<FSMResult>& fsms);
 
     uint64_t get_free_id() { return free_id_ptr_--; }
 

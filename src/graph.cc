@@ -400,4 +400,21 @@ Node *Graph::copy_node(const Node *node, bool copy_connection) {
     return n;
 }
 
+std::unordered_map<const Node *, std::unordered_set<const Node *> > Graph::group_fsms(
+    const std::vector<FSMResult> &fsms) {
+    std::unordered_map<const Node *, std::unordered_set<const Node *> > result;
+
+    for (uint64_t i = 0; i < fsms.size(); i++) {
+        auto const &fsm_from = fsms[i].node();
+        for (uint64_t j = 0; j < fsms.size(); j++) {
+            if (i == j) continue;
+            auto const &fsm_to = fsms[j].node();
+            if (reachable_control_loop(fsm_from, fsm_to)) {
+                result[fsm_from].emplace(fsm_to);
+            }
+        }
+    }
+    return result;
+}
+
 }  // namespace fsm
