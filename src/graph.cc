@@ -104,7 +104,7 @@ void Graph::identify_registers() {
         if (node->type != NodeType::Net && node->type != NodeType::Variable) continue;
         bool non_blocking = true;
         for (auto const &edge : node->edges_from) {
-            if (edge->type == EdgeType::Blocking) {
+            if (edge->from->has_type(NodeType::Assign) && edge->type == EdgeType::Blocking) {
                 non_blocking = false;
                 break;
             }
@@ -160,7 +160,7 @@ bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_as
                 result = false;
                 break;
             }
-        } else if (node->has_type(NodeType::Assign) && node_from->has_type(NodeType::Control)) {
+        } else if (node_from->has_type(NodeType::Control)) {
             // this is allowed as this is the node that controls whether to assign or not
             // but no recursive call
             continue;
@@ -295,7 +295,11 @@ bool Graph::is_counter(const Node *node, const std::unordered_set<const Edge *> 
         assert_(assign_to->has_type(NodeType::Assign));
         assert_(assign_to->edges_to.size() == 1);
         auto edge_to = assign_to->edges_to.front().get();
-        auto n = edge_to->to;
+        Node *n = edge_to->to;
+        while (n->has_type(NodeType::Assign)) {
+            assert_(n->edges_to.size() == 1);
+            n = (*n->edges_to.begin())->to;
+        }
         if (!n->has_type(NodeType::Variable)) {
             return true;
         } else {
@@ -349,7 +353,7 @@ std::vector<FSMResult> Graph::identify_fsms() {
     for (auto reg : registers) {
         // I think the constant driver is faster?
         auto const_src = Graph::get_constant_source(reg);
-        if (!const_src.empty()) {
+        if (const_src.size() > 1) {
             // next one is to check if there is a constant loop
             bool control_loop = Graph::has_control_loop(reg);
             if (control_loop) {

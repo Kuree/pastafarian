@@ -419,7 +419,7 @@ Node *parse_case(T value, Graph *g, Node *parent) {
     }
 
     if (parent && parent->has_type(NodeType::Control)) {
-        parent->add_edge(cond);
+        parent->add_edge(cond, EdgeType::Control);
     }
 
     return cond;
