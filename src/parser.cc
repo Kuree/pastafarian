@@ -19,20 +19,20 @@ int64_t parse_num_literal(std::string_view str);
 template <class T>
 uint64_t get_address(T value) {
     auto addr_json = value["addr"];
-    assert_(addr_json.error == SUCCESS);
+    assert_(addr_json.error == SUCCESS, "addr not found in address");
     auto addr = addr_json.as_uint64_t();
     return addr;
 }
 
 uint64_t parse_internal_symbol(std::string_view symbol) {
     auto tokens = string::get_tokens(symbol, " ");
-    assert_(tokens.size() == 2);
+    assert_(tokens.size() == 2, "internal symbol has to be two tokens");
     return static_cast<uint64_t>(std::stoll(tokens[0]));
 }
 
 std::string parse_internal_symbol_name(std::string_view symbol) {
     auto tokens = string::get_tokens(symbol, " ");
-    assert_(tokens.size() == 2);
+    assert_(tokens.size() == 2, "internal symbol has to be two tokens");
     return tokens[1];
 }
 
@@ -93,11 +93,11 @@ Node *parse_param(T value, Graph *g, Node *parent) {
     auto addr = get_address(value);
 
     auto name_json = value["name"];
-    assert_(name_json.error == SUCCESS);
+    assert_(name_json.error == SUCCESS, "name not found in parameter");
     auto name = std::string(name_json.as_string());
 
     auto v_json = value["value"];
-    assert_(v_json.error == SUCCESS);
+    assert_(v_json.error == SUCCESS, "value not found in parameter");
     auto v_str = v_json.as_string();
     auto v = parse_num_literal(v_str);
 
@@ -109,7 +109,7 @@ Node *parse_param(T value, Graph *g, Node *parent) {
 template <class T>
 Node *parse_num_literal(T value, Graph *g) {
     auto constant_json = value["constant"];
-    assert_(constant_json.error == SUCCESS);
+    assert_(constant_json.error == SUCCESS, "constant not found in number literal");
     auto v = parse_num_literal(constant_json.as_string());
     auto node = g->add_node(g->get_free_id(), "", NodeType::Constant);
     node->value = v;
@@ -123,7 +123,7 @@ Node *parse_conversion(T value, Graph *g) {
     // and only care about the connectivity
 
     auto operand = value["operand"];
-    assert_(operand.error == SUCCESS);
+    assert_(operand.error == SUCCESS, "operand not found in conversion");
     return parse_dispatch(operand, g, nullptr);
 }
 
@@ -131,7 +131,8 @@ template <class T>
 Node *parse_binary_op(T value, Graph *g) {
     auto left_json = value["left"];
     auto right_json = value["right"];
-    assert_(left_json.error == SUCCESS && right_json.error == SUCCESS);
+    assert_(left_json.error == SUCCESS && right_json.error == SUCCESS,
+            "error in binary op parsing");
     auto left = parse_dispatch(left_json, g, nullptr);
     auto right = parse_dispatch(right_json, g, nullptr);
 
@@ -161,7 +162,7 @@ Node *parse_module(T &value, Graph *g, Node *parent) {
     auto n = g->add_node(addr, name, NodeType::Module, parent);
 
     // parse inner members
-    assert_(value["members"].error == SUCCESS);
+    assert_(value["members"].error == SUCCESS, "member not found in module");
     auto members = value["members"].as_array();
     for (auto const &member : members) {
         parse_dispatch(member, g, n);
@@ -187,7 +188,7 @@ Node *parse_block(T value, Graph *g, Node *parent) {
 template <class T>
 Node *parse_list(T value, Graph *g, Node *parent) {
     auto list = value["list"];
-    assert_(list.error == SUCCESS);
+    assert_(list.error == SUCCESS, "list not found in statement list");
     auto stmts = list.as_array();
     for (auto const &stmt : stmts) {
         parse_dispatch(stmt, g, parent);
@@ -198,7 +199,7 @@ Node *parse_list(T value, Graph *g, Node *parent) {
 template <class T>
 Node *parse_expression_stmt(T value, Graph *g, Node *parent) {
     auto expr = value["expr"];
-    assert_(expr.error == SUCCESS);
+    assert_(expr.error == SUCCESS, "expr not found in expression statement");
 
     return parse_dispatch(expr, g, parent);
 }
@@ -206,7 +207,7 @@ Node *parse_expression_stmt(T value, Graph *g, Node *parent) {
 template <class T>
 Node *parse_timed(T value, Graph *g, Node *parent) {
     auto stmt = value["stmt"];
-    assert_(stmt.error == SUCCESS);
+    assert_(stmt.error == SUCCESS, "stmt not found in timed statement");
 
     return parse_dispatch(stmt, g, parent);
 }
@@ -214,15 +215,15 @@ Node *parse_timed(T value, Graph *g, Node *parent) {
 template <class T>
 Node *parse_conditional(T value, Graph *g, Node *parent) {
     auto cond = value["cond"];
-    assert_(cond.error == SUCCESS);
+    assert_(cond.error == SUCCESS, "cond not found in conditional statement");
     auto cond_node = parse_dispatch(cond, g, parent);
-    assert_(cond_node != nullptr);
+    assert_(cond_node != nullptr, "cond is null for conditional statement");
     // this will be a control node
     cond_node->type = NodeType::Control;
 
     // true part
     auto if_true = value["ifTrue"];
-    assert_(if_true.error == SUCCESS);
+    assert_(if_true.error == SUCCESS, "ifTrue not found for conditional statement");
     parse_dispatch(if_true, g, cond_node);
 
     auto if_false = value["ifFalse"];
@@ -261,7 +262,7 @@ Node *parse_concat(T value, Graph *g) {
 
     for (auto const &operand : array) {
         auto n = parse_dispatch(operand, g, nullptr);
-        assert_(n != nullptr);
+        assert_(n != nullptr, "item is null for concatenation");
         n->add_edge(node);
     }
 
@@ -271,11 +272,11 @@ Node *parse_concat(T value, Graph *g) {
 template <class T>
 Node *parse_ternary(T value, Graph *g) {
     auto pred = value["pred"];
-    assert_(pred.error == SUCCESS);
+    assert_(pred.error == SUCCESS, "pred is null for ternary operator");
 
     auto left = value["left"];
     auto right = value["right"];
-    assert_(left.error == SUCCESS && right.error == SUCCESS);
+    assert_(left.error == SUCCESS && right.error == SUCCESS, "error in ternary operator");
 
     auto pred_node = parse_dispatch(pred, g, nullptr);
     auto left_node = parse_dispatch(left, g, nullptr);
@@ -298,7 +299,7 @@ Node *parse_ternary(T value, Graph *g) {
 template <class T>
 Node *parse_unary(T value, Graph *g) {
     auto op = value["operand"];
-    assert_(op.error == SUCCESS);
+    assert_(op.error == SUCCESS, "operand is null for unary");
     auto op_node = parse_dispatch(op, g, nullptr);
     auto node = g->add_node(g->get_free_id(), "");
     op_node->add_edge(node);
@@ -308,12 +309,12 @@ Node *parse_unary(T value, Graph *g) {
 template <class T>
 Node *parse_replication(T value, Graph *g) {
     auto count = value["count"];
-    assert_(count.error == SUCCESS);
+    assert_(count.error == SUCCESS, "count not found for replication");
     auto num = parse_dispatch(count, g, nullptr);
     assert_(num->type == NodeType::Constant, "count has to be a number");
 
     auto concat_json = value["concat"];
-    assert_(concat_json.error == SUCCESS);
+    assert_(concat_json.error == SUCCESS, "concat not fund replication concat");
     auto var = parse_dispatch(concat_json, g, nullptr);
     if (var->type == NodeType::Constant) {
         // TODO: get the width from the design and do proper calculation
@@ -328,9 +329,9 @@ Node *parse_element_select(T value, Graph *g) {
     auto selector = value["selector"];
 
     auto v_node = parse_dispatch(v, g, nullptr);
-    assert_(v_node != nullptr);
+    assert_(v_node != nullptr, "cannot parse value for element select");
     auto selector_node = parse_dispatch(selector, g, nullptr);
-    assert_(v_node != nullptr);
+    assert_(v_node != nullptr, "cannot parse selector for element select");
 
     selector_node->add_edge(v_node, EdgeType::Slice);
 
@@ -374,7 +375,7 @@ Node *parse_call(T value, Graph *g, Node *parent) {
     auto raw_arguments = value["arguments"];
     if (raw_arguments.error == SUCCESS) {
         auto arguments = raw_arguments.as_array();
-        for (auto const &arg: arguments) {
+        for (auto const &arg : arguments) {
             auto arg_node = parse_dispatch(arg, g, call_node);
             arg_node->add_edge(call_node);
         }
@@ -386,24 +387,24 @@ Node *parse_call(T value, Graph *g, Node *parent) {
 template <class T>
 Node *parse_case(T value, Graph *g, Node *parent) {
     auto items = value["items"];
-    assert_(items.error == SUCCESS);
+    assert_(items.error == SUCCESS, "items not found in case statement");
 
     auto cond_node = value["expr"];
-    assert_(cond_node.error == SUCCESS);
+    assert_(cond_node.error == SUCCESS, "expr not found in case statement");
     auto cond = parse_dispatch(cond_node, g, parent);
 
     auto const &item_array = items.as_array();
     for (auto const &item : item_array) {
         auto expressions = item["expressions"];
-        assert_(expressions.error == SUCCESS);
+        assert_(expressions.error == SUCCESS, "expressions not found in case item");
         auto const &exprs = expressions.as_array();
         std::vector<Node *> nodes;
         for (auto const &expr : exprs) {
             auto expr_node = parse_dispatch(expr, g, parent);
-            assert_(expr_node != nullptr);
+            assert_(expr_node != nullptr, "cannot parse expr in case item");
             nodes.emplace_back(expr_node);
         }
-        assert_(!nodes.empty());
+        assert_(!nodes.empty(), "expressions empty in case item");
 
         // link all the expressions with the new control node
         auto expr_node = g->add_node(g->get_free_id(), "", parent);
@@ -419,7 +420,7 @@ Node *parse_case(T value, Graph *g, Node *parent) {
 
         // stmt
         auto stmt = item["stmt"];
-        assert_(stmt.error == SUCCESS);
+        assert_(stmt.error == SUCCESS, "stmt not found in case statement item");
         parse_dispatch(stmt, g, control_node);
     }
     // default case
@@ -469,18 +470,18 @@ Node *parse_assignment(T value, Graph *g, Node *parent) {
 template <class T>
 Node *parse_continuous_assignment(T value, Graph *g, Node *parent) {
     auto const &assignment = value["assignment"];
-    assert_(assignment.error == SUCCESS);
+    assert_(assignment.error == SUCCESS, "assignment not found in continuous assignment");
     return parse_assignment(assignment, g, parent);
 }
 
-template<class T>
+template <class T>
 Node *parse_generate_block(T value, Graph *g, Node *parent) {
     auto instantiated = value["isInstantiated"];
     auto instantiated_value = instantiated.as_bool();
     if (!instantiated_value) return nullptr;
     auto members = value["members"].as_array();
 
-    for (auto const &stmt: members) {
+    for (auto const &stmt : members) {
         parse_dispatch(stmt, g, parent);
     }
 
@@ -490,7 +491,7 @@ Node *parse_generate_block(T value, Graph *g, Node *parent) {
 template <class T>
 Node *parse_net(T value, Graph *g, Node *parent) {
     auto name_json = value["name"];
-    assert_(name_json.error == SUCCESS);
+    assert_(name_json.error == SUCCESS, "name not found in net");
 
     auto name = std::string(name_json.as_string());
     auto addr = get_address(value);
@@ -528,7 +529,7 @@ static std::unordered_set<std::string> don_t_care_kind = {"TransparentMember",  
 
 template <class T>
 Node *parse_dispatch(T value, Graph *g, Node *parent) {
-    assert_(value["kind"].error == SUCCESS);
+    assert_(value["kind"].error == SUCCESS, "kind not find in node");
     auto ast_kind = std::string(value["kind"].as_string());
     if (ast_kind == "CompilationUnit" || don_t_care_kind.find(ast_kind) != don_t_care_kind.end()) {
         // don't care
@@ -595,7 +596,7 @@ void Parser::parse(const std::string &filename) {
     if (error) {
         throw std::runtime_error(::format("unable to parse the JSON file {0}"));
     }
-    assert_(std::string(doc["name"].as_string()) == "$root");
+    assert_(std::string(doc["name"].as_string()) == "$root", "invalid slang output");
     auto const &members = doc["members"].as_array();
     for (auto const &member : members) {
         parse_dispatch(member, graph_, nullptr);

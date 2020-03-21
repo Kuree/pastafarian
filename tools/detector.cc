@@ -35,14 +35,19 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
+    auto print_verilog_filenames = fsm::string::join(filenames.begin(), filenames.end(), " ");
+    std::cout << "Start parsing verilog file " << print_verilog_filenames << std::endl;
+
     auto json_filename = fsm::parse_verilog(filenames, include_dirs);
 
     // parse the design
+    std::cout << "Start parsing design..." << std::endl;
     fsm::Graph g;
     fsm::Parser p(&g);
     p.parse(json_filename);
 
     // get FSMs
+    std::cout << "Detecting FSM..." << std::endl;
     auto fsms = g.identify_fsms();
     if (fsms.empty()) {
         std::cerr << "No FSM detected" << std::endl;
