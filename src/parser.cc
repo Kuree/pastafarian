@@ -108,9 +108,12 @@ Node *parse_param(T value, Graph *g, Node *parent) {
 
 template <class T>
 Node *parse_num_literal(T value, Graph *g) {
-    auto constant_json = value["constant"];
-    assert_(constant_json.error == SUCCESS, "constant not found in number literal");
-    auto v = parse_num_literal(constant_json.as_string());
+    auto value_json = value["constant"];
+    if (value_json.error != SUCCESS) {
+        value_json = value["value"];
+    }
+    assert_(value_json.error == SUCCESS, "constant value not found in number literal");
+    auto v = parse_num_literal(value_json.as_string());
     auto node = g->add_node(g->get_free_id(), "", NodeType::Constant);
     node->value = v;
     return node;
