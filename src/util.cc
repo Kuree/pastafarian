@@ -26,7 +26,11 @@ std::string parse_verilog(const std::vector<std::string> &filenames,
     // need to run slang to get the ast json
     // make sure slang exists
     // if SLANG is set in the env
-    std::string slang = std::getenv("SLANG");
+    std::string slang;
+    auto slang_char = std::getenv("SLANG");
+    if (slang_char) {
+        slang = std::string(slang_char);
+    }
     if (slang.empty()) {
         slang = fs::which("slang");
         if (slang.empty()) {
