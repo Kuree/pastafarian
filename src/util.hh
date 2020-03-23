@@ -50,26 +50,28 @@ class JSONWriter {
 public:
     template <typename T>
     JSONWriter &write(std::string_view name, T value) {
-        if (end_) stream_ << "," << std::endl;
+        end();
         indent();
-        stream_ << "\"" << name << "\": \"";
-        if constexpr (std::is_same_v<std::string, T>)
-            stream_ << "\"" << value << "\"";
-        else
-            stream_ << value;
-        end_ = true;
-        return *this;
+        stream_ << "\"" << name << "\": ";
+        return write_(value);
     }
-    JSONWriter &start_array(std::string_view name);
 
+    template <typename T>
+    JSONWriter &write(T value) {
+        end();
+        indent();
+        return write_(value);
+    }
+
+    JSONWriter &start_array(std::string_view name);
+    JSONWriter &start_array();
     JSONWriter &end_array();
 
     JSONWriter &start_object(std::string_view name);
-
+    JSONWriter &start_object();
     JSONWriter &end_object();
 
-    [[nodiscard]]
-    std::string str() const;
+    [[nodiscard]] std::string str() const;
 
 private:
     uint32_t indent_ = 0;
@@ -79,6 +81,18 @@ private:
     inline void indent() {
         for (uint32_t i = 0; i < indent_; i++) stream_ << ' ';
     }
+
+    template <typename T>
+    JSONWriter &write_(T value) {
+        if constexpr (std::is_same_v<std::string, T>)
+            stream_ << "\"" << value << "\"";
+        else
+            stream_ << value;
+        end_ = true;
+        return *this;
+    }
+
+    void end();
 };
 }  // namespace json
 

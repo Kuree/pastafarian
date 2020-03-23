@@ -237,40 +237,67 @@ std::vector<std::string> get_tokens(std::string_view line, const std::string &de
 
 namespace json {
 JSONWriter &JSONWriter::start_array(std::string_view name) {
-    if (end_) stream_ << "," << std::endl;
+    end();
     indent();
-    stream_ << "\"" << name << "\": \" [" << std::endl;
+    stream_ << "\"" << name << "\": [" << std::endl;
+    indent_ += 2;
+    return *this;
+}
+
+JSONWriter &JSONWriter::start_array() {
+    end();
+    indent();
+    stream_ << '[' << std::endl;
     indent_ += 2;
     return *this;
 }
 
 JSONWriter &JSONWriter::end_array() {
     // no , at the end of an array
+    stream_ << std::endl;
     indent_ -= 2;
     indent();
     stream_ << "]";
     end_ = true;
+    return *this;
 }
 
 JSONWriter &JSONWriter::start_object(std::string_view name) {
-    if (end_) stream_ << "," << std::endl;
+    end();
     indent();
     stream_ << "\"" << name << "\": \" {" << std::endl;
     indent_ += 2;
     return *this;
 }
 
+JSONWriter & JSONWriter::start_object() {
+    end();
+    indent();
+    stream_ << '{' << std::endl;
+    indent_ += 2;
+    return *this;
+}
+
 JSONWriter &JSONWriter::end_object() {
+    stream_ << std::endl;
     // no , at the end of an object
     indent_ -= 2;
     indent();
     stream_ << "}";
     end_ = true;
+    return *this;
 }
 
 std::string JSONWriter::str() const {
-    assert_(indent_ != 0, "incorrect JSON hierarchy");
+    assert_(indent_ == 0, "incorrect JSON hierarchy");
     return stream_.str();
+}
+
+void JSONWriter::end() {
+    if (end_) {
+        stream_ << "," << std::endl;
+        end_ = false;
+    }
 }
 
 }

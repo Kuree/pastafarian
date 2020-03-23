@@ -421,12 +421,12 @@ std::pair<const Node *, const Node *> coupled_fsms(const Node *fsm_from, const N
     };
 }
 
-std::unordered_map<const Node *, std::unordered_set<const Node *> > Graph::group_fsms(
+std::unordered_map<const Node *, std::unordered_set<const Node *>> Graph::group_fsms(
     const std::vector<FSMResult> &fsms) {
-    std::unordered_map<const Node *, std::unordered_set<const Node *> > result;
+    std::unordered_map<const Node *, std::unordered_set<const Node *>> result;
     auto num_cpus = get_num_cpus();
     cxxpool::thread_pool pool{num_cpus};
-    std::vector<std::future<std::pair<const Node*, const Node*>>> tasks;
+    std::vector<std::future<std::pair<const Node *, const Node *>>> tasks;
     tasks.reserve(fsms.size() * fsms.size());
 
     for (uint64_t i = 0; i < fsms.size(); i++) {
@@ -439,7 +439,7 @@ std::unordered_map<const Node *, std::unordered_set<const Node *> > Graph::group
         }
     }
 
-    for (auto &thread: tasks) {
+    for (auto &thread : tasks) {
         auto const [f, t] = thread.get();
         if (t) {
             result[f].emplace(t);
