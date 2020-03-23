@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
+#include <thread>
 
 using fmt::format;
 
@@ -68,6 +69,19 @@ void assert_(bool condition, const std::string &what) {
         throw std::runtime_error("Assert failed. Reason: " + (what.empty() ? "null" : what));
     }
 }
+
+static int _num_cpu = -1;
+
+uint32_t get_num_cpus() {
+    if (_num_cpu < 0) {
+        // compute the number of CPUs being used
+        uint32_t num_cpus = std::thread::hardware_concurrency();
+        _num_cpu = static_cast<int>(std::max(1u, num_cpus / 2));
+    }
+    return static_cast<uint32_t>(_num_cpu);
+}
+void set_num_cpus(int num_cpu) { _num_cpu = num_cpu; }
+
 
 namespace fs {
 std::string which(const std::string &name) {

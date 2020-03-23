@@ -3,6 +3,9 @@ project(pastafarian VERSION 0.0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
+# threads are quired
+find_package(Threads REQUIRED)
+
 # adding deps
 add_subdirectory(extern/simdjson)
 add_subdirectory(extern/googletest)

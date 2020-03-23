@@ -1,5 +1,7 @@
 #include "graph.hh"
 
+#include <cxxpool.h>
+
 #include <algorithm>
 #include <cmath>
 #include <queue>
@@ -195,8 +197,7 @@ bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_as
                 num_control++;
             }
         }
-        if (num_control == edges.size())
-            result = false;
+        if (num_control == edges.size()) result = false;
     }
 
     if (result) {
@@ -412,20 +413,39 @@ Node *Graph::copy_node(const Node *node, bool copy_connection) {
     return n;
 }
 
+std::pair<const Node *, const Node *> coupled_fsms(const Node *fsm_from, const Node *fsm_to) {
+    if (reachable_control_loop(fsm_from, fsm_to)) {
+        return {fsm_from, fsm_to};
+    } else {
+        return {nullptr, nullptr};
+    };
+}
+
 std::unordered_map<const Node *, std::unordered_set<const Node *> > Graph::group_fsms(
     const std::vector<FSMResult> &fsms) {
     std::unordered_map<const Node *, std::unordered_set<const Node *> > result;
+    auto num_cpus = get_num_cpus();
+    cxxpool::thread_pool pool{num_cpus};
+    std::vector<std::future<std::pair<const Node*, const Node*>>> tasks;
+    tasks.reserve(fsms.size() * fsms.size());
 
     for (uint64_t i = 0; i < fsms.size(); i++) {
         auto const &fsm_from = fsms[i].node();
         for (uint64_t j = 0; j < fsms.size(); j++) {
             if (i == j) continue;
             auto const &fsm_to = fsms[j].node();
-            if (reachable_control_loop(fsm_from, fsm_to)) {
-                result[fsm_from].emplace(fsm_to);
-            }
+            auto t = pool.push([=]() { return coupled_fsms(fsm_from, fsm_to); });
+            tasks.emplace_back(std::move(t));
         }
     }
+
+    for (auto &thread: tasks) {
+        auto const [f, t] = thread.get();
+        if (t) {
+            result[f].emplace(t);
+        }
+    }
+
     return result;
 }
 

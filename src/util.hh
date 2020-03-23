@@ -15,6 +15,9 @@ std::string parse_verilog(const std::vector<std::string> &filenames,
 
 void assert_(bool condition, const std::string &what = "");
 
+uint32_t get_num_cpus();
+void set_num_cpus(int num_cpu);
+
 // this is from kratos
 namespace fs {
 std::string join(const std::string &path1, const std::string &path2);
