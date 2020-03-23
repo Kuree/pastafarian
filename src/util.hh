@@ -44,6 +44,44 @@ std::string static join(Iter begin, Iter end, const std::string &sep) {
     return stream.str();
 }
 }  // namespace string
+
+namespace json {
+class JSONWriter {
+public:
+    template <typename T>
+    JSONWriter &write(std::string_view name, T value) {
+        if (end_) stream_ << "," << std::endl;
+        indent();
+        stream_ << "\"" << name << "\": \"";
+        if constexpr (std::is_same_v<std::string, T>)
+            stream_ << "\"" << value << "\"";
+        else
+            stream_ << value;
+        end_ = true;
+        return *this;
+    }
+    JSONWriter &start_array(std::string_view name);
+
+    JSONWriter &end_array();
+
+    JSONWriter &start_object(std::string_view name);
+
+    JSONWriter &end_object();
+
+    [[nodiscard]]
+    std::string str() const;
+
+private:
+    uint32_t indent_ = 0;
+    bool end_ = false;
+    std::stringstream stream_;
+
+    inline void indent() {
+        for (uint32_t i = 0; i < indent_; i++) stream_ << ' ';
+    }
+};
+}  // namespace json
+
 }  // namespace fsm
 
 #endif  // PASTAFARIAN_UTIL_HH

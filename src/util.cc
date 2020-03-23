@@ -82,7 +82,6 @@ uint32_t get_num_cpus() {
 }
 void set_num_cpus(int num_cpu) { _num_cpu = num_cpu; }
 
-
 namespace fs {
 std::string which(const std::string &name) {
     // windows is more picky
@@ -235,4 +234,44 @@ std::vector<std::string> get_tokens(std::string_view line, const std::string &de
 }
 
 }  // namespace string
+
+namespace json {
+JSONWriter &JSONWriter::start_array(std::string_view name) {
+    if (end_) stream_ << "," << std::endl;
+    indent();
+    stream_ << "\"" << name << "\": \" [" << std::endl;
+    indent_ += 2;
+    return *this;
+}
+
+JSONWriter &JSONWriter::end_array() {
+    // no , at the end of an array
+    indent_ -= 2;
+    indent();
+    stream_ << "]";
+    end_ = true;
+}
+
+JSONWriter &JSONWriter::start_object(std::string_view name) {
+    if (end_) stream_ << "," << std::endl;
+    indent();
+    stream_ << "\"" << name << "\": \" {" << std::endl;
+    indent_ += 2;
+    return *this;
+}
+
+JSONWriter &JSONWriter::end_object() {
+    // no , at the end of an object
+    indent_ -= 2;
+    indent();
+    stream_ << "}";
+    end_ = true;
+}
+
+std::string JSONWriter::str() const {
+    assert_(indent_ != 0, "incorrect JSON hierarchy");
+    return stream_.str();
+}
+
+}
 }  // namespace fsm
