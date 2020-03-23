@@ -91,8 +91,8 @@ int64_t parse_num_literal(std::string_view str) {
 int64_t parse_string_literal(std::string_view str) {
     // convert to asci
     int64_t result = 0;
-    if (str.size() < 8) {
-        std::cerr << "Unable to cast long string literal to integer" << std::endl;
+    if (str.size() > 8) {
+        std::cerr << "Unable to cast long string literal (" << str << ")to integer" << std::endl;
     }
     for (uint64_t i = 0; i < str.size() && i < 8; i++) {
         result = result | (str[i]) << (8 * i);  // NOLINT

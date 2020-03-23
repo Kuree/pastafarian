@@ -187,6 +187,18 @@ bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_as
         }
     }
 
+    // if all the edges are controls, then it shouldn't be a constant driver
+    {
+        uint32_t num_control = 0;
+        for (auto const &edge : edges) {
+            if (edge->from->type == NodeType::Control) {
+                num_control++;
+            }
+        }
+        if (num_control == edges.size())
+            result = false;
+    }
+
     if (result) {
         if (const_sources.empty()) result = false;
     } else {
