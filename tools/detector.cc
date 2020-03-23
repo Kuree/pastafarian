@@ -1,4 +1,5 @@
 #include <CLI/CLI.hpp>
+#include <filesystem>
 #include <iostream>
 
 #include "fsm.hh"
@@ -44,14 +45,14 @@ std::string output_json(
         &fsm_groups) {
     fsm::json::JSONWriter w;
     w.start_array();
-    for (auto const &fsm: fsms) {
+    for (auto const &fsm : fsms) {
         auto const node = fsm.node();
         w.start_object();
         w.write("name", node->handle_name());
 
         // states
         w.start_array("states");
-        for (auto const &state: fsm.const_src()) {
+        for (auto const &state : fsm.const_src()) {
             w.start_object();
             auto state_node = state->from;
             w.write("value", state_node->value).write("name", state_node->name);
@@ -75,7 +76,6 @@ std::string output_json(
     w.end_array();
 
     return w.str();
-
 }
 
 int main(int argc, char *argv[]) {
@@ -97,7 +97,14 @@ int main(int argc, char *argv[]) {
     auto print_verilog_filenames = fsm::string::join(filenames.begin(), filenames.end(), " ");
     std::cout << "Start parsing verilog file " << print_verilog_filenames << std::endl;
 
-    auto json_filename = fsm::parse_verilog(filenames, include_dirs);
+    std::string json_filename;
+
+    if (filenames.size() == 1 && std::filesystem::path(filenames[0]).extension() == ".json") {
+        // if it is JSON, we don't need to convert to JSON.
+        json_filename = filenames[0];
+    } else {
+        json_filename = fsm::parse_verilog(filenames, include_dirs);
+    }
 
     // parse the design
     std::cout << "Start parsing design..." << std::endl;
