@@ -88,6 +88,18 @@ int64_t parse_num_literal(std::string_view str) {
     return r;
 }
 
+int64_t parse_string_literal(std::string_view str) {
+    // convert to asci
+    int64_t result = 0;
+    if (str.size() < 8) {
+        std::cerr << "Unable to cast long string literal to integer" << std::endl;
+    }
+    for (uint64_t i = 0; i < str.size() && i < 8; i++) {
+        result = result | (str[i]) << (8 * i);  // NOLINT
+    }
+    return result;
+}
+
 template <class T>
 Node *parse_param(T value, Graph *g, Node *parent) {
     auto addr = get_address(value);
@@ -109,11 +121,18 @@ Node *parse_param(T value, Graph *g, Node *parent) {
 template <class T>
 Node *parse_num_literal(T value, Graph *g) {
     auto value_json = value["constant"];
+    bool string_literal = false;
     if (value_json.error != SUCCESS) {
         value_json = value["value"];
     }
+    if (value_json.error != SUCCESS) {
+        // literal?
+        value_json = value["literal"];
+        string_literal = true;
+    }
     assert_(value_json.error == SUCCESS, "constant value not found in number literal");
-    auto v = parse_num_literal(value_json.as_string());
+    auto v = string_literal ? parse_string_literal(value_json.as_string())
+                            : parse_num_literal(value_json.as_string());
     auto node = g->add_node(g->get_free_id(), "", NodeType::Constant);
     node->value = v;
     return node;
