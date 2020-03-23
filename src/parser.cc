@@ -616,7 +616,7 @@ void Parser::parse(const std::string &filename) {
     // parse the entire JSON
     auto [doc, error] = simdjson::document::parse(simdjson::get_corpus(filename));
     if (error) {
-        throw std::runtime_error(::format("unable to parse the JSON file {0}"));
+        throw std::runtime_error(::format("unable to parse the JSON file {0}", filename));
     }
     assert_(std::string(doc["name"].as_string()) == "$root", "invalid slang output");
     auto const &members = doc["members"].as_array();
