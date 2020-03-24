@@ -343,8 +343,6 @@ template <class T>
 Node *parse_replication(T value, Graph *g) {
     auto count = value["count"];
     assert_(count.error == SUCCESS, "count not found for replication");
-    auto num = parse_dispatch(count, g, nullptr);
-    assert_(num->type == NodeType::Constant, "count has to be a number");
 
     auto concat_json = value["concat"];
     assert_(concat_json.error == SUCCESS, "concat not fund replication concat");
@@ -558,7 +556,8 @@ Node *parse_net(T value, Graph *g, Node *parent) {
 
 static std::unordered_set<std::string> don_t_care_kind = {"TransparentMember",  // NOLINT
                                                           "TypeAlias", "StatementBlock",
-                                                          "Subroutine"};
+                                                          "Subroutine", "EmptyArgument", "Empty",
+                                                          "VariableDeclaration"};
 
 template <class T>
 Node *parse_dispatch(T value, Graph *g, Node *parent) {
