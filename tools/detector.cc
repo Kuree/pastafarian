@@ -1,7 +1,7 @@
 #include <CLI/CLI.hpp>
+#include <chrono>
 #include <filesystem>
 #include <iostream>
-#include <chrono>
 
 #include "fsm.hh"
 #include "parser.hh"
@@ -84,9 +84,11 @@ int main(int argc, char *argv[]) {
     std::vector<std::string> include_dirs;
     std::vector<std::string> filenames;
     std::string output_filename;
+    bool compute_coupled_fsm = false;
     app.add_option("-i,--input", filenames, "SystemVerilog design files");
     app.add_option("-I,--include", include_dirs, "SystemVerilog include search directory");
     app.add_option("--json", output_filename, "Output JSON. Use - for stdout");
+    app.add_flag("--coupled-fsm", compute_coupled_fsm, "Whether to compute coupled FSM");
 
     CLI11_PARSE(app, argc, argv)
 
@@ -119,9 +121,10 @@ int main(int argc, char *argv[]) {
 
     // get FSMs
     std::cout << "Detecting FSM..." << std::endl;
-    time_start =  std::chrono::steady_clock::now();;
+    time_start = std::chrono::steady_clock::now();
+    ;
     auto const fsms = g.identify_fsms();
-    time_end =  std::chrono::steady_clock::now();
+    time_end = std::chrono::steady_clock::now();
     time_used = time_end - time_start;
     std::cout << "FSM detection took " << time_used.count() << " seconds" << std::endl;
 
@@ -136,16 +139,18 @@ int main(int argc, char *argv[]) {
         }
     }
 
-
     // see coupled FSM
-    std::cout << "Calculating coupled FSMs..." << std::endl;
-    time_start =  std::chrono::steady_clock::now();;
-    auto fsm_groups = fsm::Graph::group_fsms(fsms);
-    time_end =  std::chrono::steady_clock::now();
-    time_used = time_end - time_start;
-    std::cout << "FSM coupling took " << time_used.count() << " seconds" << std::endl;
+    std::unordered_map<const fsm::Node *, std::unordered_set<const fsm::Node *>> fsm_groups;
+    if (compute_coupled_fsm) {
+        std::cout << "Calculating coupled FSMs..." << std::endl;
+        time_start = std::chrono::steady_clock::now();
+        fsm_groups = fsm::Graph::group_fsms(fsms);
+        time_end = std::chrono::steady_clock::now();
+        time_used = time_end - time_start;
+        std::cout << "FSM coupling took " << time_used.count() << " seconds" << std::endl;
 
-    print_grouped_fsm(fsm_groups);
+        print_grouped_fsm(fsm_groups);
+    }
 
     if (!output_filename.empty()) {
         auto str = output_json(fsms, fsm_groups);

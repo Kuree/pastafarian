@@ -163,10 +163,12 @@ bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_as
             }
         } else if (node_from->has_type(NodeType::Net)) {
             // NOTE::
-            // this is a herustics on how people write FSM that doesn't follow traditional
+            // 1. this is a herustics on how people write FSM that doesn't follow traditional
             // convention, e.g., additions
             // we only allow self loop with limited ops, such as add, and subtract
-            if (node_from->op != NetOpType::Ignore && node_from->edges_from.size() <= 2) {
+            // 2. if it's a net with name, i.e., wire/reg/logic, we continue the search
+            if ((node_from->op != NetOpType::Ignore && node_from->edges_from.size() <= 2) ||
+                !node_from->name.empty()) {
                 auto node_result = constant_driver(node_from, self_assignment_nodes, const_sources);
                 if (!node_result) {
                     result = false;
@@ -311,6 +313,36 @@ std::unordered_set<const Edge *> Graph::get_constant_source(const Node *node) {
     return result;
 }
 
+bool is_counter_(const Node *target, const Node *node) {
+    // if there is any + or - based operator on the target node
+    // first we do a search and figure out every assigned nodes
+    // BFS based search
+    std::queue<const Node *> working_set;
+    working_set.emplace(node);
+    while (!working_set.empty()) {
+        auto n = working_set.front();
+        working_set.pop();
+        if (n == target) break;
+
+        if (n->has_type(NodeType::Assign)) {
+            auto const &edges_from = n->edges_from;
+            for (auto const edge : edges_from) {
+                if (!edge->has_type(EdgeType::Control)) {
+                    auto nn = edge->from;
+                    if (Graph::reachable(target, nn) &&
+                        (nn->op == NetOpType::Add || nn->op == NetOpType::Subtract)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        for (auto const &edge : n->edges_to) {
+            working_set.emplace(edge->to);
+        }
+    }
+    return false;
+}
+
 bool Graph::is_counter(const Node *node, const std::unordered_set<const Edge *> &edges) {
     for (auto const &edge : edges) {
         assert_(edge->from->type == NodeType::Constant, "fsm state has to be driven by constant");
@@ -322,21 +354,9 @@ bool Graph::is_counter(const Node *node, const std::unordered_set<const Edge *> 
         assert_(assign_to->has_type(NodeType::Assign));
         assert_(assign_to->edges_to.size() == 1);
         auto edge_to = assign_to->edges_to.front().get();
-        Node *n = edge_to->to;
-        while (n->has_type(NodeType::Assign)) {
-            assert_(n->edges_to.size() == 1);
-            n = (*n->edges_to.begin())->to;
-        }
-        if (!n->has_type(NodeType::Variable)) {
-            return true;
-        } else {
-            // make sure it has to be a direct assignment, otherwise it is a net
-            if (n != node && !Graph::in_direct_assign_chain(n, node)) {
-                return true;
-            } else if (n == node) {
-                continue;
-            }
-        }
+        const Node *n = edge_to->to;
+        auto r = is_counter_(node, n);
+        if (r) return true;
     }
     return false;
 }

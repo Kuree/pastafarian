@@ -322,6 +322,7 @@ Node *parse_ternary(T value, Graph *g) {
     auto control_assign_node =
         g->add_node(g->get_free_id(), "", NodeType::Control | NodeType::Assign);
     node->add_edge(control_assign_node);
+    control_assign_node->op = NetOpType::Ternary;
 
     left_node->add_edge(control_assign_node);
     right_node->add_edge(control_assign_node);
@@ -528,10 +529,7 @@ Node *parse_net(T value, Graph *g, Node *parent) {
     auto addr = get_address(value);
 
     auto kind_str = std::string(value["kind"].as_string());
-    NodeType type = NodeType::Net;
-    if (kind_str == "Variable") {
-        type = NodeType::Variable;
-    }
+    NodeType type = NodeType::Variable;
 
     auto n = g->add_node(addr, name, type, parent);
     if (value["internalSymbol"].error == SUCCESS) {
