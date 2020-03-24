@@ -624,6 +624,9 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
 }
 
 void Parser::parse(const std::string &filename) {
+    if (simdjson::active_implementation->name() == "unsupported") {
+        throw std::runtime_error("Unsupported CPU");
+    }
     // parse the entire JSON
     auto [doc, error] = simdjson::document::parse(simdjson::get_corpus(filename));
     if (error) {
