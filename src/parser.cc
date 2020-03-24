@@ -64,6 +64,10 @@ int64_t parse_num_literal(std::string_view str) {
     auto tokens = string::get_tokens(str, "'");
     // we don't care about the size
     auto name_str = tokens.back();
+    if (name_str[0] == 's') {
+        // don't care about the sign
+        name_str = name_str.substr(1);
+    }
     uint32_t base;
     if (name_str[0] == 'b') {
         base = 2;
@@ -84,8 +88,12 @@ int64_t parse_num_literal(std::string_view str) {
         // don't care for now?
         return 0;
     }
-    auto r = std::stoll(name_str, nullptr, base);
-    return r;
+    try {
+        auto r = std::stoll(name_str, nullptr, base);
+        return r;
+    } catch (std::out_of_range &) {
+        return 0xFFFFFFFFFFFFFFFF;
+    }
 }
 
 int64_t parse_string_literal(std::string_view str) {
