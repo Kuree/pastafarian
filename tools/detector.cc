@@ -1,6 +1,7 @@
 #include <CLI/CLI.hpp>
 #include <filesystem>
 #include <iostream>
+#include <chrono>
 
 #include "fsm.hh"
 #include "parser.hh"
@@ -98,7 +99,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Start parsing verilog file " << print_verilog_filenames << std::endl;
 
     std::string json_filename;
-
+    auto time_start = std::chrono::steady_clock::now();
     if (filenames.size() == 1 && std::filesystem::path(filenames[0]).extension() == ".json") {
         // if it is JSON, we don't need to convert to JSON.
         json_filename = filenames[0];
@@ -112,9 +113,18 @@ int main(int argc, char *argv[]) {
     fsm::Parser p(&g);
     p.parse(json_filename);
 
+    auto time_end = std::chrono::steady_clock::now();
+    std::chrono::duration<float> time_used = time_end - time_start;
+    std::cout << "Parsing took " << time_used.count() << " seconds" << std::endl;
+
     // get FSMs
     std::cout << "Detecting FSM..." << std::endl;
+    time_start =  std::chrono::steady_clock::now();;
     auto const fsms = g.identify_fsms();
+    time_end =  std::chrono::steady_clock::now();
+    time_used = time_end - time_start;
+    std::cout << "FSM detection took " << time_used.count() << " seconds" << std::endl;
+
     if (fsms.empty()) {
         std::cerr << "No FSM detected" << std::endl;
         return EXIT_FAILURE;
@@ -126,9 +136,15 @@ int main(int argc, char *argv[]) {
         }
     }
 
+
     // see coupled FSM
     std::cout << "Calculating coupled FSMs..." << std::endl;
+    time_start =  std::chrono::steady_clock::now();;
     auto fsm_groups = fsm::Graph::group_fsms(fsms);
+    time_end =  std::chrono::steady_clock::now();
+    time_used = time_end - time_start;
+    std::cout << "FSM coupling took " << time_used.count() << " seconds" << std::endl;
+
     print_grouped_fsm(fsm_groups);
 
     if (!output_filename.empty()) {

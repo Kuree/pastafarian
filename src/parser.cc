@@ -96,11 +96,14 @@ int64_t parse_num_literal(std::string_view str) {
     }
 }
 
+
+static bool has_parse_string_warning = false;
 int64_t parse_string_literal(std::string_view str) {
     // convert to asci
     int64_t result = 0;
-    if (str.size() > 8) {
+    if (str.size() > 8 && !has_parse_string_warning) {
         std::cerr << "Unable to cast long string literal (" << str << ")to integer" << std::endl;
+        has_parse_string_warning = true;
     }
     for (uint64_t i = 0; i < str.size() && i < 8; i++) {
         result = result | (str[i]) << (8 * i);  // NOLINT
