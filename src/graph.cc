@@ -347,8 +347,18 @@ bool is_counter_(const Node *target, const Node *node) {
 }
 
 bool Graph::is_counter(const Node *node, const std::unordered_set<const Edge *> &edges) {
-    for (auto const &edge : edges) {
-        assert_(edge->from->type == NodeType::Constant, "fsm state has to be driven by constant");
+    // we do a filtering to speed up the process
+    // if it is a counter, it's unlikely it will be mixed with explicit state
+    std::unordered_map<int64_t, const Edge*> const_edges;
+    for (auto const &edge: edges) {
+        auto const node_from = edge->from;
+        assert_(node_from->type == NodeType::Constant, "fsm state has to be driven by constant");
+        if (const_edges.find(node_from->value) == const_edges.end()) {
+            const_edges.emplace(node_from->value, edge);
+        }
+    }
+    for (auto const &iter : const_edges) {
+        auto const edge = iter.second;
         auto assign_to = edge->to;
         // net is only created
         if (assign_to->type == NodeType::Net) {
