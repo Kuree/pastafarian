@@ -1,6 +1,7 @@
 #include "graph.hh"
 
 #include <cxxpool.h>
+#include <tqdm.h>
 
 #include <algorithm>
 #include <cmath>
@@ -318,12 +319,14 @@ bool is_counter_(const Node *target, const Node *node) {
     // first we do a search and figure out every assigned nodes
     // BFS based search
     std::queue<const Node *> working_set;
+    std::unordered_set<const Node *> visited;
     working_set.emplace(node);
     while (!working_set.empty()) {
         auto n = working_set.front();
         working_set.pop();
         if (n == target) break;
-
+        if (visited.find(n) != visited.end()) continue;
+        visited.emplace(n);
         if (n->has_type(NodeType::Assign)) {
             auto const &edges_from = n->edges_from;
             for (auto const edge : edges_from) {
@@ -396,8 +399,11 @@ std::vector<FSMResult> Graph::identify_fsms() {
     // first it has to be a register
     identify_registers();
     auto registers = get_registers();
+    tqdm bar;
 
-    for (auto reg : registers) {
+    for (uint64_t i = 0; i < registers.size(); i++) {
+        bar.progress(i, registers.size());
+        auto reg = registers[i];
         // I think the constant driver is faster?
         auto const_src = Graph::get_constant_source(reg);
         if (const_src.size() > 1) {
