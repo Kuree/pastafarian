@@ -1,0 +1,159 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usepackage{amsmath, amssymb}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[autosize]{dot2texi}
+\usepackage[margin=1in]{geometry}
+
+\definecolor{vgreen}{RGB}{104,180,104}
+\definecolor{vblue}{RGB}{49,49,255}
+\definecolor{vorange}{RGB}{255,143,102}
+
+
+\lstdefinestyle{verilog-style}
+{
+    language=Verilog,
+    basicstyle=\small\ttfamily,
+    keywordstyle=\color{vblue},
+    identifierstyle=\color{black},
+    commentstyle=\color{vgreen},
+    numbers=left,
+    numberstyle=\tiny\color{black},
+    numbersep=10pt,
+    tabsize=8,
+    morekeywords={unique, logic, always_ff, typedef, enum}
+    literate=*{:}{:}1
+}
+
+\title{FSM Extraction Algorithm}
+\author{Keyi Zhang}
+\begin{document}
+
+\maketitle
+\section{Graph Definition for the Circuit}\label{sec:1}
+Let the entire circuit design to be represented as a graph, $G(V, E)$. We define $V$
+as terminals of a net, and $E$ as relations between two nets terminals.
+For instance, in Listing~\ref{lst:1}, we have three variables, \texttt{a}, \texttt{b},
+and \texttt{c}, hence we have three \textit{named} vertices: they are named because
+they have direct correspondence to Verilog variables. Similar to synthesis, we create
+a new vertex for every u-/bi-nary operators. These new vertices are not named
+since they are created through expressions. For instance, \texttt{b + c} is represented
+as a new vertex connected to both \texttt{b} and \texttt{c}.
+For assignment, we introduce additional vertices as
+``pass-through'' nodes, i.e. additional node that connects two vertices. For instance,
+in Listing~\ref{lst:1}, the assignment node connects \texttt{a} and the new vertex
+created by \texttt{b + c}, as showing in Figure~\ref{fig:1}.
+\begin{lstlisting}[style={verilog-style}, caption={Graph example from Verilog},
+    label={lst:1}]
+logic [15:0] a;
+logic [15:0] b;
+logic [15:0] c;
+
+assign a = b + c;
+\end{lstlisting}
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+    \input{figure1.tex}
+    \end{tikzpicture}
+    \caption{Graph representation for Listing~\ref{lst:1}.}
+    \label{fig:1}
+\end{figure}
+
+To describe the behavior of conditional logic, e.g. \texttt{case} and \texttt{if}, and
+clocking block, such as \texttt{always\_ff}. We introduce a new type of vertex, i.e.,
+the \textit{control} vertex, and new type of edge for non-blocking assignment, as
+shown in Listing~\ref{lst:2} and Figure~\ref{fig:2}. Notice that by introducing
+control vertex and edge, we allow ``influence'' from one vertex to another vertex
+even though there is no direct assignment. Mathematically speaking, that means
+there is a path from the vertex used for conditional logic to the assigned vertex; in
+this case, a path from \texttt{c} to \texttt{a}.
+
+
+We claim without proof that the graph
+constructed by this method is a directed simple graph, which implies that any loop
+in the graph has to go through at least two vertices.
+
+We define the \texttt{source} of vertex is the function $source(v)$:
+\[
+    source(v) = \{x \mid x \in \mathcal{V} \cup {v}\quad\text{for all}\quad x \in \mathcal{E}(v) \} \cup 
+                \{source(x) \mid x \not \in \mathcal{V} \cup {v}\quad\text{for all}\quad x \in \mathcal{E}(v)\}
+\]
+where $\mathcal{V}$ denotes the set of vertices that does not have any incoming edges,
+i.e., constants and top-level IO ports, and $\mathcal{E}(v)$ is defined complete
+set of $(x, v)$ such that $(x, v) \in E$ and $(x, v)$ is not a control edge.
+Notice that this is a recursive definition to search the ``ultimate'' source of the
+vertex, including itself.
+
+\begin{lstlisting}[style={verilog-style}, caption={Control vertex and non-blocking
+    assignment Verilog code},
+    label={lst:2}]
+logic clk;
+logic [15:0] a;
+logic [15:0] b;
+logic [15:0] c;
+
+always_ff @(posedge clk) begin
+    if (b == c) begin
+      a <= c;
+    end
+end
+\end{lstlisting}
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+    \input{figure2.tex}
+    \end{tikzpicture}
+    \caption{Graph representation for Listing~\ref{lst:2}. Dotted arrow represents edge with control
+    type, and dashed arrow represents non-blocking assignment.}
+    \label{fig:2}
+\end{figure}
+
+\section{Finite State Machine (FSM) Properties and Its Graph Equivalence}
+Based on how FSM are used and programmed in Verilog, there are three properties that
+defines an FSM:
+\begin{enumerate}
+    \item The FSM state variable has to be a register.
+    \item All the sources to that FSM variable have to be either constant, ot itself,
+    or combination of both with binary operators such as addition.
+    \item The current value of the FSM state should be used to determined the next
+    state.
+\end{enumerate}
+
+One caveat of last property is that it excludes the cases where a state machine
+advances its state at every cycle regardless of inputs and state. This only happens
+when the FSM is used as a counter and the maximum value of the counter is the maximum
+value specified by its bit width. This, however, is trivial to detect, as shown
+later.
+
+Given the graph construction described in Section~\ref{sec:1}, we can show that the
+equivalent following graph properties:
+\begin{enumerate}
+    \item Given vertex $v$, for all its connected vertices $w \in V$ such that
+    $(w, v) \in E$, $E(w, v)$ is non-blocking and $V(w)$ is assignment.
+    \item Given vertex $v$, each element in $source(v)$ has be to either a constant,
+    or itself ($v$).
+    \item Given vertex $v$, for all simple path $P$ from $v$ to $v$,
+    $P = (v_0, v_1, \dots, v_i)$ such that $v_0 = v_i = v$ and $(v_{j-1}, v_{j}) \in E$,
+    there exist an edge $e = (v_{j-1}, v_j)$ such that e is a control edge.
+\end{enumerate}
+
+It is trivial to show the first properties are equivalent since we create an assignment
+vertex for each blocking and non-blocking assignment, then connect that assignment vertex
+to the sink vertex.
+
+To show that the second properties are equivalent, notice that the $source$ function
+is recursive and the base case is the set $\mathcal{V} \cup v$ for a given vertex
+$v$. Furthermore, Since $V$ is the set of all constants and IO ports, if $sources(v)$ are itself
+or constant, it means that $v$ is not a data-path register.
+
+To show the equivalence of the last properties, notice the introduction of \textit{control}
+edge, which indicates the presence of a conditional logic. If a variable's current value
+is used to determined the next value, there must be some conditional logic to use the
+current value to mux out the next value, hence creating a control edge from that vertex.
+
+\end{document}
