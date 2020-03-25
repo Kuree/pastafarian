@@ -38,17 +38,18 @@
 \maketitle
 \section{Graph Definition for the Circuit}\label{sec:1}
 Let the entire circuit design to be represented as a graph, $G(V, E)$. We define $V$
-as terminals of a net, and $E$ as relations between two nets terminals.
+as terminals of a net, and $E$ as relations between two net terminals.
 For instance, in Listing~\ref{lst:1}, we have three variables, \texttt{a}, \texttt{b},
-and \texttt{c}, hence we have three \textit{named} vertices: they are named because
-they have direct correspondence to Verilog variables. Similar to synthesis, we create
-a new vertex for every u-/bi-nary operators. These new vertices are not named
+and \texttt{c}, hence we have three \textit{named} vertices in the graph: they are named
+because they have direct correspondence to Verilog variables. Similar to synthesis,
+we create a new vertex for every u-/bi-nary operator. These new vertices are not named
 since they are created through expressions. For instance, \texttt{b + c} is represented
 as a new vertex connected to both \texttt{b} and \texttt{c}.
 For assignment, we introduce additional vertices as
 ``pass-through'' vertex, i.e. additional vertex that connects two vertices. For instance,
 in Listing~\ref{lst:1}, the assignment vertex connects \texttt{a} and the new vertex
-created by \texttt{b + c}, as showing in Figure~\ref{fig:1}.
+created by \texttt{b + c}, as showing in Figure~\ref{fig:1}. This new vertex will have
+\texttt{assignment} type.
 \begin{lstlisting}[style={verilog-style}, caption={Graph example from Verilog},
     label={lst:1}]
 logic [15:0] a;
@@ -68,10 +69,10 @@ assign a = b + c;
 \end{figure}
 
 To describe the behavior of conditional logic, e.g. \texttt{case} and \texttt{if}, and
-clocking block, such as \texttt{always\_ff}. We introduce a new type of vertex, i.e.,
-the \textit{control} vertex, and new type of edge for non-blocking assignment, as
+clocking block, such as \texttt{always\_ff}. We introduce a new type of edge \texttt{control}
+for conditional logic and \texttt{NonBlocking} for non-blocking assignment, as
 shown in Listing~\ref{lst:2} and Figure~\ref{fig:2}. Notice that by introducing
-control vertex and edge, we allow ``influence'' from one vertex to another vertex
+control edge, we allow ``influence'' from one vertex to another vertex
 even though there is no direct assignment. Mathematically speaking, that means
 there is a path from the vertex used for conditional logic to the assigned vertex; in
 this case, a path from \texttt{c} to \texttt{a}. We claim without proof that the graph
@@ -118,7 +119,7 @@ end
 For the purpose of HDL-based design, we categorize FSM into two catagories:
 \begin{itemize}
     \item \textbf{Explicit} FSM. This includes finite state machines where each state
-    is defined explicitly with an integer, such as local parameters or enums.
+    is assigned explicitly to an integer, such as local parameters or enums.
     \item \textbf{Implicit} FSM. This includes counter-based state machines where
     states are defined in a finite range of values and the state value can decrement
     or increment at any cycle.
@@ -139,26 +140,26 @@ or explicit:
 \end{enumerate}
 
 One caveat of last property is that it excludes the cases where a state machine
-advances its state at every cycle regardless of inputs and state. This only happens
+advances its state at every cycle regardless of the current state. This only happens
 when the FSM is used as a counter and the maximum value of the counter is the maximum
 value specified by its bit width. This, however, is trivial to detect, as shown
 later.
 
-Given the graph construction described in Section~\ref{sec:1}, we can show that the
-equivalent following graph properties:
+Given the graph construction described in Section~\ref{sec:1}, we can show the
+equivalent following properties in our graph:
 \begin{enumerate}
     \item Given vertex $v$, for all its connected vertices $w \in V$ such that
-    $(w, v) \in E$, $E(w, v)$ is non-blocking and $V(w)$ is assignment.
+    $(w, v) \in E$, Edge $(w, v)$ is non-blocking and $w$ is assignment.
     \item Given vertex $v$, each element in $source(v)$ has be to either a constant,
     or itself ($v$).
     \item Given vertex $v$, for all simple path $P$ from $v$ to $v$,
     $P = (v_0, v_1, \dots, v_i)$ such that $v_0 = v_i = v$ and $(v_{j-1}, v_{j}) \in E$,
-    there exist an edge $e = (v_{j-1}, v_j)$ such that e is a control edge.
+    there exist an edge $e = (v_{j-1}, v_j)$ such that $e$ is a control edge.
 \end{enumerate}
 
 It is trivial to show the first properties are equivalent since we create an assignment
 vertex for each blocking and non-blocking assignment, then connect that assignment vertex
-to the sink vertex.
+to the sink vertex, which is the only source of incoming edges to a vertex.
 
 To show that the second properties are equivalent, notice that the $source$ function
 is recursive and the base case is the set $\mathcal{V} \cup v$ for a given vertex
@@ -168,7 +169,8 @@ or constant, it means that $v$ is not a data-path register.
 To show the equivalence of the last properties, notice the introduction of \textit{control}
 edge, which indicates the presence of a conditional logic. If a variable's current value
 is used to determined the next value, there must be some conditional logic to use the
-current value to mux out the next value, hence creating a control edge from that vertex.
+current value to mux out the next value, hence creating a control edge from that vertex
+and form a loop.
 
 For the corner case where the counter advances without comparing with the current
 value, all its loop path will not have any control edge. However, the path length
@@ -178,7 +180,7 @@ $\rightarrow$ self.
 \subsection{Relaxed FSM Properties}
 In some cases where data path are mixed with control path, property~\ref{item:1} may not
 hold anymore based on the coding style, as shown in Listing~\ref{lst:3} and Listing~\ref{lst:4}. Although these
-two code are logically equivalent, property~\ref{item:1} will fail on Listing~\ref{lst:4}.
+two listings are logically equivalent, property~\ref{item:1} will fail on Listing~\ref{lst:4}.
 
 \begin{lstlisting}[style={verilog-style}, caption={Conditional increment counter
     with constant source},
@@ -210,7 +212,7 @@ end
 
 To accommodate this use case, we can relax property~\ref{item:1} with some heuristics:
 when the binary operator is addition or subtraction, one of the operand is itself and the
-other operand is a single-bit value (before the bit-width conversion), we treat that
+other operand is a single-bit value (before the bit-width conversion), we ican treat that
 single-bit value as constant source.
 
 \subsection{Implicit FSM Detection}
@@ -218,12 +220,12 @@ Based on the definition in Section~\ref{sec:fsm}, the only difference between im
 explicit FSM is that implicit has a source that combines itself with another constant with
 a binary operation. We can use that property to distinguish these two FSMs. To put that
 in the graphical terms, given a FSM vertex $v$, there exists a path,
-$(v_0, v_1, \dots, v_i, v)$, where all the edges are not control edge and
-$v \in \{v_0, v_1, \dots, v_i\}$.
+$(v_0, v_1, \dots, v_i, v)$, where $v \in \{v_0, v_1, \dots, v_i\}$ and the path from $v$
+to itself does not contain control edge.
 
 \subsection{Coupled FSM Interaction}
 When the value of one FSM machine affects another FSM, we call these two FSMs \textit{coupled}
-and there are some logic that interacts with these two. For instance, in a controller logic,
+and there are some logic that interacts with these two. For instance, in a controller,
 the valid output FSM can only be in valid state if the main FSM is in transaction state.
 Finding out these interactions between coupled FSM is very straight-forward given our graph setup.
 Given two FSM vertices, $v$ and $w$, if there is a simple path from $v$ to $w$ that contains
@@ -238,16 +240,15 @@ It also highlights some implementation details to speed up the computation.
 
 The overall algorithm to extract FSMs from a given Verilog file is shown in Algorithm~\ref{alg:1}.
 
-\begin{algorithm}[!tbh]
-    \label{alg:1}
+\begin{algorithm}[!tbh]\label{alg:1}
     \KwIn{Verilog file $V$}
     \KwResult{List of FSM variables and their states}
-    $G \gets$ parse\_verilog($V$)\;
-    $Regs \gets$ identify\_registers(G)\;
+    $G \gets$ parse\_verilog ($V$)\;
+    $Regs \gets$ identify\_registers (G)\;
     $result \gets$ $\{\}$\;
     \For{$r \gets$ Regs}{
-        $\text{const\_sources} \gets$ get\_const\_sources($r$)\;
-        \If{$|\text{const\_sources}| > 0$ and $\text{has\_control\_loop}(r)$}{
+        $\text{const\_sources} \gets$ get\_const\_sources ($r$)\;
+        \If{$|\text{const\_sources}| > 0$ and $\text{has\_control\_loop} (r)$}{
             $result \gets result \cup \{(r, \text{const\_sources}\}$\;
         }
     }
@@ -256,11 +257,13 @@ The overall algorithm to extract FSMs from a given Verilog file is shown in Algo
 \end{algorithm}
 
 In \textit{parse\_verilog}, to report all the hierarchical name (handle name) for the FSM variable,
-we add a new type of vertex to represent Verilog module and for each vertex store a
+we add a new type of vertex to represent Verilog module and in each vertex we store a
 \texttt{parent} to point back to its hierarchical parent.
 
 The algorithm for \texttt{identify\_registers} is shown in Algorithm~\ref{alg:2}, which examines
-the incoming edges for each named vertex in the graph $G$.
+the incoming edges for each named vertex in the graph $G$. We only care about named vertex because
+it is impossible to create a registers without an explicit name in Verilog. This will speed up
+the search significantly.
 \begin{algorithm}[!tbh]
     \label{alg:2}
     \KwIn{Graph $G$}
@@ -274,7 +277,9 @@ the incoming edges for each named vertex in the graph $G$.
                 \Break\;
             }
         }
-        $Regs \gets Regs \cup \{v\}$\;
+        \If{$is\_reg$} {
+            $Regs \gets Regs \cup \{v\}$\;
+        }
     }
     \Return{Regs}\;
  \caption{Algorithm for \texttt{identify\_registers}}
@@ -309,7 +314,7 @@ combine the algorithm with standard BFS with vertex coloring for visited/unvisit
 
 The algorithm for \texttt{has\_control\_loop()} is shown in Algorithm~\ref{alg:4}. Notice that
 finding all the paths between two arbitrary vertices is hard and memory inefficient. Since the
-goal is just to find one path that contains a control vertex, we can significantly speed up
+goal is just to find one loop that contains a control vertex, we can significantly speed up
 the search process by borrowing the idea from union-find, as shown between Line~\ref{line:1} and
 Line~\ref{line:2}. We maintain a set that contains all the vertex connected by or \textit{indirectly}
 connected by a control edge. This is done through two passes: the first pass collect all the
@@ -420,6 +425,6 @@ simdjson~\footnote{\url{https://github.com/simdjson/simdjson}}.
 When generating the graph, since we are not interested in the exact logic other than label
 the vertex as binary operation, unary operation, etc, we lose lots of logical information
 that could be useful for other tasks. However, at this stage the extra information are
-unnecessary and waste of memory and shall not be kept inside the data structure.
+unnecessary and waste of memory and thus shall not be kept inside the data structure.
 
 \end{document}
