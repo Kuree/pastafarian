@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <mutex>
 #include <queue>
 #include <stack>
 
@@ -349,8 +350,8 @@ bool is_counter_(const Node *target, const Node *node) {
 bool Graph::is_counter(const Node *node, const std::unordered_set<const Edge *> &edges) {
     // we do a filtering to speed up the process
     // if it is a counter, it's unlikely it will be mixed with explicit state
-    std::unordered_map<int64_t, const Edge*> const_edges;
-    for (auto const &edge: edges) {
+    std::unordered_map<int64_t, const Edge *> const_edges;
+    for (auto const &edge : edges) {
         auto const node_from = edge->from;
         assert_(node_from->type == NodeType::Constant, "fsm state has to be driven by constant");
         if (const_edges.find(node_from->value) == const_edges.end()) {
@@ -410,20 +411,42 @@ std::vector<FSMResult> Graph::identify_fsms() {
     identify_registers();
     auto registers = get_registers();
     tqdm bar;
+    std::mutex mutex;
+    auto num_cpus = get_num_cpus();
+    cxxpool::thread_pool pool{num_cpus};
+    std::vector<std::future<void>> tasks;
+    tasks.reserve(registers.size());
+    uint64_t count = 0;
+    uint64_t num_registers = registers.size();
 
-    for (uint64_t i = 0; i < registers.size(); i++) {
-        bar.progress(i, registers.size());
-        auto reg = registers[i];
+    for (auto reg : registers) {
         // I think the constant driver is faster?
-        auto const_src = Graph::get_constant_source(reg);
-        if (const_src.size() > 1) {
-            // next one is to check if there is a constant loop
-            bool control_loop = Graph::has_control_loop(reg);
-            if (control_loop) {
-                // this is the fsm
-                result.emplace_back(FSMResult(reg, const_src));
+        auto t = pool.push([reg, &mutex, &count, &bar, num_registers, &result]() -> void {
+            auto const_src = Graph::get_constant_source(reg);
+            mutex.lock();
+            count++;
+            bar.progress(count, num_registers);
+            mutex.unlock();
+
+            if (const_src.size() > 1) {
+                // next one is to check if there is a constant loop
+                bool control_loop = Graph::has_control_loop(reg);
+                if (control_loop) {
+                    // this is the fsm
+                    mutex.lock();
+                    result.emplace_back(FSMResult(reg, const_src));
+                    mutex.unlock();
+                }
             }
-        }
+        });
+        tasks.emplace_back(std::move(t));
+    }
+
+    for (auto &t: tasks) {
+        t.wait();
+    }
+    for (auto &t: tasks) {
+        t.get();
     }
 
     return result;
@@ -454,7 +477,7 @@ std::pair<const Node *, const Node *> coupled_fsms(const Node *fsm_from, const N
         return {fsm_from, fsm_to};
     } else {
         return {nullptr, nullptr};
-    };
+    }
 }
 
 std::unordered_map<const Node *, std::unordered_set<const Node *>> Graph::group_fsms(
