@@ -4,12 +4,16 @@
 \usepackage{amsmath, amssymb}
 \usepackage{xcolor}
 \usepackage{listings}
+\usepackage{url}
 \usepackage[autosize]{dot2texi}
 \usepackage[margin=1in]{geometry}
+\usepackage[ruled, linesnumbered]{algorithm2e}
 
 \definecolor{vgreen}{RGB}{104,180,104}
 \definecolor{vblue}{RGB}{49,49,255}
 \definecolor{vorange}{RGB}{255,143,102}
+\SetKw{Break}{break}
+\SetKw{Continue}{continue}
 
 
 \lstdefinestyle{verilog-style}
@@ -42,8 +46,8 @@ a new vertex for every u-/bi-nary operators. These new vertices are not named
 since they are created through expressions. For instance, \texttt{b + c} is represented
 as a new vertex connected to both \texttt{b} and \texttt{c}.
 For assignment, we introduce additional vertices as
-``pass-through'' nodes, i.e. additional node that connects two vertices. For instance,
-in Listing~\ref{lst:1}, the assignment node connects \texttt{a} and the new vertex
+``pass-through'' vertex, i.e. additional vertex that connects two vertices. For instance,
+in Listing~\ref{lst:1}, the assignment vertex connects \texttt{a} and the new vertex
 created by \texttt{b + c}, as showing in Figure~\ref{fig:1}.
 \begin{lstlisting}[style={verilog-style}, caption={Graph example from Verilog},
     label={lst:1}]
@@ -70,20 +74,17 @@ shown in Listing~\ref{lst:2} and Figure~\ref{fig:2}. Notice that by introducing
 control vertex and edge, we allow ``influence'' from one vertex to another vertex
 even though there is no direct assignment. Mathematically speaking, that means
 there is a path from the vertex used for conditional logic to the assigned vertex; in
-this case, a path from \texttt{c} to \texttt{a}.
-
-
-We claim without proof that the graph
+this case, a path from \texttt{c} to \texttt{a}. We claim without proof that the graph
 constructed by this method is a directed simple graph, which implies that any loop
 in the graph has to go through at least two vertices.
 
 We define the \texttt{source} of vertex is the function $source(v)$:
 \[
-    source(v) = \{x \mid x \in \mathcal{V} \cup {v}\quad\text{for all}\quad x \in \mathcal{E}(v) \} \cup 
-                \{source(x) \mid x \not \in \mathcal{V} \cup {v}\quad\text{for all}\quad x \in \mathcal{E}(v)\}
+    source(v) = \{x \mid x \in \mathcal{V} \cup {v}\quad\text{for all}\quad x \in \mathcal{E}(v) \} \cup \bigcup_{x \not \in \mathcal{V} \cup {v}}
+                source(x)
 \]
 where $\mathcal{V}$ denotes the set of vertices that does not have any incoming edges,
-i.e., constants and top-level IO ports, and $\mathcal{E}(v)$ is defined complete
+i.e., constants and top-level IO ports, and $\mathcal{E}(v)$ is defined as the complete
 set of $(x, v)$ such that $(x, v) \in E$ and $(x, v)$ is not a control edge.
 Notice that this is a recursive definition to search the ``ultimate'' source of the
 vertex, including itself.
@@ -91,7 +92,7 @@ vertex, including itself.
 \begin{lstlisting}[style={verilog-style}, caption={Control vertex and non-blocking
     assignment Verilog code},
     label={lst:2}]
-logic clk;
+input logic clk;
 logic [15:0] a;
 logic [15:0] b;
 logic [15:0] c;
@@ -113,12 +114,25 @@ end
     \label{fig:2}
 \end{figure}
 
-\section{Finite State Machine (FSM) Properties and Its Graph Equivalence}
-Based on how FSM are used and programmed in Verilog, there are three properties that
-defines an FSM:
+\section{Finite State Machine (FSM)}\label{sec:fsm}
+For the purpose of HDL-based design, we categorize FSM into two catagories:
+\begin{itemize}
+    \item \textbf{Explicit} FSM. This includes finite state machines where each state
+    is defined explicitly with an integer, such as local parameters or enums.
+    \item \textbf{Implicit} FSM. This includes counter-based state machines where
+    states are defined in a finite range of values and the state value can decrement
+    or increment at any cycle.
+\end{itemize}
+Although mathematically these two types of FSMs are equivalent: one can always be
+converted to another, logic designers may prefer one over another depends on the
+problem and coding styles. As a result, when we extract FSM we should consider both
+types of FSMs.
+\subsection{FSM properties and Its Graph Equivalence}
+We claim that there are three properties that holds for any FSM, either implicit
+or explicit:
 \begin{enumerate}
     \item The FSM state variable has to be a register.
-    \item All the sources to that FSM variable have to be either constant, ot itself,
+    \item\label{item:1} All the sources to that FSM variable have to be either constant, ot itself,
     or combination of both with binary operators such as addition.
     \item The current value of the FSM state should be used to determined the next
     state.
@@ -155,5 +169,257 @@ To show the equivalence of the last properties, notice the introduction of \text
 edge, which indicates the presence of a conditional logic. If a variable's current value
 is used to determined the next value, there must be some conditional logic to use the
 current value to mux out the next value, hence creating a control edge from that vertex.
+
+For the corner case where the counter advances without comparing with the current
+value, all its loop path will not have any control edge. However, the path length
+must be 4: self $\rightarrow$ increment/decrement vertex $\rightarrow$ assignment vertex
+$\rightarrow$ self.
+
+\subsection{Relaxed FSM Properties}
+In some cases where data path are mixed with control path, property~\ref{item:1} may not
+hold anymore based on the coding style, as shown in Listing~\ref{lst:3} and Listing~\ref{lst:4}. Although these
+two code are logically equivalent, property~\ref{item:1} will fail on Listing~\ref{lst:4}.
+
+\begin{lstlisting}[style={verilog-style}, caption={Conditional increment counter
+    with constant source},
+    label={lst:3}]
+input logic clk;
+input logic [15:0] a;
+input logic [15:0] b;
+logic [15:0] c;
+
+always_ff @(posedge clk) begin
+    if (a == b) begin
+      c <= c + 1;
+    end
+end
+\end{lstlisting}
+
+\begin{lstlisting}[style={verilog-style}, caption={Conditional increment counter
+    with constant source},
+    label={lst:4}]
+input logic clk;
+input logic [15:0] a;
+input logic [15:0] b;
+logic [15:0] c;
+
+always_ff @(posedge clk) begin
+    c <= c + 16'(a == b);
+end
+\end{lstlisting}
+
+To accommodate this use case, we can relax property~\ref{item:1} with some heuristics:
+when the binary operator is addition or subtraction, one of the operand is itself and the
+other operand is a single-bit value (before the bit-width conversion), we treat that
+single-bit value as constant source.
+
+\subsection{Implicit FSM Detection}
+Based on the definition in Section~\ref{sec:fsm}, the only difference between implicit and
+explicit FSM is that implicit has a source that combines itself with another constant with
+a binary operation. We can use that property to distinguish these two FSMs. To put that
+in the graphical terms, given a FSM vertex $v$, there exists a path,
+$(v_0, v_1, \dots, v_i, v)$, where all the edges are not control edge and
+$v \in \{v_0, v_1, \dots, v_i\}$.
+
+\subsection{Coupled FSM Interaction}
+When the value of one FSM machine affects another FSM, we call these two FSMs \textit{coupled}
+and there are some logic that interacts with these two. For instance, in a controller logic,
+the valid output FSM can only be in valid state if the main FSM is in transaction state.
+Finding out these interactions between coupled FSM is very straight-forward given our graph setup.
+Given two FSM vertices, $v$ and $w$, if there is a simple path from $v$ to $w$ that contains
+a control edge, then $v$ and $w$ are coupled.
+
+
+\section{Algorithms and Implementation Details}
+This section describes algorithms used to extract FSM, the type of each FSM, and their interaction.
+It also highlights some implementation details to speed up the computation.
+
+\subsection{FSM Extraction}
+
+The overall algorithm to extract FSMs from a given Verilog file is shown in Algorithm~\ref{alg:1}.
+
+\begin{algorithm}[!tbh]
+    \label{alg:1}
+    \KwIn{Verilog file $V$}
+    \KwResult{List of FSM variables and their states}
+    $G \gets$ parse\_verilog($V$)\;
+    $Regs \gets$ identify\_registers(G)\;
+    $result \gets$ $\{\}$\;
+    \For{$r \gets$ Regs}{
+        $\text{const\_sources} \gets$ get\_const\_sources($r$)\;
+        \If{$|\text{const\_sources}| > 0$ and $\text{has\_control\_loop}(r)$}{
+            $result \gets result \cup \{(r, \text{const\_sources}\}$\;
+        }
+    }
+    \Return{result}\;
+ \caption{Overall algorithm to extract FSMs}
+\end{algorithm}
+
+In \textit{parse\_verilog}, to report all the hierarchical name (handle name) for the FSM variable,
+we add a new type of vertex to represent Verilog module and for each vertex store a
+\texttt{parent} to point back to its hierarchical parent.
+
+The algorithm for \texttt{identify\_registers} is shown in Algorithm~\ref{alg:2}, which examines
+the incoming edges for each named vertex in the graph $G$.
+\begin{algorithm}[!tbh]
+    \label{alg:2}
+    \KwIn{Graph $G$}
+    \KwResult{Set of register vertices}
+    $Regs \gets$ \{\}\;
+    \For{$v \gets$ VertexNamed(G)} {
+        $is\_reg \gets true$\;
+        \For{$e \gets InComingEdges(v)$} {
+            \If{$e.type \neq BlockingAssignment$} {
+                $is\_reg \gets false$\;
+                \Break\;
+            }
+        }
+        $Regs \gets Regs \cup \{v\}$\;
+    }
+    \Return{Regs}\;
+ \caption{Algorithm for \texttt{identify\_registers}}
+\end{algorithm}
+
+The algorithm for \texttt{get\_const\_sources} is shown in Algorithm~\ref{alg:3}. We check the
+connected vertices and if it is an external port, i.e. IO, we early out the recursion. Notice
+that to avoid infinite loop and efficient search, in the actual implementation we need to
+combine the algorithm with standard BFS with vertex coloring for visited/unvisited.
+\begin{algorithm}[!tbh]
+    \label{alg:3}
+    \KwIn{Vertex $w$}
+    \KwResult{A set of constant sources}
+    $result \gets \{\}$\;
+    \For{$v \gets ConnectedFrom(w)$} {
+        \eIf{$v.type == Constant$} {
+            $result \gets result \cup \{v\}$\;
+        } {
+            \If{$v.type == ExternalPort$} {
+                \Return $\{\}$\;
+            }
+            $r \gets \text{get\_const\_sources}(v)$\;
+            \If{$|r| == 0$} {
+                \Return $\{\}$\;
+            }
+            $result \gets result \cup r$;
+        }
+    }
+    \Return{result}\;
+ \caption{Algorithm for \texttt{get\_const\_sources}}
+\end{algorithm}
+
+The algorithm for \texttt{has\_control\_loop()} is shown in Algorithm~\ref{alg:4}. Notice that
+finding all the paths between two arbitrary vertices is hard and memory inefficient. Since the
+goal is just to find one path that contains a control vertex, we can significantly speed up
+the search process by borrowing the idea from union-find, as shown between Line~\ref{line:1} and
+Line~\ref{line:2}. We maintain a set that contains all the vertex connected by or \textit{indirectly}
+connected by a control edge. This is done through two passes: the first pass collect all the
+vertices directly connected by a control edge, and the second pass colors any vertex connected by
+vertices in the control set. During the second pass, if a new vertex is colored and it has been
+visited, we remove it from the visited set so that we can recompute any path from that vertex.
+The coloring process ended when there is no vertex let to color or the target vertex has been
+colored and we have reached a loop. The correctness of the algorithm can be proved by induction
+on the graph, where the base case is the smallest loop with control loop and we add a vertex to
+the loop during induction step. For completeness we show the BFS version of the algorithm.
+\begin{algorithm}
+    \label{alg:4}
+    \KwIn{Vertex $r$}
+    \KwResult{$true$ if it contains a control vertex connected to $r$}
+    $control\_set \gets \{\}$\;
+    $visited \gets \{\}$\;
+    $working\_set \gets queue\{r\}$\;
+    // first pass to get the control set\;
+    \While{$|working\_set| > 0$} {
+        $v \gets working\_set.pop()$\;
+        \eIf{$v \in visited$} {
+            \Continue\;
+        } {
+            $visited \gets visited \cup \{v\}$\;
+        }
+        \For{$e \in Edges(v)$} {
+            $w \gets e.end()$\;
+            \If{$e.type == Control$} {
+                $control\_set \gets control\_set \cup \{w\}$\;
+            }
+            $working\_set \gets working\_set \cup \{w\}$\;
+        }
+    }
+
+    // second pass compute the result\;
+    $working\_set \gets = queue{r}$\;
+    $visited \gets \{\}$\;
+    \While{$|working\_set| > 0$} {
+        $v \gets working\_set.pop()$\;
+        \If{$v == r$ and $v \in control\_set$} {
+            \Return $true$;
+        }
+        \eIf{$v \in visited$} {
+            \Continue\;
+        } {
+            $visited \gets visited \cup \{v\}$\;
+        }
+        \For{$w \in EdgesVertex(v)$} {
+            \label{line:1}\If{$v \in control\_set$ and $w \in control\_set$} {
+                $control\_set \gets control\_set \cup \{w\}$\;
+                \If{$w \in visited$} {
+                    $visited \gets visited \setminus \{w\}$\;
+                }
+            \label{line:2}}
+            $working\_set.add(w)$\;
+        }
+    }
+    \Return{false}\;
+ \caption{Algorithm for \texttt{has\_control\_loop()}}
+\end{algorithm}
+
+\subsection{Counter Identification}
+The algorithm to detect counter is shown in Algorithm~\ref{alg:5}. We are looking for a pattern of
+$v \gets v + constant$ for a given $v$. However, since values may get passed through multiple
+vertices, we need to recursively check all the assignment patterns. Notice that for performance,
+we can rewrite the algorithm using a while loop instead of a recursive call.
+
+\begin{algorithm}[htb]
+    \label{alg:5}
+    \KwIn{Vertex $w$}
+    \KwResult{$true$ if vertex is a counter}
+    \For{$e \gets EdgesTo(w)$} {
+        $v \gets e.start()$\;
+        \If{$v.type == Assignment$ and $(x, w) \in E(G)$ and $x.type == Addition$} {
+            \If{both a constant and $w$ connected to $x$} {
+                \Return{true}\;
+            }
+        }
+        $r \gets \text{detect\_counter(v)}$\;
+        \If{$r$} {
+            \Return{true};
+        }
+    }
+    \Return{false}\;
+ \caption{Algorithm for \texttt{is\_counter}}
+\end{algorithm}
+
+\subsection{Coupled FSM}
+For given two FSM vertices $v_1$ and $v_2$, We can modify Algorithm~\ref{alg:4} where the
+terminal condition is $v == v_2$ instead of $v == r$ and the algorithm will work out just
+fine. Conceptually, if $v_1$ and $v_2$ are the same we will get a loop, which is what the
+algorithm is designed for.
+
+\subsection{Performance Optimization with Parallelism}
+Notice that all the algorithms used in Algorithm~\ref{alg:1} are intentionally designed to not
+share data during the iteration, nor do they modify the graph structure. As a result, we have
+a list of embarrassingly parallel tasks each can be computed independently on each CPU core.
+Given the nature of graph size as the design complexity grows, we can implement a thread-pool
+and dispatch the tasks to available CPU cores.
+
+\subsection{Parsing Verilog/SystemVerilog Files and Producing Graph}
+There is an open-source SystemVerilog parser project called
+slang~\footnote{\url{https://github.com/MikePopoloski/slang}}, and we have been contributing
+to it by adding serialization ability on the symbol level (one compilation stage after syntax
+tree parsing). The serialization dumps a JSON file and we can parse that efficiently using
+simdjson~\footnote{\url{https://github.com/simdjson/simdjson}}.
+
+When generating the graph, since we are not interested in the exact logic other than label
+the vertex as binary operation, unary operation, etc, we lose lots of logical information
+that could be useful for other tasks. However, at this stage the extra information are
+unnecessary and waste of memory and shall not be kept inside the data structure.
 
 \end{document}
