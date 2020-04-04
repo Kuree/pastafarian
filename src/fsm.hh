@@ -19,7 +19,7 @@ public:
 
     [[nodiscard]] std::set<std::pair<const Node *, const Node *>> self_arc() const;
 
-    [[nodiscard]] std::unordered_set<const Node*> unique_states() const;
+    [[nodiscard]] std::vector<const Node *> unique_states() const;
 
     FSMResult() = delete;
 

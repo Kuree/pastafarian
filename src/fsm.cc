@@ -1,6 +1,7 @@
 #include "fsm.hh"
 
 #include <utility>
+#include <map>
 
 namespace fsm {
 
@@ -49,18 +50,20 @@ std::set<std::pair<const Node *, const Node *>> FSMResult::self_arc() const {
     return result;
 }
 
-std::unordered_set<const Node *> FSMResult::unique_states() const {
-    std::unordered_set<int64_t> values;
-    std::unordered_set<const Node *> result;
+std::vector<const Node *> FSMResult::unique_states() const {
+    std::map<int64_t, const Node *> values;
+    std::vector<const Node *> result;
 
     for (auto const &edge: const_src_) {
         auto n = edge->from;
         auto v = n->value;
         if (values.find(v) == values.end()) {
-            result.emplace(n);
-            values.emplace(v);
+            values.emplace(v, n);
         }
     }
+    result.reserve(values.size());
+    for (auto const &iter: values)
+        result.emplace_back(iter.second);
     return result;
 }
 
