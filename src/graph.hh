@@ -20,6 +20,8 @@ enum class NodeType {
 
 enum class NetOpType { Ignore, Add, Subtract, Ternary };
 
+enum class PortType { None, Input, Output };
+
 inline NodeType operator|(NodeType a, NodeType b) {
     return static_cast<NodeType>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b));
 }
@@ -62,6 +64,11 @@ public:
 
     // only used when it's a constant node
     int64_t value = 0;
+
+    // for any wires/regs
+    std::string wire_type;
+    // only for the ports. other nodes will have none
+    PortType port_type = PortType::None;
 
     Node(uint64_t id, std::string name) : id(id), name(std::move(name)) {}
     Node(uint64_t id, std::string name, Node* parent)
@@ -106,6 +113,8 @@ private:
         template <typename... Args>
         explicit sink(Args const&...) {}
     };
+
+    // this is used to construct
 };
 
 struct Edge {
@@ -117,7 +126,7 @@ public:
     Edge(Node* from, Node* to) : from(from), to(to) {}
     Edge(Node* from, Node* to, EdgeType type) : from(from), to(to), type(type) {}
 
-    inline bool has_type(EdgeType t) const { return static_cast<bool>(t & type); }
+    [[nodiscard]] inline bool has_type(EdgeType t) const { return static_cast<bool>(t & type); }
 };
 
 class Graph {

@@ -524,6 +524,8 @@ template <class T>
 Node *parse_net(T value, Graph *g, Node *parent) {
     auto name_json = value["name"];
     assert_(name_json.error == SUCCESS, "name not found in net");
+    auto wire_str = value["type"];
+    assert_(wire_str.error == SUCCESS, "net does not have type str");
 
     auto name = std::string(name_json.as_string());
     auto addr = get_address(value);
@@ -532,6 +534,7 @@ Node *parse_net(T value, Graph *g, Node *parent) {
     NodeType type = NodeType::Variable;
 
     auto n = g->add_node(addr, name, type, parent);
+    n->wire_type = wire_str;
     if (value["internalSymbol"].error == SUCCESS) {
         auto symbol = value["internalSymbol"].as_string();
         auto symbol_addr = parse_internal_symbol(symbol);
@@ -549,6 +552,17 @@ Node *parse_net(T value, Graph *g, Node *parent) {
             assign->add_edge(n);
         }
     }
+
+    if (kind_str == "Port") {
+        auto direction = value["direction"];
+        assert_(direction.error == SUCCESS, "cannot find direction from port");
+        auto direction_str = std::string(direction.as_string());
+        if (direction_str == "Out")
+            n->port_type = PortType::Output;
+        else
+            n->port_type = PortType::Input;
+    }
+
     return n;
 }
 
