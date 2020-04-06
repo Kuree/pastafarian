@@ -1,4 +1,4 @@
-add_library(pastafarian graph.cc graph.hh parser.cc parser.hh util.cc util.hh fsm.cc fsm.hh)
+add_library(pastafarian graph.cc graph.hh parser.cc parser.hh util.cc util.hh fsm.cc fsm.hh codegen.cc codegen.hh)
 
 target_include_directories(pastafarian PUBLIC ../extern/fmt/include ../extern/simdjson/include/ ../extern/cxxpool/src
         ../extern/tqdm)

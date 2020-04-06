@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
     // get FSMs
     std::cout << "Detecting FSM..." << std::endl;
     time_start = std::chrono::steady_clock::now();
-    ;
+
     auto const fsms = g.identify_fsms();
     time_end = std::chrono::steady_clock::now();
     time_used = time_end - time_start;

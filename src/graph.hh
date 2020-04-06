@@ -182,6 +182,7 @@ public:
     uint64_t get_free_id() { return free_id_ptr_--; }
 
     Node* copy_node(const Node* node, bool copy_connection = true);
+    [[nodiscard]] const std::vector<std::unique_ptr<Node>> &nodes() const { return nodes_; }
 
 private:
     std::unordered_map<uint64_t, Node*> nodes_map_;
