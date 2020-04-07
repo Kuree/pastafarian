@@ -27,23 +27,31 @@ public:
     [[nodiscard]] std::string property_label() const;
 };
 
-class Module {
+class VerilogModule {
 public:
     std::string name;
     std::map<std::string, const Node *> ports;
 
-    explicit Module(Graph *graph, const std::string &top_name = "");
+    explicit VerilogModule(Graph *graph, const std::string &top_name = "");
     void set_fsm_result(const std::vector<FSMResult> &result) { fsm_results_ = result; }
     void create_properties();
+
+    void set_reset_name(const std::string &reset_name) { reset_name_ = reset_name; }
+    void set_clock_name(const std::string &clock_name) { clock_name_ = clock_name; }
+    [[nodiscard]] const std::string &clock_name() const { return clock_name_; }
+    [[nodiscard]] const std::string &reset_name() const { return reset_name_; }
+    void analyze_pins();
+
+    [[nodiscard]] std::string str() const;
 
 private:
     const Node *root_module_;
     std::vector<FSMResult> fsm_results_;
     std::map<uint32_t, std::shared_ptr<Property>> properties_;
-    std::string clk_name_;
-    std::string reset_pin;
+    std::string clock_name_;
+    std::string reset_name_;
+    bool posedge_reset = true;
 
-    void analyze_pins();
 };
 
 }  // namespace fsm

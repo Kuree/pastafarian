@@ -20,3 +20,8 @@ add_executable(test_fsm test_fsm.cc)
 target_link_libraries(test_fsm gtest pastafarian gtest_main)
 gtest_discover_tests(test_fsm
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/vectors)
+
+add_executable(test_codegen test_codegen.cc)
+target_link_libraries(test_codegen gtest pastafarian gtest_main)
+gtest_discover_tests(test_codegen
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/vectors)

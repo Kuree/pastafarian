@@ -534,7 +534,12 @@ Node *parse_net(T value, Graph *g, Node *parent) {
     NodeType type = NodeType::Variable;
 
     auto n = g->add_node(addr, name, type, parent);
-    n->wire_type = wire_str;
+    if constexpr (std::is_same_v<typeof(wire_str), simdjson::document::element_result<simdjson::document::element>>) {
+        auto elem = wire_str.value;
+        if (elem.is_string()) {
+            n->wire_type = wire_str;
+        }
+    }
     if (value["internalSymbol"].error == SUCCESS) {
         auto symbol = value["internalSymbol"].as_string();
         auto symbol_addr = parse_internal_symbol(symbol);

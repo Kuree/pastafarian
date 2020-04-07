@@ -31,14 +31,15 @@ std::string Property::str() const {
     assert_(!clk_name.empty(), "Design does not have a clock");
     std::stringstream result;
 
-    result << "property" << property_name() << std::endl;
+    result << "property " << property_name() << ";" << std::endl;
     // clock
     result << INDENTATION << "@(posedge " << clk_name << ") ";
     // compute the SVA expressions
     assert_(state_var1 && state_value1, "state cannot be null");
     {
-        const auto state_var_name = ::format("{0}.{1}", TOP_NAME, state_var1->handle_name());
-        const auto state_value = ::format("{0}", state_value1->value);
+        const auto state_var_name = state_var1->handle_name();
+        const auto state_value =
+            state_value1->name.empty() ? ::format("{0}", state_value1->value) : state_value1->handle_name();
         result << state_var_name << " == " << state_value;
     }
     if (state_var2 && state_value2) {
@@ -53,11 +54,12 @@ std::string Property::str() const {
             }
         }
         result << " " << op << " ";
-        const auto state_var_name = ::format("{0}.{1}", TOP_NAME, state_var1->handle_name());
-        const auto state_value = ::format("{0}", state_value1->value);
-        result << state_var_name << " == " << state_value << ";";
+        const auto state_var_name = state_var1->handle_name();
+        const auto state_value =
+            state_value1->name.empty() ? ::format("{0}", state_value1->value) : state_value1->handle_name();
+        result << state_var_name << " == " << state_value;
     }
-    result << std::endl;
+    result << ";" << std::endl;
 
     result << "endproperty" << std::endl;
     // cover
@@ -70,7 +72,7 @@ std::string Property::property_name() const { return ::format("fsm_state_{0}", i
 
 std::string Property::property_label() const { return ::format("FSM_STATE_{0}:", id); }
 
-Module::Module(fsm::Graph *graph, const std::string &top_name) {
+VerilogModule::VerilogModule(fsm::Graph *graph, const std::string &top_name) {
     // we loop into graph to see every module node and their parent is null
     std::unordered_map<std::string, const Node *> modules;
     auto const &nodes = graph->nodes();
@@ -104,9 +106,12 @@ Module::Module(fsm::Graph *graph, const std::string &top_name) {
             ports.emplace(node->name, node.get());
         }
     }
+
+    // set the name
+    this->name = root_module_->name;
 }
 
-void Module::create_properties() {
+void VerilogModule::create_properties() {
     // compute the coupled FSM here?
     uint32_t id_count = 0;
     for (auto const &fsm : fsm_results_) {
@@ -115,18 +120,73 @@ void Module::create_properties() {
         auto unique_states = fsm.unique_states();
         for (auto const &state : unique_states) {
             // so single variable
-            auto property = std::make_shared<Property>(id_count++, clk_name_, fsm.node(), state);
+            auto property = std::make_shared<Property>(id_count++, clock_name_, fsm.node(), state);
             properties_.emplace(property->id, property);
         }
         // state transition
         for (auto const &state_from : unique_states) {
             for (auto const &state_to : unique_states) {
-                auto property = std::make_shared<Property>(id_count++, clk_name_, fsm.node(),
+                auto property = std::make_shared<Property>(id_count++, clock_name_, fsm.node(),
                                                            state_from, fsm.node(), state_to);
+                property->delay = 1;
                 properties_.emplace(property->id, property);
             }
         }
     }
+}
+
+void VerilogModule::analyze_pins() {
+    // this applies a series of heuristics to figure out the reset and clock pin name
+    const static std::unordered_set<std::string> reset_names = {"rst", "rst_n", "reset"};
+    const static std::unordered_set<std::string> clock_names = {"clk", "clock"};
+    if (clock_name_.empty()) {
+        // we assume only one clock domain
+        for (auto const &iter : ports) {
+            if (clock_names.find(iter.first) != clock_names.end()) {
+                clock_name_ = iter.first;
+                break;
+            }
+        }
+    }
+    if (reset_name_.empty()) {
+        for (auto const &iter : ports) {
+            if (reset_names.find(iter.first) != reset_names.end()) {
+                reset_name_ = iter.first;
+                break;
+            }
+        }
+    }
+}
+
+std::string VerilogModule::str() const {
+    std::stringstream result;
+
+    // module header. we create ports using the same name so it's basically a pass through
+    result << "module " << TOP_NAME << "(" << std::endl;
+    uint32_t count = 0;
+    for (auto const &[port_name, port_node] : ports) {
+        assert_(port_node->port_type != PortType::None, "Port doesn't have a direction");
+        assert_(!port_node->wire_type.empty(), "Port type empty");
+        result << INDENTATION << (port_node->port_type == PortType::Input ? "input" : "output")
+               << " " << port_node->wire_type << " " << port_name;
+        if ((++count) != ports.size()) result << ",";
+        result << std::endl;
+    }
+
+    result << ");" << std::endl << std::endl;
+
+    // dut instantiation
+    result << name << " " << name << " (.*);" << std::endl << std::endl;
+
+    // all the properties
+    for (auto const &iter : properties_) {
+        result << iter.second->str() << std::endl;
+    }
+
+    // end
+    result << "endmodule" << std::endl;
+
+    return result.str();
 }
 
 }  // namespace fsm
