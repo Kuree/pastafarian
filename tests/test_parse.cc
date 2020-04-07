@@ -96,4 +96,8 @@ TEST_F(ParserTest, fsm1) {  // NOLINT
     EXPECT_TRUE(g.has_path(in, next_state));
     EXPECT_TRUE(g.has_path(next_state, current_state));
     EXPECT_TRUE(g.has_path(current_state, next_state));
+
+    // trigger type
+    auto clk = g.select("clk");
+    EXPECT_EQ(clk->event_type, fsm::EventType::Posedge);
 }

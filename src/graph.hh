@@ -21,6 +21,7 @@ enum class NodeType {
 enum class NetOpType { Ignore, Add, Subtract, Ternary };
 
 enum class PortType { None, Input, Output };
+enum class EventType { None, Posedge, Negedge };
 
 inline NodeType operator|(NodeType a, NodeType b) {
     return static_cast<NodeType>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b));
@@ -69,6 +70,7 @@ public:
     std::string wire_type;
     // only for the ports. other nodes will have none
     PortType port_type = PortType::None;
+    EventType event_type = EventType::None;
 
     Node(uint64_t id, std::string name) : id(id), name(std::move(name)) {}
     Node(uint64_t id, std::string name, Node* parent)

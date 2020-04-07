@@ -96,7 +96,6 @@ int64_t parse_num_literal(std::string_view str) {
     }
 }
 
-
 static bool has_parse_string_warning = false;
 int64_t parse_string_literal(std::string_view str) {
     // convert to asci
@@ -158,6 +157,35 @@ Node *parse_conversion(T value, Graph *g) {
     auto operand = value["operand"];
     assert_(operand.error == SUCCESS, "operand not found in conversion");
     return parse_dispatch(operand, g, nullptr);
+}
+
+template <class T>
+Node *parse_event_list(T value, Graph *g, Node *parent) {
+    auto events_raw = value["events"];
+    assert_(events_raw.error == SUCCESS, "event list does not have events");
+    auto events = events_raw.as_array();
+    for (auto const &elem : events) {
+        parse_dispatch(elem, g, parent);
+    }
+    return nullptr;
+}
+
+template <class T>
+Node *parse_signal_event(T value, Graph *g, Node *parent) {
+    auto expr_raw = value["expr"];
+    assert_(expr_raw.error == SUCCESS, "cannot find expr from signal event");
+    auto expr = parse_dispatch(expr_raw, g, parent);
+
+    auto edge_raw = value["edge"];
+    assert_(edge_raw.error == SUCCESS, "cannot find edge from signal event");
+    auto edge = std::string(edge_raw.as_string());
+    if (edge == "PosEdge") {
+        expr->event_type = EventType::Posedge;
+    } else {
+        assert_(edge == "NegEdge", "Unknown edge type " + edge);
+        expr->event_type = EventType::Negedge;
+    }
+    return nullptr;
 }
 
 template <class T>
@@ -241,6 +269,12 @@ template <class T>
 Node *parse_timed(T value, Graph *g, Node *parent) {
     auto stmt = value["stmt"];
     assert_(stmt.error == SUCCESS, "stmt not found in timed statement");
+
+    // get edge trigger type
+    auto timing = value["timing"];
+    if (timing.error == SUCCESS) {
+        parse_dispatch(timing, g, parent);
+    }
 
     return parse_dispatch(stmt, g, parent);
 }
@@ -534,7 +568,8 @@ Node *parse_net(T value, Graph *g, Node *parent) {
     NodeType type = NodeType::Variable;
 
     auto n = g->add_node(addr, name, type, parent);
-    if constexpr (std::is_same_v<typeof(wire_str), simdjson::document::element_result<simdjson::document::element>>) {
+    if constexpr (std::is_same_v<typeof(wire_str),
+                                 simdjson::document::element_result<simdjson::document::element>>) {
         auto elem = wire_str.value;
         if (elem.is_string()) {
             n->wire_type = wire_str;
@@ -571,10 +606,10 @@ Node *parse_net(T value, Graph *g, Node *parent) {
     return n;
 }
 
-static std::unordered_set<std::string> don_t_care_kind = {"TransparentMember",  // NOLINT
-                                                          "TypeAlias", "StatementBlock",
-                                                          "Subroutine", "EmptyArgument", "Empty",
-                                                          "VariableDeclaration"};
+static std::unordered_set<std::string> don_t_care_kind = {
+    "TransparentMember",  // NOLINT
+    "TypeAlias",         "StatementBlock", "Subroutine",
+    "EmptyArgument",     "Empty",          "VariableDeclaration"};
 
 template <class T>
 Node *parse_dispatch(T value, Graph *g, Node *parent) {
@@ -633,6 +668,10 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
         return parse_call(value, g, parent);
     } else if (ast_kind == "GenerateBlock") {
         parse_generate_block(value, g, parent);
+    } else if (ast_kind == "EventList") {
+        parse_event_list(value, g, parent);
+    } else if (ast_kind == "SignalEvent") {
+        parse_signal_event(value, g, parent);
     } else {
         std::cerr << "Unable to parse AST node kind " << ast_kind << std::endl;
     }
