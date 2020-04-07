@@ -1,92 +1,118 @@
 {
   "name": "$root",
   "kind": "Root",
-  "addr": 94661538974208,
+  "addr": 94544900348416,
   "members": [
     {
       "name": "",
       "kind": "CompilationUnit",
-      "addr": 94661538966592,
+      "addr": 94544900340592,
       "members": [
         {
           "name": "register",
           "kind": "Definition",
-          "addr": 94661538966848,
+          "addr": 94544900340848,
           "members": [
             {
               "name": "clk",
               "kind": "Port",
-              "addr": 94661538967768,
+              "addr": 94544900341768,
               "type": "logic",
               "direction": "In",
-              "internalSymbol": "94661538967992 clk"
+              "internalSymbol": "94544900341992 clk"
             },
             {
               "name": "clk",
               "kind": "Net",
-              "addr": 94661538967992,
+              "addr": 94544900341992,
               "type": "logic"
             },
             {
               "name": "in",
               "kind": "Port",
-              "addr": 94661538968160,
+              "addr": 94544900342160,
               "type": "logic[15:0]",
               "direction": "In",
-              "internalSymbol": "94661538968384 in"
+              "internalSymbol": "94544900342384 in"
             },
             {
               "name": "in",
               "kind": "Net",
-              "addr": 94661538968384,
+              "addr": 94544900342384,
               "type": "logic[15:0]"
             },
             {
               "name": "out",
               "kind": "Port",
-              "addr": 94661538968552,
+              "addr": 94544900342552,
               "type": "logic[15:0]",
               "direction": "Out",
-              "internalSymbol": "94661539098096 out"
+              "internalSymbol": "94544900472528 out"
             },
             {
               "name": "out",
               "kind": "Variable",
-              "addr": 94661539098096,
+              "addr": 94544900472528,
               "type": "logic[15:0]",
-              "lifetime": "Automatic",
-              "isConst": false
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
             },
             {
               "name": "rst",
               "kind": "Port",
-              "addr": 94661539098264,
+              "addr": 94544900472696,
               "type": "logic",
               "direction": "In",
-              "internalSymbol": "94661539098488 rst"
+              "internalSymbol": "94544900472920 rst"
             },
             {
               "name": "rst",
               "kind": "Net",
-              "addr": 94661539098488,
+              "addr": 94544900472920,
               "type": "logic"
             },
             {
               "name": "val",
               "kind": "Variable",
-              "addr": 94661538967232,
+              "addr": 94544900341232,
               "type": "logic[15:0]",
-              "lifetime": "Automatic",
-              "isConst": false
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
             },
             {
               "name": "",
               "kind": "ProceduralBlock",
-              "addr": 94661538967400,
+              "addr": 94544900341400,
               "procedureKind": "AlwaysFF",
               "body": {
                 "kind": "Timed",
-                "timing": "EventList",
+                "timing": {
+                  "kind": "EventList",
+                  "events": [
+                    {
+                      "kind": "SignalEvent",
+                      "expr": {
+                        "kind": "NamedValue",
+                        "type": "logic",
+                        "symbol": "94544900341992 clk",
+                        "isHierarchical": false
+                      },
+                      "edge": "PosEdge"
+                    },
+                    {
+                      "kind": "SignalEvent",
+                      "expr": {
+                        "kind": "NamedValue",
+                        "type": "logic",
+                        "symbol": "94544900472920 rst",
+                        "isHierarchical": false
+                      },
+                      "edge": "PosEdge"
+                    }
+                  ]
+                },
                 "stmt": {
                   "kind": "Block",
                   "blockKind": "Sequential",
@@ -98,7 +124,7 @@
                         "cond": {
                           "kind": "NamedValue",
                           "type": "logic",
-                          "symbol": "94661539098488 rst",
+                          "symbol": "94544900472920 rst",
                           "isHierarchical": false
                         },
                         "ifTrue": {
@@ -115,7 +141,7 @@
                                   "left": {
                                     "kind": "NamedValue",
                                     "type": "logic[15:0]",
-                                    "symbol": "94661538967232 val",
+                                    "symbol": "94544900341232 val",
                                     "isHierarchical": false
                                   },
                                   "right": {
@@ -142,13 +168,13 @@
                             "left": {
                               "kind": "NamedValue",
                               "type": "logic[15:0]",
-                              "symbol": "94661538967232 val",
+                              "symbol": "94544900341232 val",
                               "isHierarchical": false
                             },
                             "right": {
                               "kind": "NamedValue",
                               "type": "logic[15:0]",
-                              "symbol": "94661538968384 in",
+                              "symbol": "94544900342384 in",
                               "isHierarchical": false
                             },
                             "isNonBlocking": true
@@ -163,7 +189,7 @@
             {
               "name": "",
               "kind": "ProceduralBlock",
-              "addr": 94661538967584,
+              "addr": 94544900341584,
               "procedureKind": "AlwaysComb",
               "body": {
                 "kind": "Block",
@@ -179,13 +205,13 @@
                         "left": {
                           "kind": "NamedValue",
                           "type": "logic[15:0]",
-                          "symbol": "94661539098096 out",
+                          "symbol": "94544900472528 out",
                           "isHierarchical": false
                         },
                         "right": {
                           "kind": "NamedValue",
                           "type": "logic[15:0]",
-                          "symbol": "94661538967232 val",
+                          "symbol": "94544900341232 val",
                           "isHierarchical": false
                         },
                         "isNonBlocking": false
@@ -203,82 +229,108 @@
     {
       "name": "register",
       "kind": "ModuleInstance",
-      "addr": 94661539098656,
+      "addr": 94544900473088,
       "members": [
         {
           "name": "clk",
           "kind": "Port",
-          "addr": 94661539104736,
+          "addr": 94544900479168,
           "type": "logic",
           "direction": "In",
-          "internalSymbol": "94661539104960 clk"
+          "internalSymbol": "94544900479392 clk"
         },
         {
           "name": "clk",
           "kind": "Net",
-          "addr": 94661539104960,
+          "addr": 94544900479392,
           "type": "logic"
         },
         {
           "name": "in",
           "kind": "Port",
-          "addr": 94661539105128,
+          "addr": 94544900479560,
           "type": "logic[15:0]",
           "direction": "In",
-          "internalSymbol": "94661539105352 in"
+          "internalSymbol": "94544900479784 in"
         },
         {
           "name": "in",
           "kind": "Net",
-          "addr": 94661539105352,
+          "addr": 94544900479784,
           "type": "logic[15:0]"
         },
         {
           "name": "out",
           "kind": "Port",
-          "addr": 94661539105520,
+          "addr": 94544900479952,
           "type": "logic[15:0]",
           "direction": "Out",
-          "internalSymbol": "94661539105744 out"
+          "internalSymbol": "94544900480176 out"
         },
         {
           "name": "out",
           "kind": "Variable",
-          "addr": 94661539105744,
+          "addr": 94544900480176,
           "type": "logic[15:0]",
-          "lifetime": "Automatic",
-          "isConst": false
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
         },
         {
           "name": "rst",
           "kind": "Port",
-          "addr": 94661539105912,
+          "addr": 94544900480344,
           "type": "logic",
           "direction": "In",
-          "internalSymbol": "94661539106136 rst"
+          "internalSymbol": "94544900480568 rst"
         },
         {
           "name": "rst",
           "kind": "Net",
-          "addr": 94661539106136,
+          "addr": 94544900480568,
           "type": "logic"
         },
         {
           "name": "val",
           "kind": "Variable",
-          "addr": 94661539098912,
+          "addr": 94544900473344,
           "type": "logic[15:0]",
-          "lifetime": "Automatic",
-          "isConst": false
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
         },
         {
           "name": "",
           "kind": "ProceduralBlock",
-          "addr": 94661539099080,
+          "addr": 94544900473512,
           "procedureKind": "AlwaysFF",
           "body": {
             "kind": "Timed",
-            "timing": "EventList",
+            "timing": {
+              "kind": "EventList",
+              "events": [
+                {
+                  "kind": "SignalEvent",
+                  "expr": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "94544900479392 clk",
+                    "isHierarchical": false
+                  },
+                  "edge": "PosEdge"
+                },
+                {
+                  "kind": "SignalEvent",
+                  "expr": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "94544900480568 rst",
+                    "isHierarchical": false
+                  },
+                  "edge": "PosEdge"
+                }
+              ]
+            },
             "stmt": {
               "kind": "Block",
               "blockKind": "Sequential",
@@ -290,7 +342,7 @@
                     "cond": {
                       "kind": "NamedValue",
                       "type": "logic",
-                      "symbol": "94661539106136 rst",
+                      "symbol": "94544900480568 rst",
                       "isHierarchical": false
                     },
                     "ifTrue": {
@@ -307,7 +359,7 @@
                               "left": {
                                 "kind": "NamedValue",
                                 "type": "logic[15:0]",
-                                "symbol": "94661539098912 val",
+                                "symbol": "94544900473344 val",
                                 "isHierarchical": false
                               },
                               "right": {
@@ -334,13 +386,13 @@
                         "left": {
                           "kind": "NamedValue",
                           "type": "logic[15:0]",
-                          "symbol": "94661539098912 val",
+                          "symbol": "94544900473344 val",
                           "isHierarchical": false
                         },
                         "right": {
                           "kind": "NamedValue",
                           "type": "logic[15:0]",
-                          "symbol": "94661539105352 in",
+                          "symbol": "94544900479784 in",
                           "isHierarchical": false
                         },
                         "isNonBlocking": true
@@ -355,7 +407,7 @@
         {
           "name": "",
           "kind": "ProceduralBlock",
-          "addr": 94661539099264,
+          "addr": 94544900473696,
           "procedureKind": "AlwaysComb",
           "body": {
             "kind": "Block",
@@ -371,13 +423,13 @@
                     "left": {
                       "kind": "NamedValue",
                       "type": "logic[15:0]",
-                      "symbol": "94661539105744 out",
+                      "symbol": "94544900480176 out",
                       "isHierarchical": false
                     },
                     "right": {
                       "kind": "NamedValue",
                       "type": "logic[15:0]",
-                      "symbol": "94661539098912 val",
+                      "symbol": "94544900473344 val",
                       "isHierarchical": false
                     },
                     "isNonBlocking": false
@@ -388,7 +440,7 @@
           }
         }
       ],
-      "definition": "94661538966848 register"
+      "definition": "94544900340848 register"
     }
   ]
 }
