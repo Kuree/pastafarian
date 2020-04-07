@@ -2,6 +2,7 @@
 
 #include <fmt/format.h>
 
+#include <fstream>
 #include <iostream>
 
 #include "fsm.hh"
@@ -70,7 +71,9 @@ std::string Property::property_name() const { return ::format("fsm_state_{0}", i
 
 std::string Property::property_label() const { return ::format("FSM_STATE_{0}:", id); }
 
-VerilogModule::VerilogModule(fsm::Graph *graph, const std::string &top_name) {
+VerilogModule::VerilogModule(fsm::Graph *graph, ParseResult parser_result,
+                             const std::string &top_name)
+    : parser_result_(std::move(parser_result)) {
     // we loop into graph to see every module node and their parent is null
     std::unordered_map<std::string, const Node *> modules;
     auto const &nodes = graph->nodes();
@@ -164,6 +167,8 @@ void VerilogModule::analyze_pins() {
 
 void VerilogModule::analyze_reset() {
     assert_(!reset_name_.empty(), "reset pin is empty");
+    // skip if it already has value
+    if (posedge_reset_.has_value()) return;
     if (ports.find(reset_name_) != ports.end()) {
         auto reset = ports.at(reset_name_);
         // loop through the connection to see the reset type
@@ -215,6 +220,15 @@ std::string VerilogModule::str() const {
     result << "endmodule" << std::endl;
 
     return result.str();
+}
+
+void FormalGeneration::run() {
+    run_process();
+    parse_result();
+}
+
+void JasperGoldGeneration::create_command_file(const std::string &filename) {
+    std::ofstream stream(filename);
 }
 
 }  // namespace fsm

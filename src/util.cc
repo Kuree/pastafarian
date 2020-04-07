@@ -14,15 +14,15 @@ using fmt::format;
 
 namespace fsm {
 
-std::string parse_verilog(const std::string &filename) {
+ParseResult parse_verilog(const std::string &filename) {
     std::vector<std::string> name = {filename};
     return parse_verilog(name);
 }
-std::string parse_verilog(const std::vector<std::string> &filenames) {
+ParseResult parse_verilog(const std::vector<std::string> &filenames) {
     return parse_verilog(filenames, {});
 }
 
-std::string parse_verilog(const std::vector<std::string> &filenames,
+ParseResult parse_verilog(const std::vector<std::string> &filenames,
                           const std::vector<std::string> &include_dirs) {
     // need to run slang to get the ast json
     // make sure slang exists
@@ -61,7 +61,7 @@ std::string parse_verilog(const std::vector<std::string> &filenames,
         throw std::runtime_error(
             ::format("Unable to parse {0}", string::join(filenames.begin(), filenames.end(), " ")));
     }
-    return temp_filename;
+    return {temp_filename, filenames, include_dirs};
 }
 
 void assert_(bool condition, const std::string &what) {

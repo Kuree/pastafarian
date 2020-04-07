@@ -100,20 +100,20 @@ int main(int argc, char *argv[]) {
     auto print_verilog_filenames = fsm::string::join(filenames.begin(), filenames.end(), " ");
     std::cout << "Start parsing verilog file " << print_verilog_filenames << std::endl;
 
-    std::string json_filename;
+    fsm::ParseResult input_value;
     auto time_start = std::chrono::steady_clock::now();
     if (filenames.size() == 1 && std::filesystem::path(filenames[0]).extension() == ".json") {
         // if it is JSON, we don't need to convert to JSON.
-        json_filename = filenames[0];
+        input_value = {filenames[0], {}, {}};
     } else {
-        json_filename = fsm::parse_verilog(filenames, include_dirs);
+        input_value = fsm::parse_verilog(filenames, include_dirs);
     }
 
     // parse the design
     std::cout << "Start parsing design..." << std::endl;
     fsm::Graph g;
     fsm::Parser p(&g);
-    p.parse(json_filename);
+    p.parse(input_value);
 
     auto time_end = std::chrono::steady_clock::now();
     std::chrono::duration<float> time_used = time_end - time_start;

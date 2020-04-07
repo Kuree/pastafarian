@@ -678,7 +678,8 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
     return nullptr;
 }
 
-void Parser::parse(const std::string &filename) {
+void Parser::parse(const ParseResult &value) {
+    auto filename = value.filename;
     if (simdjson::active_implementation->name() == "unsupported") {
         throw std::runtime_error("Unsupported CPU");
     }
@@ -692,6 +693,12 @@ void Parser::parse(const std::string &filename) {
     for (auto const &member : members) {
         parse_dispatch(member, graph_, nullptr);
     }
+    parser_result_ = value;
+}
+
+void Parser::parse(const std::string &filename) {
+    ParseResult r{filename, {}, {}};
+    parse(r);
 }
 
 }  // namespace fsm

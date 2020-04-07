@@ -5,7 +5,7 @@
 TEST_F(GraphTest, fsm_codegen1) {  // NOLINT
     parse("fsm1.json");
     auto fsms = g.identify_fsms();
-    fsm::VerilogModule m(&g);
+    fsm::VerilogModule m(&g, p->parser_result());
     m.set_fsm_result(fsms);
     m.analyze_pins();
     m.create_properties();
