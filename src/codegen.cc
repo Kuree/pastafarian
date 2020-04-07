@@ -38,8 +38,7 @@ std::string Property::str() const {
     assert_(state_var1 && state_value1, "state cannot be null");
     {
         const auto state_var_name = state_var1->handle_name();
-        const auto state_value =
-            state_value1->name.empty() ? ::format("{0}", state_value1->value) : state_value1->handle_name();
+        const auto state_value = ::format("{0}", state_value1->value);
         result << state_var_name << " == " << state_value;
     }
     if (state_var2 && state_value2) {
@@ -55,8 +54,7 @@ std::string Property::str() const {
         }
         result << " " << op << " ";
         const auto state_var_name = state_var1->handle_name();
-        const auto state_value =
-            state_value1->name.empty() ? ::format("{0}", state_value1->value) : state_value1->handle_name();
+        const auto state_value = ::format("{0}", state_value1->value);
         result << state_var_name << " == " << state_value;
     }
     result << ";" << std::endl;
