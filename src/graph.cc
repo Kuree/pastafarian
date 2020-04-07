@@ -308,6 +308,39 @@ bool reachable_control_loop(const Node *from, const Node *to) {
 
 bool Graph::has_control_loop(const Node *node) { return reachable_control_loop(node, node); }
 
+std::vector<const Node *> Graph::find_sinks(const Node *node, uint32_t depth) {
+    std::unordered_set<const Node *> visited;
+    std::queue<const Node *> working_set;
+    working_set.emplace(node);
+    std::unordered_map<const Node *, uint32_t> level_nodes = {{node, 0}};
+    std::vector<const Node *> result;
+
+    while (!working_set.empty()) {
+        auto n = working_set.front();
+        working_set.pop();
+        if (visited.find(n) != visited.end()) {
+            continue;
+        } else {
+            visited.emplace(n);
+        }
+
+        auto d = level_nodes.at(n);
+        if (depth != 0 && d > depth) {
+            continue;
+        }
+        uint32_t current_level = d + 1;
+        for (auto const &edge : n->edges_to) {
+            if (edge->has_type(EdgeType::Control)) continue;
+            auto const nn = edge->to;
+            level_nodes.emplace(nn, current_level);
+            working_set.emplace(nn);
+        }
+        result.emplace_back(n);
+    }
+
+    return result;
+}
+
 std::unordered_set<const Edge *> Graph::get_constant_source(const Node *node) {
     std::unordered_set<const Node *> self_nodes;
     std::unordered_set<const Edge *> result;
@@ -442,10 +475,10 @@ std::vector<FSMResult> Graph::identify_fsms() {
         tasks.emplace_back(std::move(t));
     }
 
-    for (auto &t: tasks) {
+    for (auto &t : tasks) {
         t.wait();
     }
-    for (auto &t: tasks) {
+    for (auto &t : tasks) {
         t.get();
     }
 

@@ -145,6 +145,8 @@ void VerilogModule::analyze_pins() {
                 break;
             }
         }
+    } else {
+        assert_(ports.find(clock_name_) != ports.end(), "Unable to find " + clock_name_);
     }
     if (reset_name_.empty()) {
         for (auto const &iter : ports) {
@@ -153,6 +155,34 @@ void VerilogModule::analyze_pins() {
                 break;
             }
         }
+    } else {
+        assert_(ports.find(reset_name_) != ports.end(), "Unable to find " + clock_name_);
+    }
+
+    analyze_reset();
+}
+
+void VerilogModule::analyze_reset() {
+    assert_(!reset_name_.empty(), "reset pin is empty");
+    if (ports.find(reset_name_) != ports.end()) {
+        auto reset = ports.at(reset_name_);
+        // loop through the connection to see the reset type
+        // this is a graph search algorithm
+        auto sinks = Graph::find_sinks(reset);
+        bool found = false;
+        for (auto const node : sinks) {
+            if (node->event_type != EventType::None) {
+                // TODO: need to make sure that it's not inverted
+                posedge_reset_ = node->event_type == EventType::Posedge;
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            std::cerr << "Unable to find reset type. Using default posedge reset" << std::endl;
+        }
+    } else {
+        std::cerr << "reset pin (" << reset_name_ << ") not found in top" << std::endl;
     }
 }
 

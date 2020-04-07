@@ -1,8 +1,8 @@
-#include "util.hh"
-#include "../src/fsm.hh"
 #include "../src/codegen.hh"
+#include "../src/fsm.hh"
+#include "util.hh"
 
-TEST_F(GraphTest, fsm_codegen1) {   // NOLINT
+TEST_F(GraphTest, fsm_codegen1) {  // NOLINT
     parse("fsm1.json");
     auto fsms = g.identify_fsms();
     fsm::VerilogModule m(&g);
@@ -15,5 +15,8 @@ TEST_F(GraphTest, fsm_codegen1) {   // NOLINT
     // clk, rst, in, out
     EXPECT_EQ(m.ports.size(), 4);
     EXPECT_FALSE(result.empty());
-    printf("%s\n", result.c_str());
+    EXPECT_TRUE(m.posedge_reset());
+    EXPECT_NE(result.find(
+                  "@(posedge clk) mod.Color_current_state == 1 |=> mod.Color_current_state == 1;"),
+              std::string::npos);
 }

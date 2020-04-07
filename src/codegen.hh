@@ -40,6 +40,7 @@ public:
     void set_clock_name(const std::string &clock_name) { clock_name_ = clock_name; }
     [[nodiscard]] const std::string &clock_name() const { return clock_name_; }
     [[nodiscard]] const std::string &reset_name() const { return reset_name_; }
+    [[nodiscard]] bool posedge_reset() const { return posedge_reset_; }
     void analyze_pins();
 
     [[nodiscard]] std::string str() const;
@@ -50,7 +51,9 @@ private:
     std::map<uint32_t, std::shared_ptr<Property>> properties_;
     std::string clock_name_;
     std::string reset_name_;
-    bool posedge_reset = true;
+    bool posedge_reset_ = true;
+
+    void analyze_reset();
 
 };
 

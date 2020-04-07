@@ -167,6 +167,7 @@ public:
     static bool reachable(const Node* from, const Node* to);
     static bool has_loop(const Node* node);
     static bool has_control_loop(const Node* node);
+    static std::vector<const Node*> find_sinks(const Node* node, uint32_t depth = 0);
     // notice that get_constant_source uses the same algorithm as constant_driver
     // in practice we can just use get_constant_source since if it's not constant driver
     // an empty set will be returned
