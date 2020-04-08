@@ -10,6 +10,7 @@
 namespace fsm {
 
 constexpr char TOP_NAME[] = "TOP";
+constexpr char PROPERTY_LABEL_PREFIX[] = "FSM_STATE_";
 
 class Property {
 public:
@@ -20,6 +21,8 @@ public:
     const Node *state_value2 = nullptr;
     uint32_t delay = 0;
     std::string clk_name;
+    // whether it's a valid property, which will be determined by mail
+    bool valid = false;
 
     Property(uint32_t id, std::string clk_name, const Node *state_var1, const Node *state_value1);
     Property(uint32_t id, std::string clk_name, const Node *state_var1, const Node *state_value1,
@@ -38,13 +41,14 @@ public:
     VerilogModule(Graph *graph, SourceManager parser_result, const std::string &top_name = "");
     void set_fsm_result(const std::vector<FSMResult> &result) { fsm_results_ = result; }
     void create_properties();
+    Property &get_property(uint32_t id);
 
     void set_reset_name(const std::string &reset_name) { reset_name_ = reset_name; }
     void set_clock_name(const std::string &clock_name) { clock_name_ = clock_name; }
     void set_posedge_reset(bool value) { posedge_reset_ = value; }
     [[nodiscard]] const std::string &clock_name() const { return clock_name_; }
     [[nodiscard]] const std::string &reset_name() const { return reset_name_; }
-    [[nodiscard]] bool posedge_reset() const { return posedge_reset_? *posedge_reset_: true; }
+    [[nodiscard]] bool posedge_reset() const { return posedge_reset_ ? *posedge_reset_ : true; }
     [[nodiscard]] const SourceManager &parser_result() const { return parser_result_; }
     void analyze_pins();
 
@@ -64,7 +68,7 @@ private:
 
 class FormalGeneration {
 public:
-    FormalGeneration(VerilogModule &module): module_(module) {}
+    explicit FormalGeneration(VerilogModule &module) : module_(module) {}
     void run();
 
     virtual ~FormalGeneration() = default;
@@ -76,13 +80,16 @@ protected:
     virtual void run_process() = 0;
 };
 
-class JasperGoldGeneration: public FormalGeneration {
+class JasperGoldGeneration : public FormalGeneration {
 public:
-    JasperGoldGeneration(VerilogModule &module): FormalGeneration(module) {}
+    explicit JasperGoldGeneration(VerilogModule &module) : FormalGeneration(module) {}
+    void parse_result(const std::string &log_file);
 
 private:
     void create_command_file(const std::string &filename);
     void run_process() override;
+    void parse_result() override;
+    [[nodiscard]] static std::string jg_working_dir();
 };
 
 }  // namespace fsm

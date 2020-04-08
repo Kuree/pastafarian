@@ -4,6 +4,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <subprocess.hpp>
 
 #include "fsm.hh"
 #include "source.hh"
@@ -70,7 +71,9 @@ std::string Property::str() const {
 
 std::string Property::property_name() const { return ::format("fsm_state_{0}", id); }
 
-std::string Property::property_label() const { return ::format("FSM_STATE_{0}:", id); }
+std::string Property::property_label() const {
+    return ::format("{0}{1}:", PROPERTY_LABEL_PREFIX, id);
+}
 
 VerilogModule::VerilogModule(fsm::Graph *graph, SourceManager parser_result,
                              const std::string &top_name)
@@ -135,6 +138,11 @@ void VerilogModule::create_properties() {
             }
         }
     }
+}
+
+Property &VerilogModule::get_property(uint32_t id) {
+    assert_(properties_.find(id) != properties_.end(), ::format("cannot find property {0}", id));
+    return *properties_.at(id);
 }
 
 void VerilogModule::analyze_pins() {
@@ -244,7 +252,6 @@ void JasperGoldGeneration::create_command_file(const std::string &filename) {
     // output top
     stream << "elaborate -top " << module_.name << ";" << std::endl;
 
-
     // clock
     assert_(!module_.clock_name().empty(), "clock name cannot be empty");
     stream << "clock " << module_.clock_name() << ";" << std::endl;
@@ -266,8 +273,60 @@ void JasperGoldGeneration::create_command_file(const std::string &filename) {
     stream << "exit -force;" << std::endl;
 }
 
+constexpr char JASPERGOLD_COMMAND[] = "jaspergold";
+
 void JasperGoldGeneration::run_process() {
+    // check if jasper gold is in the shell
+    assert_(fs::which(JASPERGOLD_COMMAND).empty(), "jaspergold not found in $PATH");
     // output a command file
+    auto temp_dir = fs::temp_directory_path();
+    auto script_filename = fs::join(temp_dir, "fsm_jg.tcl");
+    create_command_file(script_filename);
+    // run the script file
+    auto wd = jg_working_dir();
+    auto command = ::format("{0} -no_gui -proj {1}", JASPERGOLD_COMMAND, wd);
+    subprocess::call(command);
+}
+
+std::string JasperGoldGeneration::jg_working_dir() {
+    auto temp_dir = fs::temp_directory_path();
+    auto wd = fs::join(temp_dir, "fsm_jg");
+    return wd;
+}
+
+void JasperGoldGeneration::parse_result(const std::string &log_file) {
+    // keywords
+    auto const keyword = ::format("The cover property \"{0}.", TOP_NAME, PROPERTY_LABEL_PREFIX);
+    // parse the log
+    std::ifstream file(log_file);
+    for (std::string line; std::getline(file, line);) {
+        // simple scanning
+        auto pos = line.find(keyword);
+        if (pos != std::string::npos) {
+            pos += keyword.size();
+            auto end_str = line.substr(pos);
+            auto end = line.find('\"');
+            if (end != std::string::npos && end > pos) {
+                end -= 1;
+                auto id_str = line.substr(pos, end);
+                uint32_t id = 0;
+                try {
+                    id = std::stoul(id_str);
+                } catch (...) {
+                }
+                auto &property = module_.get_property(id);
+                property.valid = line.find("unreachable") != std::string::npos;
+            }
+        }
+    }
+}
+
+void JasperGoldGeneration::parse_result() {
+    auto wd = jg_working_dir();
+    auto log_dir = fs::join(fs::join(wd, "sessionLogs"), "session_0");
+    auto log_file = fs::join(log_dir, "jg_session_0.log");
+    assert_(fs::exists(log_file), log_file + " does not exist");
+    parse_result(log_file);
 }
 
 }  // namespace fsm
