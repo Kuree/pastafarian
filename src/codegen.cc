@@ -229,6 +229,44 @@ void FormalGeneration::run() {
 
 void JasperGoldGeneration::create_command_file(const std::string &filename) {
     std::ofstream stream(filename);
+    auto const &parser_result = module_.parser_result();
+    auto files = parser_result.src_filenames;
+    auto include_dirs = parser_result.src_include_dirs;
+
+    // output the read command
+    stream << "analyze -sv " << string::join(files.begin(), files.end(), " ");
+    if (!include_dirs.empty()) {
+        stream << " +incdir " << string::join(include_dirs.begin(), include_dirs.end(), " ");
+    }
+    stream << ";" << std::endl;
+
+    // output top
+    stream << "elaborate -top " << module_.name << ";" << std::endl;
+
+
+    // clock
+    assert_(!module_.clock_name().empty(), "clock name cannot be empty");
+    stream << "clock " << module_.clock_name() << ";" << std::endl;
+
+    // reset
+    assert_(!module_.reset_name().empty(), "reset name cannot be empty");
+    stream << "reset -expression ";
+    // notice that this is some forms of heretics
+    if (module_.posedge_reset()) {
+        stream << module_.reset_name() << ";" << std::endl;
+    } else {
+        stream << "~" << module_.reset_name() << ";" << std::endl;
+    }
+
+    // prove them all
+    stream << "prove -task {<embedded>};" << std::endl;
+
+    // quit
+    stream << "exit -force;" << std::endl;
+}
+
+void JasperGoldGeneration::run_process() {
+    // output a command file
 }
 
 }  // namespace fsm

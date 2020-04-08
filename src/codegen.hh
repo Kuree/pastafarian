@@ -44,6 +44,7 @@ public:
     [[nodiscard]] const std::string &clock_name() const { return clock_name_; }
     [[nodiscard]] const std::string &reset_name() const { return reset_name_; }
     [[nodiscard]] bool posedge_reset() const { return posedge_reset_? *posedge_reset_: true; }
+    [[nodiscard]] const ParseResult &parser_result() const { return parser_result_; }
     void analyze_pins();
 
     [[nodiscard]] std::string str() const;
@@ -80,6 +81,7 @@ public:
 
 private:
     void create_command_file(const std::string &filename);
+    void run_process() override;
 };
 
 }  // namespace fsm
