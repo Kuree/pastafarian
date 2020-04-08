@@ -1,10 +1,11 @@
 #ifndef PASTAFARIAN_CODEGEN_HH
 #define PASTAFARIAN_CODEGEN_HH
 #include <map>
+#include <optional>
 
 #include "graph.hh"
+#include "source.hh"
 #include "util.hh"
-#include <optional>
 
 namespace fsm {
 
@@ -34,7 +35,7 @@ public:
     std::string name;
     std::map<std::string, const Node *> ports;
 
-    VerilogModule(Graph *graph, ParseResult parser_result, const std::string &top_name = "");
+    VerilogModule(Graph *graph, SourceManager parser_result, const std::string &top_name = "");
     void set_fsm_result(const std::vector<FSMResult> &result) { fsm_results_ = result; }
     void create_properties();
 
@@ -44,13 +45,13 @@ public:
     [[nodiscard]] const std::string &clock_name() const { return clock_name_; }
     [[nodiscard]] const std::string &reset_name() const { return reset_name_; }
     [[nodiscard]] bool posedge_reset() const { return posedge_reset_? *posedge_reset_: true; }
-    [[nodiscard]] const ParseResult &parser_result() const { return parser_result_; }
+    [[nodiscard]] const SourceManager &parser_result() const { return parser_result_; }
     void analyze_pins();
 
     [[nodiscard]] std::string str() const;
 
 private:
-    ParseResult parser_result_;
+    SourceManager parser_result_;
     const Node *root_module_;
     std::vector<FSMResult> fsm_results_;
     std::map<uint32_t, std::shared_ptr<Property>> properties_;

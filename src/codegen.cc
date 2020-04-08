@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "fsm.hh"
+#include "source.hh"
 #include "util.hh"
 
 using fmt::format;
@@ -71,7 +72,7 @@ std::string Property::property_name() const { return ::format("fsm_state_{0}", i
 
 std::string Property::property_label() const { return ::format("FSM_STATE_{0}:", id); }
 
-VerilogModule::VerilogModule(fsm::Graph *graph, ParseResult parser_result,
+VerilogModule::VerilogModule(fsm::Graph *graph, SourceManager parser_result,
                              const std::string &top_name)
     : parser_result_(std::move(parser_result)) {
     // we loop into graph to see every module node and their parent is null
@@ -230,8 +231,8 @@ void FormalGeneration::run() {
 void JasperGoldGeneration::create_command_file(const std::string &filename) {
     std::ofstream stream(filename);
     auto const &parser_result = module_.parser_result();
-    auto files = parser_result.src_filenames;
-    auto include_dirs = parser_result.src_include_dirs;
+    auto const &files = parser_result.src_filenames();
+    auto const &include_dirs = parser_result.src_include_dirs();
 
     // output the read command
     stream << "analyze -sv " << string::join(files.begin(), files.end(), " ");

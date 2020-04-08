@@ -5,19 +5,9 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include "source.hh"
 
 namespace fsm {
-
-struct ParseResult {
-    std::string filename;
-    std::vector<std::string> src_filenames;
-    std::vector<std::string> src_include_dirs;
-};
-
-ParseResult parse_verilog(const std::string &filename);
-ParseResult parse_verilog(const std::vector<std::string> &filenames);
-ParseResult parse_verilog(const std::vector<std::string> &filenames,
-                          const std::vector<std::string> &include_dirs);
 
 void assert_(bool condition, const std::string &what = "");
 

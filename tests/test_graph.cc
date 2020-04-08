@@ -123,7 +123,7 @@ TEST_F(GraphTest, const_source_values_fsm1) {    // NOLINT
     EXPECT_FALSE(Graph::is_counter(state, state_values));
 }
 
-TEST_F(GraphTest, const_source_values_const_driver) {   // NOLINT
+TEST_F(GraphTest, counter) {   // NOLINT
     parse("const_driver.json");
 
     auto a = g.select("mod.a");
@@ -146,7 +146,7 @@ TEST_F(GraphTest, const_source_values_const_driver) {   // NOLINT
     {
         auto values = Graph::get_constant_source(f);
         EXPECT_FALSE(values.empty());
-        EXPECT_TRUE(Graph::is_counter(f, values));
+        EXPECT_FALSE(Graph::is_counter(f, values));
     }
 
     {

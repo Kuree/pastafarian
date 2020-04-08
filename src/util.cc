@@ -7,62 +7,14 @@
 #include <fstream>
 #include <thread>
 
+#include "source.hh"
+
 using fmt::format;
 
 // we only support Linux
 #define INCLUDE_FILESYSTEM
 
 namespace fsm {
-
-ParseResult parse_verilog(const std::string &filename) {
-    std::vector<std::string> name = {filename};
-    return parse_verilog(name);
-}
-ParseResult parse_verilog(const std::vector<std::string> &filenames) {
-    return parse_verilog(filenames, {});
-}
-
-ParseResult parse_verilog(const std::vector<std::string> &filenames,
-                          const std::vector<std::string> &include_dirs) {
-    // need to run slang to get the ast json
-    // make sure slang exists
-    // if SLANG is set in the env
-    std::string slang;
-    auto slang_char = std::getenv("SLANG");
-    if (slang_char) {
-        slang = std::string(slang_char);
-    }
-    if (slang.empty()) {
-        slang = fs::which("slang");
-        if (slang.empty()) {
-            slang = fs::which("slang-driver");
-        }
-    }
-    if (slang.empty()) throw std::runtime_error("Unable to find slang driver");
-    // prepare for the slang arguments
-    std::vector<std::string> args = {slang};
-    args.reserve(1 + filenames.size() + 1 + include_dirs.size() + 2);
-    // all the files
-    args.insert(args.end(), filenames.begin(), filenames.end());
-    // if we have include dirs
-    if (!include_dirs.empty()) {
-        args.emplace_back("-I");
-        args.insert(args.end(), include_dirs.begin(), include_dirs.end());
-    }
-    // json output
-    // get a random filename
-    std::string temp_dir = fs::temp_directory_path();
-    auto temp_filename = fs::join(temp_dir, "output.json");
-    args.emplace_back("--ast-json");
-    args.emplace_back(temp_filename);
-    auto command = string::join(args.begin(), args.end(), " ");
-    auto ret = std::system(command.c_str());
-    if (ret) {
-        throw std::runtime_error(
-            ::format("Unable to parse {0}", string::join(filenames.begin(), filenames.end(), " ")));
-    }
-    return {temp_filename, filenames, include_dirs};
-}
 
 void assert_(bool condition, const std::string &what) {
     if (!condition) {

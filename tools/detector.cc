@@ -5,6 +5,7 @@
 
 #include "fsm.hh"
 #include "parser.hh"
+#include "source.hh"
 #include "util.hh"
 
 void print_out_fsm(const fsm::FSMResult &fsm_result) {
@@ -100,20 +101,21 @@ int main(int argc, char *argv[]) {
     auto print_verilog_filenames = fsm::string::join(filenames.begin(), filenames.end(), " ");
     std::cout << "Start parsing verilog file " << print_verilog_filenames << std::endl;
 
-    fsm::ParseResult input_value;
+    fsm::SourceManager manager;
     auto time_start = std::chrono::steady_clock::now();
     if (filenames.size() == 1 && std::filesystem::path(filenames[0]).extension() == ".json") {
         // if it is JSON, we don't need to convert to JSON.
-        input_value = {filenames[0], {}, {}};
+        manager.set_json_filename(filenames[0]);
     } else {
-        input_value = fsm::parse_verilog(filenames, include_dirs);
+        manager = fsm::SourceManager(filenames, include_dirs);
+        fsm::parse_verilog(manager);
     }
 
     // parse the design
     std::cout << "Start parsing design..." << std::endl;
     fsm::Graph g;
     fsm::Parser p(&g);
-    p.parse(input_value);
+    p.parse(manager);
 
     auto time_end = std::chrono::steady_clock::now();
     std::chrono::duration<float> time_used = time_end - time_start;

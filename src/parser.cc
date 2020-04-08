@@ -4,6 +4,7 @@
 
 #include "fmt/format.h"
 #include "simdjson/simdjson.h"
+#include "source.hh"
 #include "util.hh"
 
 using fmt::format;
@@ -11,6 +12,49 @@ using fmt::format;
 constexpr auto SUCCESS = simdjson::error_code::SUCCESS;
 
 namespace fsm {
+
+void parse_verilog(SourceManager &source) {
+    // need to run slang to get the ast json
+    // make sure slang exists
+    // if SLANG is set in the env
+    std::string slang;
+    auto slang_char = std::getenv("SLANG");
+    if (slang_char) {
+        slang = std::string(slang_char);
+    }
+    if (slang.empty()) {
+        slang = fs::which("slang");
+        if (slang.empty()) {
+            slang = fs::which("slang-driver");
+        }
+    }
+    if (slang.empty()) throw std::runtime_error("Unable to find slang driver");
+    // prepare for the slang arguments
+    auto const &filenames = source.src_filenames();
+    auto const &include_dirs = source.src_include_dirs();
+    std::vector<std::string> args = {slang};
+    args.reserve(1 + filenames.size() + 1 + include_dirs.size() + 2);
+    // all the files
+    args.insert(args.end(), filenames.begin(), filenames.end());
+    // if we have include dirs
+    if (!include_dirs.empty()) {
+        args.emplace_back("-I");
+        args.insert(args.end(), include_dirs.begin(), include_dirs.end());
+    }
+    // json output
+    // get a random filename
+    std::string temp_dir = fs::temp_directory_path();
+    auto temp_filename = fs::join(temp_dir, "output.json");
+    args.emplace_back("--ast-json");
+    args.emplace_back(temp_filename);
+    auto command = string::join(args.begin(), args.end(), " ");
+    auto ret = std::system(command.c_str());
+    if (ret) {
+        throw std::runtime_error(
+            ::format("Unable to parse {0}", string::join(filenames.begin(), filenames.end(), " ")));
+    }
+    source.set_json_filename(temp_filename);
+}
 
 template <class T>
 Node *parse_dispatch(T value, Graph *g, Node *parent);
@@ -678,8 +722,8 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
     return nullptr;
 }
 
-void Parser::parse(const ParseResult &value) {
-    auto filename = value.filename;
+void Parser::parse(const SourceManager &value) {
+    auto filename = value.json_filename();
     if (simdjson::active_implementation->name() == "unsupported") {
         throw std::runtime_error("Unsupported CPU");
     }
@@ -697,8 +741,10 @@ void Parser::parse(const ParseResult &value) {
 }
 
 void Parser::parse(const std::string &filename) {
-    ParseResult r{filename, {}, {}};
+    SourceManager r;
+    r.set_json_filename(filename);
     parse(r);
+    parser_result_ = r;
 }
 
 }  // namespace fsm
