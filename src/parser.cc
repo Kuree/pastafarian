@@ -317,7 +317,13 @@ Node *parse_timed(T value, Graph *g, Node *parent) {
     // get edge trigger type
     auto timing = value["timing"];
     if (timing.error == SUCCESS) {
-        parse_dispatch(timing, g, parent);
+        if constexpr (std::is_same_v<typeof(timing),
+            simdjson::document::element_result<simdjson::document::element>>) {
+            auto v = timing.value;
+            if (v.is_object()) {
+                parse_dispatch(timing, g, parent);
+            }
+        }
     }
 
     return parse_dispatch(stmt, g, parent);
@@ -650,10 +656,9 @@ Node *parse_net(T value, Graph *g, Node *parent) {
     return n;
 }
 
-static std::unordered_set<std::string> don_t_care_kind = {
-    "TransparentMember",  // NOLINT
-    "TypeAlias",         "StatementBlock", "Subroutine",
-    "EmptyArgument",     "Empty",          "VariableDeclaration"};
+static std::unordered_set<std::string> don_t_care_kind = {  // NOLINT
+    "TransparentMember", "TypeAlias", "StatementBlock",     "Subroutine",
+    "EmptyArgument",     "Empty",     "VariableDeclaration"};
 
 template <class T>
 Node *parse_dispatch(T value, Graph *g, Node *parent) {
