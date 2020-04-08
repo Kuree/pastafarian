@@ -15,4 +15,4 @@
 	url = https://github.com/Kuree/cxxpool
 [submodule "extern/cpp-subprocess"]
 	path = extern/cpp-subprocess
-	url = https://github.com/arun11299/cpp-subprocess
+	url = https://github.com/Kuree/cpp-subprocess
