@@ -15,21 +15,26 @@
 namespace fsm {
 
 std::string Node::handle_name() const {
-    std::stack<std::string> names;
-    auto node = this;
-    while (node) {
-        assert_(!node->name.empty(), "node name empty");
-        names.emplace(node->name);
-        node = node->parent;
-    }
-    std::vector<std::string> reorder_names;
-    reorder_names.reserve(names.size());
-    while (!names.empty()) {
-        reorder_names.emplace_back(names.top());
-        names.pop();
-    }
-    return string::join(reorder_names.begin(), reorder_names.end(), ".");
+    return handle_name(nullptr);
 }
+
+std::string Node::handle_name(const Node *top) const {
+        std::stack<std::string> names;
+        auto node = this;
+        while (node) {
+            assert_(!node->name.empty(), "node name empty");
+            names.emplace(node->name);
+            if (node == top) break;
+            node = node->parent;
+        }
+        std::vector<std::string> reorder_names;
+        reorder_names.reserve(names.size());
+        while (!names.empty()) {
+            reorder_names.emplace_back(names.top());
+            names.pop();
+        }
+        return string::join(reorder_names.begin(), reorder_names.end(), ".");
+    }
 
 bool Node::child_of(const Node *node) const {
     if (!node) return false;

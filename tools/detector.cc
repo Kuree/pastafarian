@@ -52,7 +52,7 @@ void print_fsm_value(const fsm::Node *node) {
 
 void print_out_fsm(const fsm::FSMResult &fsm_result, const fsm::VerilogModule &m, bool formal) {
     auto state_node = fsm_result.node();
-    std::cout << "State variable name: " << state_node->handle_name() << std::endl;
+    std::cout << "State variable name: " << state_node->handle_name(m.top()) << std::endl;
     if (fsm_result.is_counter()) {
         std::cout << "  State: counter" << std::endl;
     } else {
@@ -77,14 +77,15 @@ void print_out_fsm(const fsm::FSMResult &fsm_result, const fsm::VerilogModule &m
 }
 
 void print_grouped_fsm(
+    const fsm::VerilogModule &m,
     const std::unordered_map<const fsm::Node *, std::unordered_set<const fsm::Node *>> &result) {
     if (result.empty()) return;
     uint64_t count = 0;
     for (auto const &[node, linked_nodes] : result) {
         if (linked_nodes.empty()) continue;
-        std::cout << node->handle_name() << ": " << std::endl;
+        std::cout << node->handle_name(m.top()) << ": " << std::endl;
         for (auto const linked_node : linked_nodes) {
-            std::cout << "  - " << linked_node->handle_name() << std::endl;
+            std::cout << "  - " << linked_node->handle_name(m.top()) << std::endl;
         }
 
         if (count++ < result.size()) {
@@ -227,7 +228,7 @@ int main(int argc, char *argv[]) {
         time_used = time_end - time_start;
         std::cout << "FSM coupling took " << time_used.count() << " seconds" << std::endl;
 
-        print_grouped_fsm(fsm_groups);
+        print_grouped_fsm(m, fsm_groups);
     }
 
     if (!output_filename.empty()) {

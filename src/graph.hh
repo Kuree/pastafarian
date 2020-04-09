@@ -108,6 +108,7 @@ public:
     inline bool has_type(NodeType t) const { return static_cast<bool>(t & type); }
 
     [[nodiscard]] std::string handle_name() const;
+    [[nodiscard]] std::string handle_name(const Node *parent) const;
     bool child_of(const Node *node) const;
 
 private:

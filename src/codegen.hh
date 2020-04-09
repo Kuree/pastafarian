@@ -15,6 +15,7 @@ constexpr char PROPERTY_LABEL_PREFIX[] = "FSM_STATE_";
 class Property {
 public:
     uint32_t id;
+    const Node *top;
     const Node *state_var1;
     const Node *state_value1;
     const Node *state_var2 = nullptr;
@@ -24,8 +25,8 @@ public:
     // whether it's a valid property, which will be determined by mail
     bool valid = false;
 
-    Property(uint32_t id, std::string clk_name, const Node *state_var1, const Node *state_value1);
-    Property(uint32_t id, std::string clk_name, const Node *state_var1, const Node *state_value1,
+    Property(uint32_t id, const Node *top, std::string clk_name, const Node *state_var1, const Node *state_value1);
+    Property(uint32_t id, const Node *top, std::string clk_name, const Node *state_var1, const Node *state_value1,
              const Node *state_var2, const Node *state_value2);
 
     [[nodiscard]] std::string str() const;

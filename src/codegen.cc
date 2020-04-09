@@ -16,14 +16,19 @@ namespace fsm {
 
 constexpr char INDENTATION[] = "  ";
 
-Property::Property(uint32_t id, std::string clk_name, const fsm::Node *state_var1,
+Property::Property(uint32_t id, const Node *top, std::string clk_name, const fsm::Node *state_var1,
                    const fsm::Node *state_value1)
-    : id(id), state_var1(state_var1), state_value1(state_value1), clk_name(std::move(clk_name)) {}
+    : id(id),
+      top(top),
+      state_var1(state_var1),
+      state_value1(state_value1),
+      clk_name(std::move(clk_name)) {}
 
-Property::Property(uint32_t id, std::string clk_name, const fsm::Node *state_var1,
+Property::Property(uint32_t id, const Node *top, std::string clk_name, const fsm::Node *state_var1,
                    const fsm::Node *state_value1, const fsm::Node *state_var2,
                    const fsm::Node *state_value2)
     : id(id),
+      top(top),
       state_var1(state_var1),
       state_value1(state_value1),
       state_var2(state_var2),
@@ -40,7 +45,7 @@ std::string Property::str() const {
     // compute the SVA expressions
     assert_(state_var1 && state_value1, "state cannot be null");
     {
-        const auto state_var_name = state_var1->handle_name();
+        const auto state_var_name = state_var1->handle_name(top);
         const auto state_value = ::format("{0}", state_value1->value);
         result << state_var_name << " == " << state_value;
     }
@@ -56,7 +61,7 @@ std::string Property::str() const {
             }
         }
         result << " " << op << " ";
-        const auto state_var_name = state_var1->handle_name();
+        const auto state_var_name = state_var1->handle_name(top);
         const auto state_value = ::format("{0}", state_value1->value);
         result << state_var_name << " == " << state_value;
     }
@@ -124,8 +129,8 @@ void VerilogModule::create_properties() {
         // this is for reachable state
         auto const &fsm = fsm_results_[i];
         if (fsm.is_counter()) {
-            auto property =
-                std::make_shared<Property>(id_count++, clock_name_, fsm.node(), nullptr);
+            auto property = std::make_shared<Property>(id_count++, root_module_, clock_name_,
+                                                       fsm.node(), nullptr);
             properties_.emplace(property->id, property);
             property_id_to_fsm_.emplace(property->id, i);
             continue;
@@ -133,16 +138,17 @@ void VerilogModule::create_properties() {
             auto unique_states = fsm.unique_states();
             for (auto const &state : unique_states) {
                 // so single variable
-                auto property =
-                    std::make_shared<Property>(id_count++, clock_name_, fsm.node(), state);
+                auto property = std::make_shared<Property>(id_count++, root_module_, clock_name_,
+                                                           fsm.node(), state);
                 properties_.emplace(property->id, property);
                 property_id_to_fsm_.emplace(property->id, i);
             }
             // state transition
             for (auto const &state_from : unique_states) {
                 for (auto const &state_to : unique_states) {
-                    auto property = std::make_shared<Property>(id_count++, clock_name_, fsm.node(),
-                                                               state_from, fsm.node(), state_to);
+                    auto property =
+                        std::make_shared<Property>(id_count++, root_module_, clock_name_,
+                                                   fsm.node(), state_from, fsm.node(), state_to);
                     property->delay = 1;
                     properties_.emplace(property->id, property);
                     property_id_to_fsm_.emplace(property->id, i);
@@ -193,7 +199,8 @@ std::vector<const Property *> VerilogModule::get_property(const Node *node) cons
     return result;
 }
 
-std::vector<const Property *> VerilogModule::get_property(const Node *node1, const Node *node2) const {
+std::vector<const Property *> VerilogModule::get_property(const Node *node1,
+                                                          const Node *node2) const {
     std::vector<const Property *> result;
 
     for (auto const &iter : properties_) {
