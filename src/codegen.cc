@@ -290,7 +290,8 @@ std::string VerilogModule::str() const {
     result << ");" << std::endl << std::endl;
 
     // dut instantiation
-    result << name << " " << name << " (.*);" << std::endl << std::endl;
+    assert_(root_module_->module_def != nullptr, "root module doesn't have definition");
+    result << root_module_->module_def->name << " " << name << " (.*);" << std::endl << std::endl;
 
     // all the properties
     for (auto const &iter : properties_) {

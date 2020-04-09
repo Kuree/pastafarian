@@ -48,6 +48,10 @@ inline EdgeType operator&(EdgeType a, EdgeType b) {
 struct Edge;
 class FSMResult;
 
+struct ModuleDefInfo {
+    std::string name;
+};
+
 struct Node {
 public:
     uint64_t id;
@@ -71,6 +75,8 @@ public:
     // only for the ports. other nodes will have none
     PortType port_type = PortType::None;
     EventType event_type = EventType::None;
+    // only for module instances
+    std::unique_ptr<ModuleDefInfo> module_def;
 
     Node(uint64_t id, std::string name) : id(id), name(std::move(name)) {}
     Node(uint64_t id, std::string name, Node* parent)

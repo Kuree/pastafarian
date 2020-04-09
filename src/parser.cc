@@ -272,6 +272,14 @@ Node *parse_module(T &value, Graph *g, Node *parent) {
     for (auto const &member : members) {
         parse_dispatch(member, g, n);
     }
+
+    // definition stuff
+    auto definition = value["definition"].as_string();
+    auto def_name = parse_internal_symbol_name(definition);
+    auto module_def = std::make_unique<ModuleDefInfo>();
+    module_def->name = def_name;
+    n->module_def = std::move(module_def);
+
     return n;
 }
 
