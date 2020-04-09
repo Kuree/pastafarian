@@ -93,7 +93,8 @@ VerilogModule::VerilogModule(fsm::Graph *graph, SourceManager parser_result,
         for (auto const &iter : modules) {
             std::cerr << "  - " << iter.first << std::endl;
         }
-        throw std::invalid_argument("Top module not set");
+        root_module_ = modules.begin()->second;
+        std::cerr << "Using " << modules.begin()->first << " as top" << std::endl;
     } else if (modules.size() > 1) {
         if (modules.find(top_name) == modules.end()) {
             throw std::invalid_argument(top_name + " not found");
@@ -119,33 +120,44 @@ VerilogModule::VerilogModule(fsm::Graph *graph, SourceManager parser_result,
 void VerilogModule::create_properties() {
     // compute the coupled FSM here?
     uint32_t id_count = 0;
-    for (auto const &fsm : fsm_results_) {
+    for (uint32_t i = 0; i < fsm_results_.size(); i++) {
         // this is for reachable state
-        if (fsm.is_counter()) continue;
-        auto unique_states = fsm.unique_states();
-        for (auto const &state : unique_states) {
-            // so single variable
-            auto property = std::make_shared<Property>(id_count++, clock_name_, fsm.node(), state);
+        auto const &fsm = fsm_results_[i];
+        if (fsm.is_counter()) {
+            auto property =
+                std::make_shared<Property>(id_count++, clock_name_, fsm.node(), nullptr);
             properties_.emplace(property->id, property);
-        }
-        // state transition
-        for (auto const &state_from : unique_states) {
-            for (auto const &state_to : unique_states) {
-                auto property = std::make_shared<Property>(id_count++, clock_name_, fsm.node(),
-                                                           state_from, fsm.node(), state_to);
-                property->delay = 1;
+            property_id_to_fsm_.emplace(property->id, i);
+            continue;
+        } else {
+            auto unique_states = fsm.unique_states();
+            for (auto const &state : unique_states) {
+                // so single variable
+                auto property =
+                    std::make_shared<Property>(id_count++, clock_name_, fsm.node(), state);
                 properties_.emplace(property->id, property);
+                property_id_to_fsm_.emplace(property->id, i);
+            }
+            // state transition
+            for (auto const &state_from : unique_states) {
+                for (auto const &state_to : unique_states) {
+                    auto property = std::make_shared<Property>(id_count++, clock_name_, fsm.node(),
+                                                               state_from, fsm.node(), state_to);
+                    property->delay = 1;
+                    properties_.emplace(property->id, property);
+                    property_id_to_fsm_.emplace(property->id, i);
+                }
             }
         }
     }
 }
 
-Property &VerilogModule::get_property(uint32_t id) {
+Property &VerilogModule::get_property(uint32_t id) const {
     assert_(properties_.find(id) != properties_.end(), ::format("cannot find property {0}", id));
     return *properties_.at(id);
 }
 
-Property *VerilogModule::get_property(const Node *node, uint32_t state_value) {
+Property *VerilogModule::get_property(const Node *node, uint32_t state_value) const {
     for (auto const &iter : properties_) {
         auto const &prop = iter.second;
         if (prop->state_var1 == node && prop->state_value1->value == state_value &&
@@ -156,7 +168,8 @@ Property *VerilogModule::get_property(const Node *node, uint32_t state_value) {
     return nullptr;
 }
 
-Property *VerilogModule::get_property(const Node *node, uint32_t state_from, uint32_t state_to) {
+Property *VerilogModule::get_property(const Node *node, uint32_t state_from,
+                                      uint32_t state_to) const {
     for (auto const &iter : properties_) {
         auto const &prop = iter.second;
         if (prop->state_var1 == node && prop->state_value1->value == state_from &&
@@ -167,9 +180,36 @@ Property *VerilogModule::get_property(const Node *node, uint32_t state_from, uin
     return nullptr;
 }
 
+std::vector<const Property *> VerilogModule::get_property(const Node *node) const {
+    std::vector<const Property *> result;
+
+    for (auto const &iter : properties_) {
+        auto const &prop = iter.second;
+        if (prop->state_var1 == node) {
+            result.emplace_back(prop.get());
+        }
+    }
+    assert_(!result.empty(), "no FSM states found");
+    return result;
+}
+
+std::vector<const Property *> VerilogModule::get_property(const Node *node1, const Node *node2) const {
+    std::vector<const Property *> result;
+
+    for (auto const &iter : properties_) {
+        auto const &prop = iter.second;
+        if (prop->state_var1 == node1 && prop->state_var2 == node2) {
+            result.emplace_back(prop.get());
+        }
+    }
+    assert_(!result.empty(), "no FSM states found");
+    return result;
+}
+
 void VerilogModule::analyze_pins() {
     // this applies a series of heuristics to figure out the reset and clock pin name
-    const static std::unordered_set<std::string> reset_names = {"rst", "rst_n", "reset"};
+    const static std::unordered_set<std::string> reset_names = {"rst", "rst_n", "reset", "resetn"};
+    const static std::unordered_set<std::string> neg_reset_names = {"rst_n", "resetn"};
     const static std::unordered_set<std::string> clock_names = {"clk", "clock"};
     if (clock_name_.empty()) {
         // we assume only one clock domain
@@ -191,6 +231,9 @@ void VerilogModule::analyze_pins() {
         }
     } else {
         assert_(ports.find(reset_name_) != ports.end(), "Unable to find " + clock_name_);
+    }
+    if (neg_reset_names.find(reset_name_) != neg_reset_names.end() && !posedge_reset_) {
+        posedge_reset_ = false;
     }
 
     analyze_reset();
@@ -244,7 +287,11 @@ std::string VerilogModule::str() const {
 
     // all the properties
     for (auto const &iter : properties_) {
-        result << iter.second->str() << std::endl;
+        // skip the counter one
+        auto const &prop = iter.second;
+        auto const &fsm = fsm_results_[property_id_to_fsm_.at(prop->id)];
+        if (fsm.is_counter()) continue;
+        result << prop->str() << std::endl;
     }
 
     // end
@@ -323,7 +370,7 @@ void JasperGoldGeneration::run_process() {
     }
     auto command = ::format("{0} -allow_unsupported_OS -no_gui -proj {1} {2}", JASPERGOLD_COMMAND,
                             wd, script_filename);
-    subprocess::check_output(command);
+    subprocess::call(command);
 }
 
 std::string JasperGoldGeneration::jg_working_dir() {
@@ -332,9 +379,7 @@ std::string JasperGoldGeneration::jg_working_dir() {
     return wd;
 }
 
-bool JasperGoldGeneration::has_tools() const {
-    return has_jaspergold();
-}
+bool JasperGoldGeneration::has_tools() const { return has_jaspergold(); }
 
 bool JasperGoldGeneration::has_jaspergold() {
     std::string jg_command = fs::which(JASPERGOLD_COMMAND);

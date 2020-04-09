@@ -41,9 +41,13 @@ public:
     VerilogModule(Graph *graph, SourceManager parser_result, const std::string &top_name = "");
     void set_fsm_result(const std::vector<FSMResult> &result) { fsm_results_ = result; }
     void create_properties();
-    Property &get_property(uint32_t id);
-    Property *get_property(const Node * node, uint32_t state_value);
-    Property *get_property(const Node * node, uint32_t state_from, uint32_t state_to);
+    [[nodiscard]] Property &get_property(uint32_t id) const;
+    [[nodiscard]] Property *get_property(const Node *node, uint32_t state_value) const;
+    [[nodiscard]] Property *get_property(const Node *node, uint32_t state_from,
+                                         uint32_t state_to) const;
+    [[nodiscard]] std::vector<const Property *> get_property(const Node *node) const;
+    [[nodiscard]] std::vector<const Property *> get_property(const Node *node1,
+                                                             const Node *node2) const;
 
     void set_reset_name(const std::string &reset_name) { reset_name_ = reset_name; }
     void set_clock_name(const std::string &clock_name) { clock_name_ = clock_name; }
@@ -65,6 +69,7 @@ private:
     std::string clock_name_;
     std::string reset_name_;
     std::optional<bool> posedge_reset_;
+    std::unordered_map<uint32_t, uint32_t> property_id_to_fsm_;
 
     void analyze_reset();
 };

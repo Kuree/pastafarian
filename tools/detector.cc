@@ -1,5 +1,6 @@
 #include <CLI/CLI.hpp>
 #include <chrono>
+#include <codegen.hh>
 #include <filesystem>
 #include <iostream>
 
@@ -8,17 +9,68 @@
 #include "source.hh"
 #include "util.hh"
 
-void print_out_fsm(const fsm::FSMResult &fsm_result) {
-    std::cout << "State variable name: " << fsm_result.node()->handle_name() << std::endl;
+std::vector<std::pair<const fsm::Property *, std::vector<const fsm::Property *>>> sort_fsm_result(
+    const std::vector<const fsm::Property *> &properties) {
+    std::vector<std::pair<const fsm::Property *, std::vector<const fsm::Property *>>> result;
+    std::map<const fsm::Node *, std::vector<const fsm::Property *>> entries;
+    std::map<const fsm::Node *, const fsm::Property *> states;
+
+    for (auto const property : properties) {
+        if (property->state_var2) {
+            fsm::assert_(property->state_var2 == property->state_var1, "only single FSM supported");
+            entries[property->state_value1].emplace_back(property);
+        } else {
+            states[property->state_value1] = property;
+        }
+    }
+    // merge result
+    result.reserve(entries.size());
+    for (auto &[node, ps] : entries) {
+        auto p = states.at(node);
+        // sort the properties
+        std::sort(ps.begin(), ps.end(), [](auto const &left, auto const &right) {
+            return left->state_value2 > right->state_value2;
+        });
+        result.emplace_back(std::make_pair(p, ps));
+    }
+
+    // sort the result as well
+    std::sort(result.begin(), result.end(), [](auto const &left, auto const &right) {
+        return left.first->state_value1 > right.first->state_value1;
+    });
+
+    return result;
+}
+
+void print_fsm_value(const fsm::Node *node) {
+    if (!node->name.empty()) {
+        std::cout << node->name << " (" << node->value << ")";
+    } else {
+        std::cout << node->value;
+    }
+}
+
+void print_out_fsm(const fsm::FSMResult &fsm_result, const fsm::VerilogModule &m, bool formal) {
+    auto state_node = fsm_result.node();
+    std::cout << "State variable name: " << state_node->handle_name() << std::endl;
     if (fsm_result.is_counter()) {
         std::cout << "  State: counter" << std::endl;
     } else {
-        auto states = fsm_result.unique_states();
-        for (auto const &state : states) {
-            if (!state->name.empty()) {
-                std::cout << "  State: " << state->name << " (" << state->value << ")" << std::endl;
-            } else {
-                std::cout << "  State: " << state->value << std::endl;
+        auto properties = m.get_property(state_node);
+        auto sorted_result = sort_fsm_result(properties);
+        for (auto const &[state_p, ps] : sorted_result) {
+            auto state = state_p->state_value1;
+            std::cout << "  State: ";
+            print_fsm_value(state);
+            if (!state_p->valid && formal) {
+                std::cout << " [UNREACHABLE]";
+            }
+            std::cout << ":" << std::endl;
+            if (!formal) continue;
+            for (auto const &next_state : ps) {
+                std::cout << "    - Next: ";
+                print_fsm_value(next_state->state_value2);
+                std::cout << std::endl;
             }
         }
     }
@@ -86,10 +138,18 @@ int main(int argc, char *argv[]) {
     std::vector<std::string> filenames;
     std::string output_filename;
     bool compute_coupled_fsm = false;
+    bool use_formal = false;
+    std::string top;
+    std::string clock_name;
+    std::string reset_name;
     app.add_option("-i,--input", filenames, "SystemVerilog design files");
     app.add_option("-I,--include", include_dirs, "SystemVerilog include search directory");
     app.add_option("--json", output_filename, "Output JSON. Use - for stdout");
     app.add_flag("--coupled-fsm", compute_coupled_fsm, "Whether to compute coupled FSM");
+    app.add_flag("--formal", use_formal, "Whether to use formal tools to determine FSM properties");
+    app.add_option("--top", top, "Specify the design top");
+    app.add_option("--reset", reset_name, "Reset pin name");
+    app.add_option("--clock", clock_name, "Clock pin name");
 
     CLI11_PARSE(app, argc, argv)
 
@@ -130,12 +190,26 @@ int main(int argc, char *argv[]) {
     time_used = time_end - time_start;
     std::cout << "FSM detection took " << time_used.count() << " seconds" << std::endl;
 
+    fsm::VerilogModule m(&g, manager, top);
+    m.set_fsm_result(fsms);
+    if (!clock_name.empty()) m.set_clock_name(clock_name);
+    if (!reset_name.empty()) m.set_reset_name(reset_name);
+    m.analyze_pins();
+    m.create_properties();
+
     if (fsms.empty()) {
         std::cerr << "No FSM detected" << std::endl;
         return EXIT_FAILURE;
     }
+
+    // set properties
+    if (use_formal) {
+        fsm::JasperGoldGeneration jg(m);
+        jg.run();
+    }
+
     for (uint64_t i = 0; i < fsms.size(); i++) {
-        print_out_fsm(fsms[i]);
+        print_out_fsm(fsms[i], m, use_formal);
         if (i != fsms.size() - 1) {
             std::cout << std::endl;
         }

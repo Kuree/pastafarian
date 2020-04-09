@@ -31,7 +31,7 @@ TEST_F(GraphTest, fsm1_codegen) {  // NOLINT
 
     // test properties
     // this is just a sanity check
-    auto red_prop = m.get_property(g.select("Color_current_state"), 0);
+    auto red_prop = m.get_property(g.select("Color_current_state"), 0u);
     EXPECT_NE(red_prop, nullptr);
     EXPECT_TRUE(red_prop->valid);
 }
