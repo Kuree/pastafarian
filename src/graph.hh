@@ -108,6 +108,7 @@ public:
     inline bool has_type(NodeType t) const { return static_cast<bool>(t & type); }
 
     [[nodiscard]] std::string handle_name() const;
+    bool child_of(const Node *node) const;
 
 private:
     static void update() {}
@@ -179,6 +180,7 @@ public:
     static bool in_direct_assign_chain(const Node* from, const Node* to);
 
     std::vector<FSMResult> identify_fsms();
+    std::vector<FSMResult> identify_fsms(const Node *top);
     static std::unordered_map<const Node*, std::unordered_set<const Node*>> group_fsms(
         const std::vector<FSMResult>& fsms);
 

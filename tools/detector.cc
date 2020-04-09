@@ -181,16 +181,18 @@ int main(int argc, char *argv[]) {
     std::chrono::duration<float> time_used = time_end - time_start;
     std::cout << "Parsing took " << time_used.count() << " seconds" << std::endl;
 
+    // top module
+    fsm::VerilogModule m(&g, manager, top);
+
     // get FSMs
     std::cout << "Detecting FSM..." << std::endl;
     time_start = std::chrono::steady_clock::now();
 
-    auto const fsms = g.identify_fsms();
+    auto const fsms = g.identify_fsms(m.top());
     time_end = std::chrono::steady_clock::now();
     time_used = time_end - time_start;
     std::cout << "FSM detection took " << time_used.count() << " seconds" << std::endl;
 
-    fsm::VerilogModule m(&g, manager, top);
     m.set_fsm_result(fsms);
     if (!clock_name.empty()) m.set_clock_name(clock_name);
     if (!reset_name.empty()) m.set_reset_name(reset_name);

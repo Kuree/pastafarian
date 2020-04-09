@@ -31,6 +31,19 @@ std::string Node::handle_name() const {
     return string::join(reorder_names.begin(), reorder_names.end(), ".");
 }
 
+bool Node::child_of(const Node *node) const {
+    if (!node) return false;
+    auto p = parent;
+    while (p) {
+        if (p != node) {
+            p = p->parent;
+        } else {
+            return true;
+        }
+    }
+    return false;
+}
+
 Node *Graph::get_node(uint64_t key) {
     if (has_node(key)) {
         return nodes_map_.at(key);
@@ -438,6 +451,10 @@ bool Graph::in_direct_assign_chain(const Node *from, const Node *to) {
 }
 
 std::vector<FSMResult> Graph::identify_fsms() {
+    return identify_fsms(nullptr);
+}
+
+std::vector<FSMResult> Graph::identify_fsms(const Node *top) {
     std::vector<FSMResult> result;
 
     // first it has to be a register
@@ -453,6 +470,7 @@ std::vector<FSMResult> Graph::identify_fsms() {
     uint64_t num_registers = registers.size();
 
     for (auto reg : registers) {
+        if (top && !reg->child_of(top)) continue;
         // I think the constant driver is faster?
         auto t = pool.push([reg, &mutex, &count, &bar, num_registers, &result]() -> void {
             auto const_src = Graph::get_constant_source(reg);

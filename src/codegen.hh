@@ -58,6 +58,8 @@ public:
     [[nodiscard]] const SourceManager &parser_result() const { return parser_result_; }
     void analyze_pins();
 
+    [[nodiscard]] inline const Node *top() const { return root_module_; }
+
     [[nodiscard]] std::string str() const;
     void to_file(const std::string &filename);
 
