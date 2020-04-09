@@ -1,0 +1,70 @@
+[INFO] Beginning multiple driver analysis
+[INFO] Finished multiple driver analysis
+[INFO] Module Name TOP
+TOP
+[<embedded>] % clock clk;
+[<embedded>] % reset -expression rst;
+INFO (IPM031): Clearing proof results of all properties.
+INFO (IRS006): Current reset condition is "rst".
+[<embedded>] % prove -task {<embedded>};
+INFO (IPF031): Settings used for this proof:
+    time_limit                    = 86400s
+    per_property_time_limit       = 1s * 10 ^ scan
+    engine_mode                   = Hp Ht N B 
+    proofgrid_per_engine_max_jobs = 1
+    max engine jobs               = Hp Ht N B, total 4
+    proofgrid_mode                = local
+    proofgrid_restarts            = 10
+INFO (IPF036): Starting proof on task: "<embedded>", 6 properties to prove with 0 already proven/unreachable
+INFO (IRS029): Starting reset analysis: phase 1 of 4.
+INFO (IRS030): Running reset analysis phase 2 of 4.
+INFO (IRS031): Running reset analysis phase 3 of 4.
+INFO (IRS020): Starting the reset analysis simulation with a limit of 100 iterations (phase 4 of 4).
+INFO (IRS024): Reset iterations 0 to 4 analyzed.
+INFO (IRS018): Reset analysis simulation executed for 3 iterations. Assigned values for 1 of 1 design flops, 0 of 0 design latches, 10 of 10 internal elements.
+Using multistage preprocessing
+Starting reduce
+Finished reduce in 0s
+Performing Proof Simplification...
+0.0.Hp: clocks: 1, declared: 1, disabling: 0, posedge: 1, negedge: 0, noedge: 0, bothedge: 0
+0.0.Hp: Proof Simplification Iteration 1	[0.00 s]
+0.0.Hp: Proof Simplification Iteration 2	[0.00 s]
+Proof Simplification completed in 0.00 s
+0.0.Hp: Identified and disabled 2 duplicated targets.
+About to start centralized ProofGrid in its own thread with a limit of 10000 pending notifications and a limit of 10 traces.
+=============================== ProofGrid start ===============================
+ProofGrid usable level: 4
+ProofGrid is starting event handling
+0.0.Ht: clocks: 1, declared: 1, disabling: 0, posedge: 1, negedge: 0, noedge: 0, bothedge: 0
+0.0.N: clocks: 1, declared: 1, disabling: 0, posedge: 1, negedge: 0, noedge: 0, bothedge: 0
+0.0.N: Next scan (0) will use per property time limit: 1s * 10 ^ 0 = 1s
+0.0.N: Starting proof for property "TOP.FSM_STATE_0"	[0.00 s].
+0.0.Ht: Trace Attempt  1	[0.00 s]
+0.0.Ht: A trace with 1 cycles was found. [0.00 s]
+INFO (IPF047): 0.0.Ht: The cover property "TOP.FSM_STATE_1" was covered in 1 cycles in 0.01 s.
+0.0.N: Trace Attempt  1	[0.00 s]
+0.0.Ht: Trace Attempt  2	[0.00 s]
+0.0.Ht: A trace with 2 cycles was found. [0.00 s]
+INFO (IPF047): 0.0.Ht: The cover property "TOP.FSM_STATE_0" was covered in 2 cycles in 0.01 s.
+0.0.Ht: A trace with 2 cycles was found. [0.00 s]
+INFO (IPF047): 0.0.Ht: The cover property "TOP.FSM_STATE_4" was covered in 2 cycles in 0.01 s.
+INFO (IPF047): 0.0.Ht: The cover property "TOP.FSM_STATE_5" was covered in 2 cycles in 0.01 s by the incidental trace "TOP.FSM_STATE_4".
+0.0.Hp: clocks: 1, declared: 1, disabling: 0, posedge: 1, negedge: 0, noedge: 0, bothedge: 0
+0.0.Ht: Trace Attempt  3	[0.00 s]
+0.0.Ht: A trace with 3 cycles was found. [0.00 s]
+INFO (IPF047): 0.0.Ht: The cover property "TOP.FSM_STATE_2" was covered in 3 cycles in 0.02 s.
+INFO (IPF047): 0.0.Ht: The cover property "TOP.FSM_STATE_3" was covered in 3 cycles in 0.02 s by the incidental trace "TOP.FSM_STATE_2".
+0.0.Ht: All properties determined. [0.00 s]
+0.0.N: Trace Attempt  1	[0.00 s]
+0.0.Hp: Interrupted. [0.00 s]
+0.0.Ht: Exited with Success (@ 0.01 s)
+ProofGrid usable level: 0
+0.0.N: Stopped processing property "TOP.FSM_STATE_0"	[0.02 s].
+0.0.N: All properties either determined or skipped. [0.00 s]
+0.0.B: Interrupted. [0.00 s]
+0.0.Hp: Exited with Success (@ 0.01 s)
+0.0.B: Exited with Success (@ 0.01 s)
+0.0.N: Exited with Success (@ 0.01 s)
+ProofGrid usable level: 0
+All pending notifications were processed.
+INFO (IPF059): Completed proof on task: "<embedded>"

@@ -8,9 +8,9 @@ class LoadFile : public ::testing::Test {
 public:
     void SetUp() override { p = std::make_unique<fsm::Parser>(&g); }
 
-    void parse(const std::string &json_filename) {
-        EXPECT_TRUE(std::filesystem::exists(json_filename));
-        p->parse(json_filename);
+    void parse(const std::string &filename) {
+        EXPECT_TRUE(std::filesystem::exists(filename));
+        p->parse(filename);
     }
 
     fsm::Graph g;

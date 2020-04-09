@@ -145,6 +145,28 @@ Property &VerilogModule::get_property(uint32_t id) {
     return *properties_.at(id);
 }
 
+Property *VerilogModule::get_property(const Node *node, uint32_t state_value) {
+    for (auto const &iter : properties_) {
+        auto const &prop = iter.second;
+        if (prop->state_var1 == node && prop->state_value1->value == state_value &&
+            !prop->state_var2) {
+            return prop.get();
+        }
+    }
+    return nullptr;
+}
+
+Property *VerilogModule::get_property(const Node *node, uint32_t state_from, uint32_t state_to) {
+    for (auto const &iter : properties_) {
+        auto const &prop = iter.second;
+        if (prop->state_var1 == node && prop->state_value1->value == state_from &&
+            prop->state_var2 == node && prop->state_value2->value == state_to) {
+            return prop.get();
+        }
+    }
+    return nullptr;
+}
+
 void VerilogModule::analyze_pins() {
     // this applies a series of heuristics to figure out the reset and clock pin name
     const static std::unordered_set<std::string> reset_names = {"rst", "rst_n", "reset"};
@@ -231,26 +253,36 @@ std::string VerilogModule::str() const {
     return result.str();
 }
 
+void VerilogModule::to_file(const std::string &filename) {
+    std::ofstream f(filename);
+    f << str();
+}
+
 void FormalGeneration::run() {
     run_process();
     parse_result();
 }
 
-void JasperGoldGeneration::create_command_file(const std::string &filename) {
-    std::ofstream stream(filename);
+void JasperGoldGeneration::create_command_file(const std::string &cmd_filename,
+                                               const std::string &wrapper_filename) {
+    std::ofstream stream(cmd_filename);
     auto const &parser_result = module_.parser_result();
     auto const &files = parser_result.src_filenames();
     auto const &include_dirs = parser_result.src_include_dirs();
 
+    // create wrapper file
+    module_.to_file(wrapper_filename);
+
     // output the read command
     stream << "analyze -sv " << string::join(files.begin(), files.end(), " ");
+    stream << " " << wrapper_filename;
     if (!include_dirs.empty()) {
         stream << " +incdir " << string::join(include_dirs.begin(), include_dirs.end(), " ");
     }
     stream << ";" << std::endl;
 
     // output top
-    stream << "elaborate -top " << module_.name << ";" << std::endl;
+    stream << "elaborate -top " << TOP_NAME << ";" << std::endl;
 
     // clock
     assert_(!module_.clock_name().empty(), "clock name cannot be empty");
@@ -277,15 +309,21 @@ constexpr char JASPERGOLD_COMMAND[] = "jaspergold";
 
 void JasperGoldGeneration::run_process() {
     // check if jasper gold is in the shell
-    assert_(fs::which(JASPERGOLD_COMMAND).empty(), "jaspergold not found in $PATH");
+    std::string jg_command = fs::which(JASPERGOLD_COMMAND);
+    assert_(!jg_command.empty(), "jaspergold not found in $PATH");
     // output a command file
     auto temp_dir = fs::temp_directory_path();
     auto script_filename = fs::join(temp_dir, "fsm_jg.tcl");
-    create_command_file(script_filename);
+    auto wrapper_filename = fs::join(temp_dir, "fsm_wrapper.sv");
+    create_command_file(script_filename, wrapper_filename);
     // run the script file
     auto wd = jg_working_dir();
-    auto command = ::format("{0} -no_gui -proj {1}", JASPERGOLD_COMMAND, wd);
-    subprocess::call(command);
+    if (fs::exists(wd)) {
+        fs::remove(wd);
+    }
+    auto command = ::format("{0} -allow_unsupported_OS -no_gui -proj {1} {2}", JASPERGOLD_COMMAND,
+                            wd, script_filename);
+    subprocess::check_output(command);
 }
 
 std::string JasperGoldGeneration::jg_working_dir() {
@@ -294,9 +332,18 @@ std::string JasperGoldGeneration::jg_working_dir() {
     return wd;
 }
 
+bool JasperGoldGeneration::has_tools() const {
+    return has_jaspergold();
+}
+
+bool JasperGoldGeneration::has_jaspergold() {
+    std::string jg_command = fs::which(JASPERGOLD_COMMAND);
+    return !jg_command.empty();
+}
+
 void JasperGoldGeneration::parse_result(const std::string &log_file) {
     // keywords
-    auto const keyword = ::format("The cover property \"{0}.", TOP_NAME, PROPERTY_LABEL_PREFIX);
+    auto const keyword = ::format("The cover property \"{0}.{1}", TOP_NAME, PROPERTY_LABEL_PREFIX);
     // parse the log
     std::ifstream file(log_file);
     for (std::string line; std::getline(file, line);) {
@@ -305,9 +352,8 @@ void JasperGoldGeneration::parse_result(const std::string &log_file) {
         if (pos != std::string::npos) {
             pos += keyword.size();
             auto end_str = line.substr(pos);
-            auto end = line.find('\"');
-            if (end != std::string::npos && end > pos) {
-                end -= 1;
+            auto end = end_str.find('\"');
+            if (end != std::string::npos) {
                 auto id_str = line.substr(pos, end);
                 uint32_t id = 0;
                 try {
@@ -315,7 +361,7 @@ void JasperGoldGeneration::parse_result(const std::string &log_file) {
                 } catch (...) {
                 }
                 auto &property = module_.get_property(id);
-                property.valid = line.find("unreachable") != std::string::npos;
+                property.valid = line.find("unreachable") == std::string::npos;
             }
         }
     }

@@ -42,6 +42,8 @@ public:
     void set_fsm_result(const std::vector<FSMResult> &result) { fsm_results_ = result; }
     void create_properties();
     Property &get_property(uint32_t id);
+    Property *get_property(const Node * node, uint32_t state_value);
+    Property *get_property(const Node * node, uint32_t state_from, uint32_t state_to);
 
     void set_reset_name(const std::string &reset_name) { reset_name_ = reset_name; }
     void set_clock_name(const std::string &clock_name) { clock_name_ = clock_name; }
@@ -53,6 +55,7 @@ public:
     void analyze_pins();
 
     [[nodiscard]] std::string str() const;
+    void to_file(const std::string &filename);
 
 private:
     SourceManager parser_result_;
@@ -70,6 +73,7 @@ class FormalGeneration {
 public:
     explicit FormalGeneration(VerilogModule &module) : module_(module) {}
     void run();
+    virtual bool has_tools() const = 0;
 
     virtual ~FormalGeneration() = default;
 
@@ -84,9 +88,11 @@ class JasperGoldGeneration : public FormalGeneration {
 public:
     explicit JasperGoldGeneration(VerilogModule &module) : FormalGeneration(module) {}
     void parse_result(const std::string &log_file);
+    bool has_tools() const override;
+    static bool has_jaspergold();
 
 private:
-    void create_command_file(const std::string &filename);
+    void create_command_file(const std::string &cmd_filename, const std::string &wrapper_filename);
     void run_process() override;
     void parse_result() override;
     [[nodiscard]] static std::string jg_working_dir();

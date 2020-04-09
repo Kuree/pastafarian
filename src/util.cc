@@ -86,7 +86,11 @@ std::string join(const std::string &path1, const std::string &path2) {
 bool remove(const std::string &filename) {
 #if defined(INCLUDE_FILESYSTEM)
     namespace fs = std::filesystem;
-    return fs::remove(filename);
+    if (fs::is_directory(filename)) {
+        return fs::remove_all(filename);
+    } else {
+        return fs::remove(filename);
+    }
 #else
     return std::remove(filename.c_str());
 #endif

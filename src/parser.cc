@@ -747,7 +747,14 @@ void Parser::parse(const SourceManager &value) {
 
 void Parser::parse(const std::string &filename) {
     SourceManager r;
-    r.set_json_filename(filename);
+    if (fs::get_ext(filename) == ".json") {
+        r.set_json_filename(filename);
+    }
+    else {
+        r = SourceManager(filename);
+        parse_verilog(r);
+    }
+
     parse(r);
     parser_result_ = r;
 }
