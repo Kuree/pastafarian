@@ -45,11 +45,13 @@ inline EdgeType operator&(EdgeType a, EdgeType b) {
     return static_cast<EdgeType>(static_cast<uint32_t>(a) & static_cast<uint32_t>(b));
 }
 
+struct Node;
 struct Edge;
 class FSMResult;
 
 struct ModuleDefInfo {
     std::string name;
+    std::unordered_map<std::string, const Node *> params;
 };
 
 struct Node {

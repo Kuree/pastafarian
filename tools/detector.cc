@@ -144,7 +144,7 @@ int main(int argc, char *argv[]) {
     std::string top;
     std::string clock_name;
     std::string reset_name;
-    app.add_option("-i,--input", filenames, "SystemVerilog design files");
+    app.add_option("-i,--input", filenames, "SystemVerilog design files")->required();
     app.add_option("-I,--include", include_dirs, "SystemVerilog include search directory");
     app.add_option("--json", output_filename, "Output JSON. Use - for stdout");
     app.add_flag("--coupled-fsm", compute_coupled_fsm, "Whether to compute coupled FSM");
@@ -154,11 +154,6 @@ int main(int argc, char *argv[]) {
     app.add_option("--clock", clock_name, "Clock pin name");
 
     CLI11_PARSE(app, argc, argv)
-
-    if (filenames.empty()) {
-        app.exit(CLI::Error("filename", "filenames cannot be empty"));
-        return EXIT_FAILURE;
-    }
 
     auto print_verilog_filenames = fsm::string::join(filenames.begin(), filenames.end(), " ");
     std::cout << "Start parsing verilog file " << print_verilog_filenames << std::endl;

@@ -169,6 +169,17 @@ Node *parse_param(T value, Graph *g, Node *parent) {
 
     auto node = g->add_node(addr, name, NodeType::Constant, parent);
     node->value = v;
+
+    // non-local module level parameter
+    auto is_port_raw = value["isPort"];
+    assert_(is_port_raw.error == SUCCESS, "isPort not found in parameter");
+    if (is_port_raw.as_bool()) {
+        // it's a port parameter, put it to the module definition
+        if (parent->type == NodeType::Module) {
+            parent->module_def->params.emplace(name, node);
+        }
+    }
+
     return node;
 }
 
@@ -266,19 +277,19 @@ Node *parse_module(T &value, Graph *g, Node *parent) {
     auto addr = get_address(value);
     auto n = g->add_node(addr, name, NodeType::Module, parent);
 
-    // parse inner members
-    assert_(value["members"].error == SUCCESS, "member not found in module");
-    auto members = value["members"].as_array();
-    for (auto const &member : members) {
-        parse_dispatch(member, g, n);
-    }
-
     // definition stuff
     auto definition = value["definition"].as_string();
     auto def_name = parse_internal_symbol_name(definition);
     auto module_def = std::make_unique<ModuleDefInfo>();
     module_def->name = def_name;
     n->module_def = std::move(module_def);
+
+    // parse inner members
+    assert_(value["members"].error == SUCCESS, "member not found in module");
+    auto members = value["members"].as_array();
+    for (auto const &member : members) {
+        parse_dispatch(member, g, n);
+    }
 
     return n;
 }
