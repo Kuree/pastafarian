@@ -62,7 +62,7 @@ std::string Property::str() const {
         }
         result << " " << op << " ";
         const auto state_var_name = state_var1->handle_name(top);
-        const auto state_value = ::format("{0}", state_value1->value);
+        const auto state_value = ::format("{0}", state_value2->value);
         result << state_var_name << " == " << state_value;
     }
     result << ";" << std::endl;
