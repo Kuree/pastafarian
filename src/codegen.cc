@@ -291,7 +291,19 @@ std::string VerilogModule::str() const {
 
     // dut instantiation
     assert_(root_module_->module_def != nullptr, "root module doesn't have definition");
-    result << root_module_->module_def->name << " " << name << " (.*);" << std::endl << std::endl;
+    result << root_module_->module_def->name;
+    // parameters
+    if (!root_module_->module_def->params.empty()) {
+        result << " #(" << std::endl << "    ";
+        count = 0;
+        for (auto const &[param_name, param_node]: root_module_->module_def->params) {
+            result << "." << param_name << "(" << param_node->value << ")";
+            if (++count != root_module_->module_def->params.size())
+                result << "," << std::endl << "    ";
+        }
+        result << ")";
+    }
+    result << " " << name << " (.*);" << std::endl << std::endl;
 
     // all the properties
     for (auto const &iter : properties_) {

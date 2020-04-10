@@ -81,7 +81,7 @@ class FormalGeneration {
 public:
     explicit FormalGeneration(VerilogModule &module) : module_(module) {}
     void run();
-    virtual bool has_tools() const = 0;
+    [[nodiscard]] virtual bool has_tools() const = 0;
 
     virtual ~FormalGeneration() = default;
 
@@ -96,7 +96,7 @@ class JasperGoldGeneration : public FormalGeneration {
 public:
     explicit JasperGoldGeneration(VerilogModule &module) : FormalGeneration(module) {}
     void parse_result(const std::string &log_file);
-    bool has_tools() const override;
+    [[nodiscard]] bool has_tools() const override;
     static bool has_jaspergold();
 
 private:

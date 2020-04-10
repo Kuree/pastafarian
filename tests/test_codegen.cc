@@ -3,11 +3,6 @@
 #include "util.hh"
 
 TEST_F(GraphTest, fsm1_codegen) {  // NOLINT
-    // skip the rest if can't find jaspergold in the env
-    if (!fsm::JasperGoldGeneration::has_jaspergold()) {
-        GTEST_SKIP_("jaspergold not available");
-    }
-
     parse("fsm1.sv");
     auto fsms = g.identify_fsms();
     fsm::VerilogModule m(&g, p->parser_result());
@@ -26,6 +21,11 @@ TEST_F(GraphTest, fsm1_codegen) {  // NOLINT
               std::string::npos);
 
     fsm::JasperGoldGeneration jg(m);
+
+    // skip the rest if can't find jaspergold in the env
+    if (!fsm::JasperGoldGeneration::has_jaspergold()) {
+        GTEST_SKIP_("jaspergold not available");
+    }
 
     jg.run();
 
