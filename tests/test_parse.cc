@@ -23,6 +23,15 @@ TEST_F(ParserTest, param) {  // NOLINT
     auto local_param_value = g.select("mod.value");
     EXPECT_NE(local_param_value, nullptr);
     EXPECT_TRUE(g.has_path(local_param_value, out));
+
+    // param
+    auto mod = g.select("mod");
+    EXPECT_NE(mod, nullptr);
+    EXPECT_NE(mod->module_def, nullptr);
+    auto const &params = mod->module_def->params;
+    EXPECT_EQ(params.size(), 2);
+    EXPECT_TRUE(params.find("P") != params.end());
+
 }
 
 TEST_F(ParserTest, reg) {  // NOLINT
