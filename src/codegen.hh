@@ -64,6 +64,8 @@ public:
     [[nodiscard]] std::string str() const;
     void to_file(const std::string &filename);
 
+    void set_param_values(const std::unordered_map<std::string, int64_t> &params);
+
 private:
     SourceManager parser_result_;
     const Node *root_module_;
@@ -73,6 +75,7 @@ private:
     std::string reset_name_;
     std::optional<bool> posedge_reset_;
     std::unordered_map<uint32_t, uint32_t> property_id_to_fsm_;
+    std::unordered_map<std::string, int64_t> param_values_;
 
     void analyze_reset();
 };

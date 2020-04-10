@@ -296,10 +296,13 @@ std::string VerilogModule::str() const {
     if (!root_module_->module_def->params.empty()) {
         result << " #(" << std::endl << "    ";
         count = 0;
-        for (auto const &[param_name, param_node]: root_module_->module_def->params) {
-            result << "." << param_name << "(" << param_node->value << ")";
-            if (++count != root_module_->module_def->params.size())
-                result << "," << std::endl << "    ";
+        auto const &params = root_module_->module_def->params;
+        for (auto const &[param_name, param_node] : params) {
+            int64_t value = param_values_.find(param_name) != param_values_.end()
+                                ? param_values_.at(param_name)
+                                : param_node->value;
+            result << "." << param_name << "(" << value << ")";
+            if (++count != params.size()) result << "," << std::endl << "    ";
         }
         result << ")";
     }
@@ -323,6 +326,10 @@ std::string VerilogModule::str() const {
 void VerilogModule::to_file(const std::string &filename) {
     std::ofstream f(filename);
     f << str();
+}
+
+void VerilogModule::set_param_values(const std::unordered_map<std::string, int64_t> &params) {
+    param_values_ = params;
 }
 
 void FormalGeneration::run() {

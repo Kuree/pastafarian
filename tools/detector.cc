@@ -134,6 +134,24 @@ std::string output_json(
     return w.str();
 }
 
+std::unordered_map<std::string, int64_t> get_param_values(const std::vector<std::string> &params) {
+    std::unordered_map<std::string, int64_t> result;
+    for (auto const &param : params) {
+        auto tokens = fsm::string::get_tokens(param, "=");
+        if (tokens.size() == 2) {
+            auto const &param_name = tokens[0];
+            auto const &val_str = tokens[1];
+            try {
+                int64_t v = std::stoll(val_str);
+                result.emplace(param_name, v);
+            } catch (...) {
+            }
+        }
+    }
+
+    return result;
+}
+
 int main(int argc, char *argv[]) {
     CLI::App app{"FSM Detector"};
     std::vector<std::string> include_dirs;
@@ -144,6 +162,7 @@ int main(int argc, char *argv[]) {
     std::string top;
     std::string clock_name;
     std::string reset_name;
+    std::vector<std::string> param_values;
     app.add_option("-i,--input", filenames, "SystemVerilog design files")->required();
     app.add_option("-I,--include", include_dirs, "SystemVerilog include search directory");
     app.add_option("--json", output_filename, "Output JSON. Use - for stdout");
@@ -152,6 +171,7 @@ int main(int argc, char *argv[]) {
     app.add_option("--top", top, "Specify the design top");
     app.add_option("--reset", reset_name, "Reset pin name");
     app.add_option("--clock", clock_name, "Clock pin name");
+    app.add_option("-P", param_values, "Override top port parameters");
 
     CLI11_PARSE(app, argc, argv)
 
@@ -204,6 +224,8 @@ int main(int argc, char *argv[]) {
     // set properties
     if (use_formal) {
         fsm::JasperGoldGeneration jg(m);
+        auto parameters = get_param_values(param_values);
+        m.set_param_values(parameters);
         jg.run();
     }
 
