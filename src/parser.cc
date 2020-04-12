@@ -265,6 +265,8 @@ Node *parse_binary_op(T value, Graph *g) {
             node->op = NetOpType::Add;
         } else if (op == "Subtract") {
             node->op = NetOpType::Subtract;
+        } else if (op == "Equality") {
+            node->op = NetOpType::Equal;
         }
     }
 
@@ -550,6 +552,7 @@ Node *parse_case(T value, Graph *g, Node *parent) {
         // control node with the condition variable
         auto control_node = g->add_node(g->get_free_id(), "", parent);
         control_node->type = NodeType::Control;
+        control_node->op = NetOpType::Equal;
         expr_node->add_edge(control_node);
         cond->add_edge(control_node);
 

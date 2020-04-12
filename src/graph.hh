@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include <functional>
 
 namespace fsm {
 
@@ -18,7 +19,7 @@ enum class NodeType {
     Assign = 1u << 6u
 };
 
-enum class NetOpType { Ignore, Add, Subtract, Ternary };
+enum class NetOpType { Ignore, Add, Subtract, Ternary, Equal };
 
 enum class PortType { None, Input, Output };
 enum class EventType { None, Posedge, Negedge };
@@ -51,7 +52,7 @@ class FSMResult;
 
 struct ModuleDefInfo {
     std::string name;
-    std::unordered_map<std::string, const Node *> params;
+    std::unordered_map<std::string, const Node*> params;
 };
 
 struct Node {
@@ -116,8 +117,8 @@ public:
     inline bool has_type(NodeType t) const { return static_cast<bool>(t & type); }
 
     [[nodiscard]] std::string handle_name() const;
-    [[nodiscard]] std::string handle_name(const Node *parent) const;
-    bool child_of(const Node *node) const;
+    [[nodiscard]] std::string handle_name(const Node* parent) const;
+    bool child_of(const Node* node) const;
 
 private:
     static void update() {}
@@ -187,16 +188,18 @@ public:
     // given the output of get_constant_source, this function calculate if it is a counter type
     static bool is_counter(const Node* node, const std::unordered_set<const Edge*>& edges);
     static bool in_direct_assign_chain(const Node* from, const Node* to);
+    static std::unordered_set<const Edge*> find_connection_cond(
+        const Node* from, const std::function<bool(const Edge*)>& predicate);
 
     std::vector<FSMResult> identify_fsms();
-    std::vector<FSMResult> identify_fsms(const Node *top);
+    std::vector<FSMResult> identify_fsms(const Node* top);
     static std::unordered_map<const Node*, std::unordered_set<const Node*>> group_fsms(
         const std::vector<FSMResult>& fsms);
 
     uint64_t get_free_id() { return free_id_ptr_--; }
 
     Node* copy_node(const Node* node, bool copy_connection = true);
-    [[nodiscard]] const std::vector<std::unique_ptr<Node>> &nodes() const { return nodes_; }
+    [[nodiscard]] const std::vector<std::unique_ptr<Node>>& nodes() const { return nodes_; }
 
 private:
     std::unordered_map<uint64_t, Node*> nodes_map_;

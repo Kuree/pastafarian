@@ -19,7 +19,11 @@ public:
 
     [[nodiscard]] std::set<std::pair<const Node *, const Node *>> self_arc() const;
 
+    // get state transition arcs from heuristics
+    [[nodiscard]] std::set<std::pair<const Node *, const Node *>> syntax_arc() const;
+
     [[nodiscard]] std::vector<const Node *> unique_states() const;
+
 
     FSMResult() = delete;
 

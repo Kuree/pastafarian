@@ -14,27 +14,25 @@
 
 namespace fsm {
 
-std::string Node::handle_name() const {
-    return handle_name(nullptr);
-}
+std::string Node::handle_name() const { return handle_name(nullptr); }
 
 std::string Node::handle_name(const Node *top) const {
-        std::stack<std::string> names;
-        auto node = this;
-        while (node) {
-            assert_(!node->name.empty(), "node name empty");
-            names.emplace(node->name);
-            if (node == top) break;
-            node = node->parent;
-        }
-        std::vector<std::string> reorder_names;
-        reorder_names.reserve(names.size());
-        while (!names.empty()) {
-            reorder_names.emplace_back(names.top());
-            names.pop();
-        }
-        return string::join(reorder_names.begin(), reorder_names.end(), ".");
+    std::stack<std::string> names;
+    auto node = this;
+    while (node) {
+        assert_(!node->name.empty(), "node name empty");
+        names.emplace(node->name);
+        if (node == top) break;
+        node = node->parent;
     }
+    std::vector<std::string> reorder_names;
+    reorder_names.reserve(names.size());
+    while (!names.empty()) {
+        reorder_names.emplace_back(names.top());
+        names.pop();
+    }
+    return string::join(reorder_names.begin(), reorder_names.end(), ".");
+}
 
 bool Node::child_of(const Node *node) const {
     if (!node) return false;
@@ -434,6 +432,9 @@ bool Graph::in_direct_assign_chain(const Node *from, const Node *to) {
     while (!working_set.empty()) {
         auto node = working_set.front();
         working_set.pop();
+        if (visited.find(node) != visited.end()) continue;
+        visited.emplace(node);
+
         for (auto const &edge : node->edges_to) {
             if (!edge->has_type(EdgeType::Control)) {
                 auto n = edge->to;
@@ -455,9 +456,30 @@ bool Graph::in_direct_assign_chain(const Node *from, const Node *to) {
     return false;
 }
 
-std::vector<FSMResult> Graph::identify_fsms() {
-    return identify_fsms(nullptr);
+std::unordered_set<const Edge *> Graph::find_connection_cond(
+    const Node *from, const std::function<bool(const Edge *)> &predicate) {
+    std::unordered_set<const Edge *> result;
+    std::queue<const Node *> working_set;
+    std::unordered_set<const Node *> visited;
+    working_set.emplace(from);
+
+    while (!working_set.empty()) {
+        auto node = working_set.front();
+        working_set.pop();
+        if (visited.find(node) != visited.end()) continue;
+        visited.emplace(node);
+
+        for (auto const &edge : node->edges_to) {
+            working_set.emplace(edge->to);
+            if (predicate(edge.get())) {
+                result.emplace(edge.get());
+            }
+        }
+    }
+    return result;
 }
+
+std::vector<FSMResult> Graph::identify_fsms() { return identify_fsms(nullptr); }
 
 std::vector<FSMResult> Graph::identify_fsms(const Node *top) {
     std::vector<FSMResult> result;
