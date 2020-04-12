@@ -22,6 +22,9 @@ TEST_F(GraphTest, fsm_extract_fsm1) {  // NOLINT
     EXPECT_EQ(states.size(), 2);
 
     EXPECT_FALSE(fsm.is_counter());
+
+    auto s_arcs = fsm.syntax_arc();
+    EXPECT_EQ(s_arcs.size(), 4);
 }
 
 TEST_F(GraphTest, fsm_extract_fsm2) {  // NOLINT

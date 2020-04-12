@@ -1,8 +1,9 @@
 #include "fsm.hh"
-#include "util.hh"
 
 #include <map>
 #include <utility>
+
+#include "util.hh"
 
 namespace fsm {
 
@@ -51,6 +52,18 @@ std::set<std::pair<const Node *, const Node *>> FSMResult::self_arc() const {
     return result;
 }
 
+Node *get_direct_const(const Edge *edge) {
+    // TODO: handle case expressions where there are expression groups
+    Node *from = edge->from;
+    while (from->edges_from.size() == 1) {
+        from = (*from->edges_from.begin())->from;
+        if (from->type == NodeType::Constant) {
+            return from;
+        }
+    }
+    return nullptr;
+};
+
 std::set<std::pair<const Node *, const Node *>> FSMResult::syntax_arc() const {
     // this is an O(n^2) algorithm to find possible transitions from the graph
     // notice that this is not guaranteed to be complete, but have zero false positive.
@@ -67,8 +80,8 @@ std::set<std::pair<const Node *, const Node *>> FSMResult::syntax_arc() const {
                 auto const &edges_from = node_to->edges_from;
                 Node *n = nullptr;
                 for (auto const edge_from : edges_from) {
-                    if (edge_from->from->type == NodeType::Constant) {
-                        n = edge_from->from;
+                    if (!n) {
+                        n = get_direct_const(edge_from);
                     }
                 }
                 return n != nullptr;
@@ -84,18 +97,30 @@ std::set<std::pair<const Node *, const Node *>> FSMResult::syntax_arc() const {
     // find the assign nodes
     for (auto const &edge : const_src_) {
         auto assign_node = edge->to;
-        for (auto const node_edge: comp_edges) {
+        for (auto const node_edge : comp_edges) {
             auto node_comp = node_edge->to;
             if (Graph::has_path(node_comp, assign_node)) {
                 // this is one transition arc
                 auto const_to = edge->from;
                 Node *const_from = nullptr;
-                for (auto const e : node_comp->edges_from)
-                    if (e->from->type == NodeType::Constant)
-                        const_from = e->from;
+                for (auto const e : node_comp->edges_from) {
+                    if (!const_from) {
+                        const_from = get_direct_const(e);
+                    }
+                }
+
                 assert_(const_from != nullptr, "Unable to find const from");
                 result.emplace(std::make_pair(const_from, const_to));
             }
+        }
+    }
+
+    std::set<std::pair<int64_t, int64_t>> unique_values;
+    std::set<std::pair<const Node *, const Node *>> unique_result;
+    for (auto const &[n1, n2]: result) {
+        if (unique_values.find({n1->value, n2->value}) == unique_values.end()) {
+            unique_result.emplace(std::make_pair(n1, n2));
+            unique_values.emplace(std::make_pair(n1->value, n2->value));
         }
     }
 
