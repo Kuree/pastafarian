@@ -56,6 +56,8 @@ std::set<std::pair<const Node *, const Node *>> FSMResult::syntax_arc() const {
     // notice that this is not guaranteed to be complete, but have zero false positive.
 
     std::set<std::pair<const Node *, const Node *>> result;
+    // counter based doesn't have arc transition
+    if (is_counter_) return result;
 
     auto cond = [](const Edge *edge) -> bool {
         if (edge->type == EdgeType::NonBlocking || edge->type == EdgeType::Blocking) {
