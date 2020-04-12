@@ -366,7 +366,11 @@ Node *parse_conditional(T value, Graph *g, Node *parent) {
 
     auto if_false = value["ifFalse"];
     if (if_false.error == SUCCESS) {
-        parse_dispatch(if_false, g, cond_node);
+        // put a negate on the cond code
+        auto negate = g->add_node(g->get_free_id(), "");
+        negate->op = NetOpType::LogicalNot;
+        cond_node->add_edge(negate);
+        parse_dispatch(if_false, g, negate);
     }
 
     if (parent && parent->has_type(NodeType::Control)) {
