@@ -19,7 +19,7 @@ enum class NodeType {
     Assign = 1u << 6u
 };
 
-enum class NetOpType { Ignore, Add, Subtract, Ternary, Equal };
+enum class NetOpType { Ignore, Add, Subtract, Ternary, Equal, LogicalNot };
 
 enum class PortType { None, Input, Output };
 enum class EventType { None, Posedge, Negedge };

@@ -441,6 +441,10 @@ Node *parse_unary(T value, Graph *g) {
     assert_(op.error == SUCCESS, "operand is null for unary");
     auto op_node = parse_dispatch(op, g, nullptr);
     auto node = g->add_node(g->get_free_id(), "");
+    auto op_code_raw = value["op"];
+    assert_(op_code_raw.error == SUCCESS, "op is null for unary");
+    auto op_str = std::string(op_code_raw.as_string());
+    if (op_str == "LogicalNot") node->op = NetOpType::LogicalNot;
     op_node->add_edge(node);
     return node;
 }
