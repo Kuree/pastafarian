@@ -79,6 +79,29 @@ bool Graph::has_path(Node *from, Node *to, uint64_t max_depth) {
     return false;
 }
 
+bool Graph::has_path(Node *from, Node *to, const std::function<bool(const Edge *)> &cond) {
+    // DFS based search
+    std::stack<Node *> nodes;
+    std::unordered_set<Node *> visited;
+    nodes.emplace(from);
+    while (!nodes.empty()) {
+        auto n = nodes.top();
+        nodes.pop();
+        if (n->id == to->id) {
+            return true;
+        }
+        auto const &edges = n->edges_to;
+        for (auto const &nn : edges) {
+            if (visited.find(nn->to) != visited.end()) continue;
+            bool add_cond = cond(nn.get());
+            if (add_cond)
+                nodes.push(nn->to);
+        }
+        visited.emplace(n);
+    }
+    return false;
+}
+
 Node *Graph::select(const std::string &name) {
     // this is a tree traversal search
     auto tokens = string::get_tokens(name, ".");
@@ -425,6 +448,7 @@ bool Graph::is_counter(const Node *node, const std::unordered_set<const Edge *> 
 }
 
 bool Graph::in_direct_assign_chain(const Node *from, const Node *to) {
+    if (from == to) return true;
     std::queue<const Node *> working_set;
     std::unordered_set<const Node *> visited;
     working_set.emplace(from);

@@ -338,8 +338,8 @@ Node *parse_timed(T value, Graph *g, Node *parent) {
     // get edge trigger type
     auto timing = value["timing"];
     if (timing.error == SUCCESS) {
-        if constexpr (std::is_same_v<typeof(timing),
-            simdjson::document::element_result<simdjson::document::element>>) {
+        if constexpr (std::is_same_v<typeof(timing), simdjson::document::element_result<
+                                                         simdjson::document::element>>) {
             auto v = timing.value;
             if (v.is_object()) {
                 parse_dispatch(timing, g, parent);
@@ -354,9 +354,11 @@ template <class T>
 Node *parse_conditional(T value, Graph *g, Node *parent) {
     auto cond = value["cond"];
     assert_(cond.error == SUCCESS, "cond not found in conditional statement");
-    auto cond_node = parse_dispatch(cond, g, parent);
-    assert_(cond_node != nullptr, "cond is null for conditional statement");
+    auto cond_node_parent = parse_dispatch(cond, g, parent);
+    assert_(cond_node_parent != nullptr, "cond is null for conditional statement");
     // this will be a control node
+    auto cond_node = g->add_node(g->get_free_id(), "", parent);
+    cond_node_parent->add_edge(cond_node);
     cond_node->type = NodeType::Control;
 
     // true part
@@ -367,14 +369,16 @@ Node *parse_conditional(T value, Graph *g, Node *parent) {
     auto if_false = value["ifFalse"];
     if (if_false.error == SUCCESS) {
         // put a negate on the cond code
-        auto negate = g->add_node(g->get_free_id(), "");
+        auto negate = g->add_node(g->get_free_id(), "", cond_node);
         negate->op = NetOpType::LogicalNot;
-        cond_node->add_edge(negate);
+        negate->type = NodeType::Control;
+        cond_node->add_edge(negate, EdgeType::False);
         parse_dispatch(if_false, g, negate);
     }
 
     if (parent && parent->has_type(NodeType::Control)) {
-        parent->add_edge(cond_node);
+        parent->add_edge(cond_node, EdgeType::Control);
+        cond_node->parent = parent;
     }
 
     return cond_node;
@@ -610,6 +614,7 @@ Node *parse_assignment(T value, Graph *g, Node *parent) {
     auto non_blocking = value["isNonBlocking"].as_bool();
     auto edge_type = non_blocking ? EdgeType::NonBlocking : EdgeType::Blocking;
     n->add_edge(left_node, edge_type);
+    n->parent = parent;
     return nullptr;
 }
 
@@ -779,8 +784,7 @@ void Parser::parse(const std::string &filename) {
     SourceManager r;
     if (fs::get_ext(filename) == ".json") {
         r.set_json_filename(filename);
-    }
-    else {
+    } else {
         r = SourceManager(filename);
         parse_verilog(r);
     }

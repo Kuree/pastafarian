@@ -1,11 +1,11 @@
 #ifndef PASTAFARIAN_GRAPH_HH
 #define PASTAFARIAN_GRAPH_HH
 
+#include <functional>
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include <functional>
 
 namespace fsm {
 
@@ -35,7 +35,9 @@ enum class EdgeType {
     Blocking = 1u << 0u,
     NonBlocking = 1u << 1u,
     Slice = 1u << 2u,
-    Control = 1u << 3u
+    Control = 1u << 3u,
+    True = Control | 1u << 4u,
+    False = Control | 1u << 5u
 };
 
 inline EdgeType operator|(EdgeType a, EdgeType b) {
@@ -139,7 +141,10 @@ public:
     Edge(Node* from, Node* to) : from(from), to(to) {}
     Edge(Node* from, Node* to, EdgeType type) : from(from), to(to), type(type) {}
 
-    [[nodiscard]] inline bool has_type(EdgeType t) const { return static_cast<bool>(t & type); }
+    [[nodiscard]] inline bool has_type(EdgeType t) const { return (t & type) == t; }
+    [[nodiscard]] inline bool is_assign() const {
+        return type == EdgeType::Blocking || type == EdgeType::NonBlocking;
+    }
 };
 
 class Graph {
@@ -169,6 +174,7 @@ public:
     Node* get_node(uint64_t key);
 
     static bool has_path(Node* from, Node* to, uint64_t max_depth = 1u << 20u);
+    static bool has_path(Node* from, Node* to, const std::function<bool(const Edge*)>& cond);
 
     Node* select(const std::string& name);
     void identify_registers();

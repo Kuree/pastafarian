@@ -1,0 +1,1220 @@
+{
+  "name": "$root",
+  "kind": "Root",
+  "addr": 94348926278368,
+  "members": [
+    {
+      "name": "",
+      "kind": "CompilationUnit",
+      "addr": 94348926283296,
+      "members": [
+        {
+          "name": "mod",
+          "kind": "Definition",
+          "addr": 94348926283552,
+          "members": [
+            {
+              "name": "clk",
+              "kind": "Port",
+              "addr": 94348926284824,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "94348926285048 clk"
+            },
+            {
+              "name": "clk",
+              "kind": "Net",
+              "addr": 94348926285048,
+              "type": "logic"
+            },
+            {
+              "name": "reset",
+              "kind": "Port",
+              "addr": 94348926285216,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "94348926424032 reset"
+            },
+            {
+              "name": "reset",
+              "kind": "Net",
+              "addr": 94348926424032,
+              "type": "logic"
+            },
+            {
+              "name": "in",
+              "kind": "Port",
+              "addr": 94348926424200,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "94348926424424 in"
+            },
+            {
+              "name": "in",
+              "kind": "Net",
+              "addr": 94348926424424,
+              "type": "logic"
+            },
+            {
+              "name": "out",
+              "kind": "Port",
+              "addr": 94348926424592,
+              "type": "logic",
+              "direction": "Out",
+              "internalSymbol": "94348926424816 out"
+            },
+            {
+              "name": "out",
+              "kind": "Variable",
+              "addr": 94348926424816,
+              "type": "logic",
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "state",
+              "kind": "Variable",
+              "addr": 94348926283936,
+              "type": "logic[1:0]",
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "next_state",
+              "kind": "Variable",
+              "addr": 94348926284104,
+              "type": "logic[1:0]",
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "",
+              "kind": "ProceduralBlock",
+              "addr": 94348926284272,
+              "procedureKind": "AlwaysFF",
+              "body": {
+                "kind": "Timed",
+                "timing": {
+                  "kind": "EventList",
+                  "events": [
+                    {
+                      "kind": "SignalEvent",
+                      "expr": {
+                        "kind": "NamedValue",
+                        "type": "logic",
+                        "symbol": "94348926285048 clk",
+                        "isHierarchical": false
+                      },
+                      "edge": "PosEdge"
+                    },
+                    {
+                      "kind": "SignalEvent",
+                      "expr": {
+                        "kind": "NamedValue",
+                        "type": "logic",
+                        "symbol": "94348926424032 reset",
+                        "isHierarchical": false
+                      },
+                      "edge": "PosEdge"
+                    }
+                  ]
+                },
+                "stmt": {
+                  "kind": "Block",
+                  "blockKind": "Sequential",
+                  "body": {
+                    "kind": "List",
+                    "list": [
+                      {
+                        "kind": "Conditional",
+                        "cond": {
+                          "kind": "NamedValue",
+                          "type": "logic",
+                          "symbol": "94348926424032 reset",
+                          "isHierarchical": false
+                        },
+                        "ifTrue": {
+                          "kind": "ExpressionStatement",
+                          "expr": {
+                            "kind": "Assignment",
+                            "type": "logic[1:0]",
+                            "left": {
+                              "kind": "NamedValue",
+                              "type": "logic[1:0]",
+                              "symbol": "94348926283936 state",
+                              "isHierarchical": false
+                            },
+                            "right": {
+                              "kind": "Conversion",
+                              "type": "logic[1:0]",
+                              "constant": "2'b0",
+                              "operand": {
+                                "kind": "Conversion",
+                                "type": "logic[31:0]",
+                                "constant": "32'd0",
+                                "operand": {
+                                  "kind": "IntegerLiteral",
+                                  "type": "int",
+                                  "constant": "0"
+                                }
+                              }
+                            },
+                            "isNonBlocking": true
+                          }
+                        },
+                        "ifFalse": {
+                          "kind": "ExpressionStatement",
+                          "expr": {
+                            "kind": "Assignment",
+                            "type": "logic[1:0]",
+                            "left": {
+                              "kind": "NamedValue",
+                              "type": "logic[1:0]",
+                              "symbol": "94348926283936 state",
+                              "isHierarchical": false
+                            },
+                            "right": {
+                              "kind": "NamedValue",
+                              "type": "logic[1:0]",
+                              "symbol": "94348926284104 next_state",
+                              "isHierarchical": false
+                            },
+                            "isNonBlocking": true
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "name": "",
+              "kind": "ProceduralBlock",
+              "addr": 94348926284456,
+              "procedureKind": "AlwaysComb",
+              "body": {
+                "kind": "Block",
+                "blockKind": "Sequential",
+                "body": {
+                  "kind": "List",
+                  "list": [
+                    {
+                      "kind": "Conditional",
+                      "cond": {
+                        "kind": "BinaryOp",
+                        "type": "logic",
+                        "op": "Equality",
+                        "left": {
+                          "kind": "Conversion",
+                          "type": "logic[31:0]",
+                          "operand": {
+                            "kind": "NamedValue",
+                            "type": "logic[1:0]",
+                            "symbol": "94348926283936 state",
+                            "isHierarchical": false
+                          }
+                        },
+                        "right": {
+                          "kind": "Conversion",
+                          "type": "logic[31:0]",
+                          "constant": "32'd0",
+                          "operand": {
+                            "kind": "IntegerLiteral",
+                            "type": "int",
+                            "constant": "0"
+                          }
+                        }
+                      },
+                      "ifTrue": {
+                        "kind": "Block",
+                        "blockKind": "Sequential",
+                        "body": {
+                          "kind": "List",
+                          "list": [
+                            {
+                              "kind": "Conditional",
+                              "cond": {
+                                "kind": "NamedValue",
+                                "type": "logic",
+                                "symbol": "94348926424424 in",
+                                "isHierarchical": false
+                              },
+                              "ifTrue": {
+                                "kind": "Block",
+                                "blockKind": "Sequential",
+                                "body": {
+                                  "kind": "List",
+                                  "list": [
+                                    {
+                                      "kind": "ExpressionStatement",
+                                      "expr": {
+                                        "kind": "Assignment",
+                                        "type": "logic[1:0]",
+                                        "left": {
+                                          "kind": "NamedValue",
+                                          "type": "logic[1:0]",
+                                          "symbol": "94348926284104 next_state",
+                                          "isHierarchical": false
+                                        },
+                                        "right": {
+                                          "kind": "Conversion",
+                                          "type": "logic[1:0]",
+                                          "constant": "2'b1",
+                                          "operand": {
+                                            "kind": "Conversion",
+                                            "type": "logic[31:0]",
+                                            "constant": "32'd1",
+                                            "operand": {
+                                              "kind": "IntegerLiteral",
+                                              "type": "int",
+                                              "constant": "1"
+                                            }
+                                          }
+                                        },
+                                        "isNonBlocking": false
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "ifFalse": {
+                                "kind": "Block",
+                                "blockKind": "Sequential",
+                                "body": {
+                                  "kind": "List",
+                                  "list": [
+                                    {
+                                      "kind": "ExpressionStatement",
+                                      "expr": {
+                                        "kind": "Assignment",
+                                        "type": "logic[1:0]",
+                                        "left": {
+                                          "kind": "NamedValue",
+                                          "type": "logic[1:0]",
+                                          "symbol": "94348926284104 next_state",
+                                          "isHierarchical": false
+                                        },
+                                        "right": {
+                                          "kind": "Conversion",
+                                          "type": "logic[1:0]",
+                                          "constant": "2'b10",
+                                          "operand": {
+                                            "kind": "Conversion",
+                                            "type": "logic[31:0]",
+                                            "constant": "32'd2",
+                                            "operand": {
+                                              "kind": "IntegerLiteral",
+                                              "type": "int",
+                                              "constant": "2"
+                                            }
+                                          }
+                                        },
+                                        "isNonBlocking": false
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "ifFalse": {
+                        "kind": "Conditional",
+                        "cond": {
+                          "kind": "BinaryOp",
+                          "type": "logic",
+                          "op": "Equality",
+                          "left": {
+                            "kind": "Conversion",
+                            "type": "logic[31:0]",
+                            "operand": {
+                              "kind": "NamedValue",
+                              "type": "logic[1:0]",
+                              "symbol": "94348926283936 state",
+                              "isHierarchical": false
+                            }
+                          },
+                          "right": {
+                            "kind": "Conversion",
+                            "type": "logic[31:0]",
+                            "constant": "32'd1",
+                            "operand": {
+                              "kind": "IntegerLiteral",
+                              "type": "int",
+                              "constant": "1"
+                            }
+                          }
+                        },
+                        "ifTrue": {
+                          "kind": "Block",
+                          "blockKind": "Sequential",
+                          "body": {
+                            "kind": "List",
+                            "list": [
+                              {
+                                "kind": "Conditional",
+                                "cond": {
+                                  "kind": "NamedValue",
+                                  "type": "logic",
+                                  "symbol": "94348926424424 in",
+                                  "isHierarchical": false
+                                },
+                                "ifTrue": {
+                                  "kind": "Block",
+                                  "blockKind": "Sequential",
+                                  "body": {
+                                    "kind": "List",
+                                    "list": [
+                                      {
+                                        "kind": "ExpressionStatement",
+                                        "expr": {
+                                          "kind": "Assignment",
+                                          "type": "logic[1:0]",
+                                          "left": {
+                                            "kind": "NamedValue",
+                                            "type": "logic[1:0]",
+                                            "symbol": "94348926284104 next_state",
+                                            "isHierarchical": false
+                                          },
+                                          "right": {
+                                            "kind": "Conversion",
+                                            "type": "logic[1:0]",
+                                            "constant": "2'b10",
+                                            "operand": {
+                                              "kind": "Conversion",
+                                              "type": "logic[31:0]",
+                                              "constant": "32'd2",
+                                              "operand": {
+                                                "kind": "IntegerLiteral",
+                                                "type": "int",
+                                                "constant": "2"
+                                              }
+                                            }
+                                          },
+                                          "isNonBlocking": false
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                "ifFalse": {
+                                  "kind": "Block",
+                                  "blockKind": "Sequential",
+                                  "body": {
+                                    "kind": "List",
+                                    "list": [
+                                      {
+                                        "kind": "ExpressionStatement",
+                                        "expr": {
+                                          "kind": "Assignment",
+                                          "type": "logic[1:0]",
+                                          "left": {
+                                            "kind": "NamedValue",
+                                            "type": "logic[1:0]",
+                                            "symbol": "94348926284104 next_state",
+                                            "isHierarchical": false
+                                          },
+                                          "right": {
+                                            "kind": "Conversion",
+                                            "type": "logic[1:0]",
+                                            "constant": "2'b11",
+                                            "operand": {
+                                              "kind": "Conversion",
+                                              "type": "logic[31:0]",
+                                              "constant": "32'd3",
+                                              "operand": {
+                                                "kind": "IntegerLiteral",
+                                                "type": "int",
+                                                "constant": "3"
+                                              }
+                                            }
+                                          },
+                                          "isNonBlocking": false
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "ifFalse": {
+                          "kind": "Conditional",
+                          "cond": {
+                            "kind": "BinaryOp",
+                            "type": "logic",
+                            "op": "Equality",
+                            "left": {
+                              "kind": "Conversion",
+                              "type": "logic[31:0]",
+                              "operand": {
+                                "kind": "NamedValue",
+                                "type": "logic[1:0]",
+                                "symbol": "94348926283936 state",
+                                "isHierarchical": false
+                              }
+                            },
+                            "right": {
+                              "kind": "Conversion",
+                              "type": "logic[31:0]",
+                              "constant": "32'd2",
+                              "operand": {
+                                "kind": "IntegerLiteral",
+                                "type": "int",
+                                "constant": "2"
+                              }
+                            }
+                          },
+                          "ifTrue": {
+                            "kind": "Block",
+                            "blockKind": "Sequential",
+                            "body": {
+                              "kind": "List",
+                              "list": [
+                                {
+                                  "kind": "ExpressionStatement",
+                                  "expr": {
+                                    "kind": "Assignment",
+                                    "type": "logic[1:0]",
+                                    "left": {
+                                      "kind": "NamedValue",
+                                      "type": "logic[1:0]",
+                                      "symbol": "94348926284104 next_state",
+                                      "isHierarchical": false
+                                    },
+                                    "right": {
+                                      "kind": "Conversion",
+                                      "type": "logic[1:0]",
+                                      "constant": "2'b11",
+                                      "operand": {
+                                        "kind": "Conversion",
+                                        "type": "logic[31:0]",
+                                        "constant": "32'd3",
+                                        "operand": {
+                                          "kind": "IntegerLiteral",
+                                          "type": "int",
+                                          "constant": "3"
+                                        }
+                                      }
+                                    },
+                                    "isNonBlocking": false
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "ifFalse": {
+                            "kind": "Block",
+                            "blockKind": "Sequential",
+                            "body": {
+                              "kind": "List",
+                              "list": [
+                                {
+                                  "kind": "ExpressionStatement",
+                                  "expr": {
+                                    "kind": "Assignment",
+                                    "type": "logic[1:0]",
+                                    "left": {
+                                      "kind": "NamedValue",
+                                      "type": "logic[1:0]",
+                                      "symbol": "94348926284104 next_state",
+                                      "isHierarchical": false
+                                    },
+                                    "right": {
+                                      "kind": "Conversion",
+                                      "type": "logic[1:0]",
+                                      "constant": "2'b1",
+                                      "operand": {
+                                        "kind": "Conversion",
+                                        "type": "logic[31:0]",
+                                        "constant": "32'd1",
+                                        "operand": {
+                                          "kind": "IntegerLiteral",
+                                          "type": "int",
+                                          "constant": "1"
+                                        }
+                                      }
+                                    },
+                                    "isNonBlocking": false
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "",
+              "kind": "ProceduralBlock",
+              "addr": 94348926284640,
+              "procedureKind": "AlwaysComb",
+              "body": {
+                "kind": "Block",
+                "blockKind": "Sequential",
+                "body": {
+                  "kind": "List",
+                  "list": [
+                    {
+                      "kind": "ExpressionStatement",
+                      "expr": {
+                        "kind": "Assignment",
+                        "type": "logic",
+                        "left": {
+                          "kind": "NamedValue",
+                          "type": "logic",
+                          "symbol": "94348926424816 out",
+                          "isHierarchical": false
+                        },
+                        "right": {
+                          "kind": "BinaryOp",
+                          "type": "logic",
+                          "op": "Inequality",
+                          "left": {
+                            "kind": "Conversion",
+                            "type": "logic[31:0]",
+                            "operand": {
+                              "kind": "NamedValue",
+                              "type": "logic[1:0]",
+                              "symbol": "94348926283936 state",
+                              "isHierarchical": false
+                            }
+                          },
+                          "right": {
+                            "kind": "Conversion",
+                            "type": "logic[31:0]",
+                            "constant": "32'd0",
+                            "operand": {
+                              "kind": "IntegerLiteral",
+                              "type": "int",
+                              "constant": "0"
+                            }
+                          }
+                        },
+                        "isNonBlocking": false
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "definitionKind": "Module"
+        }
+      ]
+    },
+    {
+      "name": "mod",
+      "kind": "ModuleInstance",
+      "addr": 94348926424984,
+      "members": [
+        {
+          "name": "clk",
+          "kind": "Port",
+          "addr": 94348926442568,
+          "type": "logic",
+          "direction": "In",
+          "internalSymbol": "94348926442792 clk"
+        },
+        {
+          "name": "clk",
+          "kind": "Net",
+          "addr": 94348926442792,
+          "type": "logic"
+        },
+        {
+          "name": "reset",
+          "kind": "Port",
+          "addr": 94348926442960,
+          "type": "logic",
+          "direction": "In",
+          "internalSymbol": "94348926443184 reset"
+        },
+        {
+          "name": "reset",
+          "kind": "Net",
+          "addr": 94348926443184,
+          "type": "logic"
+        },
+        {
+          "name": "in",
+          "kind": "Port",
+          "addr": 94348926443352,
+          "type": "logic",
+          "direction": "In",
+          "internalSymbol": "94348926443576 in"
+        },
+        {
+          "name": "in",
+          "kind": "Net",
+          "addr": 94348926443576,
+          "type": "logic"
+        },
+        {
+          "name": "out",
+          "kind": "Port",
+          "addr": 94348926443744,
+          "type": "logic",
+          "direction": "Out",
+          "internalSymbol": "94348926443968 out"
+        },
+        {
+          "name": "out",
+          "kind": "Variable",
+          "addr": 94348926443968,
+          "type": "logic",
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "state",
+          "kind": "Variable",
+          "addr": 94348926425240,
+          "type": "logic[1:0]",
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "next_state",
+          "kind": "Variable",
+          "addr": 94348926425408,
+          "type": "logic[1:0]",
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "",
+          "kind": "ProceduralBlock",
+          "addr": 94348926425576,
+          "procedureKind": "AlwaysFF",
+          "body": {
+            "kind": "Timed",
+            "timing": {
+              "kind": "EventList",
+              "events": [
+                {
+                  "kind": "SignalEvent",
+                  "expr": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "94348926442792 clk",
+                    "isHierarchical": false
+                  },
+                  "edge": "PosEdge"
+                },
+                {
+                  "kind": "SignalEvent",
+                  "expr": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "94348926443184 reset",
+                    "isHierarchical": false
+                  },
+                  "edge": "PosEdge"
+                }
+              ]
+            },
+            "stmt": {
+              "kind": "Block",
+              "blockKind": "Sequential",
+              "body": {
+                "kind": "List",
+                "list": [
+                  {
+                    "kind": "Conditional",
+                    "cond": {
+                      "kind": "NamedValue",
+                      "type": "logic",
+                      "symbol": "94348926443184 reset",
+                      "isHierarchical": false
+                    },
+                    "ifTrue": {
+                      "kind": "ExpressionStatement",
+                      "expr": {
+                        "kind": "Assignment",
+                        "type": "logic[1:0]",
+                        "left": {
+                          "kind": "NamedValue",
+                          "type": "logic[1:0]",
+                          "symbol": "94348926425240 state",
+                          "isHierarchical": false
+                        },
+                        "right": {
+                          "kind": "Conversion",
+                          "type": "logic[1:0]",
+                          "constant": "2'b0",
+                          "operand": {
+                            "kind": "Conversion",
+                            "type": "logic[31:0]",
+                            "constant": "32'd0",
+                            "operand": {
+                              "kind": "IntegerLiteral",
+                              "type": "int",
+                              "constant": "0"
+                            }
+                          }
+                        },
+                        "isNonBlocking": true
+                      }
+                    },
+                    "ifFalse": {
+                      "kind": "ExpressionStatement",
+                      "expr": {
+                        "kind": "Assignment",
+                        "type": "logic[1:0]",
+                        "left": {
+                          "kind": "NamedValue",
+                          "type": "logic[1:0]",
+                          "symbol": "94348926425240 state",
+                          "isHierarchical": false
+                        },
+                        "right": {
+                          "kind": "NamedValue",
+                          "type": "logic[1:0]",
+                          "symbol": "94348926425408 next_state",
+                          "isHierarchical": false
+                        },
+                        "isNonBlocking": true
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "",
+          "kind": "ProceduralBlock",
+          "addr": 94348926425760,
+          "procedureKind": "AlwaysComb",
+          "body": {
+            "kind": "Block",
+            "blockKind": "Sequential",
+            "body": {
+              "kind": "List",
+              "list": [
+                {
+                  "kind": "Conditional",
+                  "cond": {
+                    "kind": "BinaryOp",
+                    "type": "logic",
+                    "op": "Equality",
+                    "left": {
+                      "kind": "Conversion",
+                      "type": "logic[31:0]",
+                      "operand": {
+                        "kind": "NamedValue",
+                        "type": "logic[1:0]",
+                        "symbol": "94348926425240 state",
+                        "isHierarchical": false
+                      }
+                    },
+                    "right": {
+                      "kind": "Conversion",
+                      "type": "logic[31:0]",
+                      "constant": "32'd0",
+                      "operand": {
+                        "kind": "IntegerLiteral",
+                        "type": "int",
+                        "constant": "0"
+                      }
+                    }
+                  },
+                  "ifTrue": {
+                    "kind": "Block",
+                    "blockKind": "Sequential",
+                    "body": {
+                      "kind": "List",
+                      "list": [
+                        {
+                          "kind": "Conditional",
+                          "cond": {
+                            "kind": "NamedValue",
+                            "type": "logic",
+                            "symbol": "94348926443576 in",
+                            "isHierarchical": false
+                          },
+                          "ifTrue": {
+                            "kind": "Block",
+                            "blockKind": "Sequential",
+                            "body": {
+                              "kind": "List",
+                              "list": [
+                                {
+                                  "kind": "ExpressionStatement",
+                                  "expr": {
+                                    "kind": "Assignment",
+                                    "type": "logic[1:0]",
+                                    "left": {
+                                      "kind": "NamedValue",
+                                      "type": "logic[1:0]",
+                                      "symbol": "94348926425408 next_state",
+                                      "isHierarchical": false
+                                    },
+                                    "right": {
+                                      "kind": "Conversion",
+                                      "type": "logic[1:0]",
+                                      "constant": "2'b1",
+                                      "operand": {
+                                        "kind": "Conversion",
+                                        "type": "logic[31:0]",
+                                        "constant": "32'd1",
+                                        "operand": {
+                                          "kind": "IntegerLiteral",
+                                          "type": "int",
+                                          "constant": "1"
+                                        }
+                                      }
+                                    },
+                                    "isNonBlocking": false
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "ifFalse": {
+                            "kind": "Block",
+                            "blockKind": "Sequential",
+                            "body": {
+                              "kind": "List",
+                              "list": [
+                                {
+                                  "kind": "ExpressionStatement",
+                                  "expr": {
+                                    "kind": "Assignment",
+                                    "type": "logic[1:0]",
+                                    "left": {
+                                      "kind": "NamedValue",
+                                      "type": "logic[1:0]",
+                                      "symbol": "94348926425408 next_state",
+                                      "isHierarchical": false
+                                    },
+                                    "right": {
+                                      "kind": "Conversion",
+                                      "type": "logic[1:0]",
+                                      "constant": "2'b10",
+                                      "operand": {
+                                        "kind": "Conversion",
+                                        "type": "logic[31:0]",
+                                        "constant": "32'd2",
+                                        "operand": {
+                                          "kind": "IntegerLiteral",
+                                          "type": "int",
+                                          "constant": "2"
+                                        }
+                                      }
+                                    },
+                                    "isNonBlocking": false
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "ifFalse": {
+                    "kind": "Conditional",
+                    "cond": {
+                      "kind": "BinaryOp",
+                      "type": "logic",
+                      "op": "Equality",
+                      "left": {
+                        "kind": "Conversion",
+                        "type": "logic[31:0]",
+                        "operand": {
+                          "kind": "NamedValue",
+                          "type": "logic[1:0]",
+                          "symbol": "94348926425240 state",
+                          "isHierarchical": false
+                        }
+                      },
+                      "right": {
+                        "kind": "Conversion",
+                        "type": "logic[31:0]",
+                        "constant": "32'd1",
+                        "operand": {
+                          "kind": "IntegerLiteral",
+                          "type": "int",
+                          "constant": "1"
+                        }
+                      }
+                    },
+                    "ifTrue": {
+                      "kind": "Block",
+                      "blockKind": "Sequential",
+                      "body": {
+                        "kind": "List",
+                        "list": [
+                          {
+                            "kind": "Conditional",
+                            "cond": {
+                              "kind": "NamedValue",
+                              "type": "logic",
+                              "symbol": "94348926443576 in",
+                              "isHierarchical": false
+                            },
+                            "ifTrue": {
+                              "kind": "Block",
+                              "blockKind": "Sequential",
+                              "body": {
+                                "kind": "List",
+                                "list": [
+                                  {
+                                    "kind": "ExpressionStatement",
+                                    "expr": {
+                                      "kind": "Assignment",
+                                      "type": "logic[1:0]",
+                                      "left": {
+                                        "kind": "NamedValue",
+                                        "type": "logic[1:0]",
+                                        "symbol": "94348926425408 next_state",
+                                        "isHierarchical": false
+                                      },
+                                      "right": {
+                                        "kind": "Conversion",
+                                        "type": "logic[1:0]",
+                                        "constant": "2'b10",
+                                        "operand": {
+                                          "kind": "Conversion",
+                                          "type": "logic[31:0]",
+                                          "constant": "32'd2",
+                                          "operand": {
+                                            "kind": "IntegerLiteral",
+                                            "type": "int",
+                                            "constant": "2"
+                                          }
+                                        }
+                                      },
+                                      "isNonBlocking": false
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "ifFalse": {
+                              "kind": "Block",
+                              "blockKind": "Sequential",
+                              "body": {
+                                "kind": "List",
+                                "list": [
+                                  {
+                                    "kind": "ExpressionStatement",
+                                    "expr": {
+                                      "kind": "Assignment",
+                                      "type": "logic[1:0]",
+                                      "left": {
+                                        "kind": "NamedValue",
+                                        "type": "logic[1:0]",
+                                        "symbol": "94348926425408 next_state",
+                                        "isHierarchical": false
+                                      },
+                                      "right": {
+                                        "kind": "Conversion",
+                                        "type": "logic[1:0]",
+                                        "constant": "2'b11",
+                                        "operand": {
+                                          "kind": "Conversion",
+                                          "type": "logic[31:0]",
+                                          "constant": "32'd3",
+                                          "operand": {
+                                            "kind": "IntegerLiteral",
+                                            "type": "int",
+                                            "constant": "3"
+                                          }
+                                        }
+                                      },
+                                      "isNonBlocking": false
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "ifFalse": {
+                      "kind": "Conditional",
+                      "cond": {
+                        "kind": "BinaryOp",
+                        "type": "logic",
+                        "op": "Equality",
+                        "left": {
+                          "kind": "Conversion",
+                          "type": "logic[31:0]",
+                          "operand": {
+                            "kind": "NamedValue",
+                            "type": "logic[1:0]",
+                            "symbol": "94348926425240 state",
+                            "isHierarchical": false
+                          }
+                        },
+                        "right": {
+                          "kind": "Conversion",
+                          "type": "logic[31:0]",
+                          "constant": "32'd2",
+                          "operand": {
+                            "kind": "IntegerLiteral",
+                            "type": "int",
+                            "constant": "2"
+                          }
+                        }
+                      },
+                      "ifTrue": {
+                        "kind": "Block",
+                        "blockKind": "Sequential",
+                        "body": {
+                          "kind": "List",
+                          "list": [
+                            {
+                              "kind": "ExpressionStatement",
+                              "expr": {
+                                "kind": "Assignment",
+                                "type": "logic[1:0]",
+                                "left": {
+                                  "kind": "NamedValue",
+                                  "type": "logic[1:0]",
+                                  "symbol": "94348926425408 next_state",
+                                  "isHierarchical": false
+                                },
+                                "right": {
+                                  "kind": "Conversion",
+                                  "type": "logic[1:0]",
+                                  "constant": "2'b11",
+                                  "operand": {
+                                    "kind": "Conversion",
+                                    "type": "logic[31:0]",
+                                    "constant": "32'd3",
+                                    "operand": {
+                                      "kind": "IntegerLiteral",
+                                      "type": "int",
+                                      "constant": "3"
+                                    }
+                                  }
+                                },
+                                "isNonBlocking": false
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "ifFalse": {
+                        "kind": "Block",
+                        "blockKind": "Sequential",
+                        "body": {
+                          "kind": "List",
+                          "list": [
+                            {
+                              "kind": "ExpressionStatement",
+                              "expr": {
+                                "kind": "Assignment",
+                                "type": "logic[1:0]",
+                                "left": {
+                                  "kind": "NamedValue",
+                                  "type": "logic[1:0]",
+                                  "symbol": "94348926425408 next_state",
+                                  "isHierarchical": false
+                                },
+                                "right": {
+                                  "kind": "Conversion",
+                                  "type": "logic[1:0]",
+                                  "constant": "2'b1",
+                                  "operand": {
+                                    "kind": "Conversion",
+                                    "type": "logic[31:0]",
+                                    "constant": "32'd1",
+                                    "operand": {
+                                      "kind": "IntegerLiteral",
+                                      "type": "int",
+                                      "constant": "1"
+                                    }
+                                  }
+                                },
+                                "isNonBlocking": false
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "",
+          "kind": "ProceduralBlock",
+          "addr": 94348926425944,
+          "procedureKind": "AlwaysComb",
+          "body": {
+            "kind": "Block",
+            "blockKind": "Sequential",
+            "body": {
+              "kind": "List",
+              "list": [
+                {
+                  "kind": "ExpressionStatement",
+                  "expr": {
+                    "kind": "Assignment",
+                    "type": "logic",
+                    "left": {
+                      "kind": "NamedValue",
+                      "type": "logic",
+                      "symbol": "94348926443968 out",
+                      "isHierarchical": false
+                    },
+                    "right": {
+                      "kind": "BinaryOp",
+                      "type": "logic",
+                      "op": "Inequality",
+                      "left": {
+                        "kind": "Conversion",
+                        "type": "logic[31:0]",
+                        "operand": {
+                          "kind": "NamedValue",
+                          "type": "logic[1:0]",
+                          "symbol": "94348926425240 state",
+                          "isHierarchical": false
+                        }
+                      },
+                      "right": {
+                        "kind": "Conversion",
+                        "type": "logic[31:0]",
+                        "constant": "32'd0",
+                        "operand": {
+                          "kind": "IntegerLiteral",
+                          "type": "int",
+                          "constant": "0"
+                        }
+                      }
+                    },
+                    "isNonBlocking": false
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "definition": "94348926283552 mod"
+    }
+  ]
+}
