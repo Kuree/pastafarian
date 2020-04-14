@@ -10,14 +10,6 @@ TEST_F(GraphTest, fsm_extract_fsm1) {  // NOLINT
 
     EXPECT_EQ(fsm.node()->name, "Color_current_state");
 
-    auto arcs = fsm.self_arc();
-    // there are four state transitions
-    // Red -> Red
-    // Red -> Blue
-    // Blue -> Blue
-    // Blue ->Red
-    //EXPECT_EQ(arcs.size(), 4);
-
     auto states = fsm.unique_states();
     EXPECT_EQ(states.size(), 2);
 
@@ -34,16 +26,6 @@ TEST_F(GraphTest, fsm_extract_fsm2) {  // NOLINT
     auto const &fsm = fsms[0];
 
     EXPECT_EQ(fsm.node()->name, "state");
-
-    auto arcs = fsm.self_arc();
-    // this is count two logic and implemented as an explicit FSM in chisel
-    // 0 -> 0
-    // 0 -> 1
-    // 1 -> 2
-    // 1 -> 0
-    // 2 -> 2
-    // 2 -> 0
-    //EXPECT_EQ(arcs.size(), 6);
 
     auto states = fsm.unique_states();
     EXPECT_EQ(states.size(), 3);
