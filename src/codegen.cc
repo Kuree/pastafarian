@@ -140,15 +140,24 @@ void VerilogModule::create_properties() {
                 // so single variable
                 auto property = std::make_shared<Property>(id_count++, root_module_, clock_name_,
                                                            fsm.node(), state);
+                property->should_be_valid = true;
                 properties_.emplace(property->id, property);
                 property_id_to_fsm_.emplace(property->id, i);
             }
             // state transition
+            // get the absolute correct ones
+            auto state_arcs = fsm.syntax_arc();
+            std::set<std::pair<int64_t, int64_t>> state_arc_values;
+            for (auto const &[from, to]: state_arcs)
+                state_arc_values.emplace(std::make_pair(from->value, to->value));
             for (auto const &state_from : unique_states) {
                 for (auto const &state_to : unique_states) {
                     auto property =
                         std::make_shared<Property>(id_count++, root_module_, clock_name_,
                                                    fsm.node(), state_from, fsm.node(), state_to);
+                    auto state_pair = std::make_pair(state_from->value, state_to->value);
+                    if (state_arc_values.find(state_pair) != state_arc_values.end())
+                        property->should_be_valid = true;
                     property->delay = 1;
                     properties_.emplace(property->id, property);
                     property_id_to_fsm_.emplace(property->id, i);
