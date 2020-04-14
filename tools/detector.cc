@@ -75,16 +75,16 @@ void print_out_fsm(const fsm::FSMResult &fsm_result, const fsm::VerilogModule &m
                         if (!next_state->valid) {
                             std::cout << " [UNREACHABLE]";
                         }
+                        std::cout << std::endl;
                     }
-                    std::cout << std::endl;
                 }
             } else {
                 for (auto const &next_state : ps) {
                     if (next_state->should_be_valid) {
                         std::cout << "    - Next: ";
                         print_fsm_value(next_state->state_value2);
+                        std::cout << std::endl;
                     }
-                    std::cout << std::endl;
                 }
             }
         }
