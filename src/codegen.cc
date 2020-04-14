@@ -88,8 +88,20 @@ VerilogModule::VerilogModule(fsm::Graph *graph, SourceManager parser_result,
     auto const &nodes = graph->nodes();
     for (auto const &node : nodes) {
         if (node->type == NodeType::Module) {
-            if (!node->parent || node->name == top_name) {
-                modules.emplace(node->name, node.get());
+            if (!node->parent || node->name == top_name ||
+                (node->module_def && node->module_def->name == top_name)) {
+                if (node->module_def) {
+                    // this only works for the top one instantiated once
+                    if (modules.find(node->module_def->name) == modules.end()) {
+                        modules.emplace(node->module_def->name, node.get());
+                    } else {
+                        throw std::runtime_error(
+                            top_name +
+                            " has instantiated multiple times. Use instance name instead");
+                    }
+                } else {
+                    modules.emplace(node->name, node.get());
+                }
             }
         }
     }
@@ -148,7 +160,7 @@ void VerilogModule::create_properties() {
             // get the absolute correct ones
             auto state_arcs = fsm.syntax_arc();
             std::set<std::pair<int64_t, int64_t>> state_arc_values;
-            for (auto const &[from, to]: state_arcs)
+            for (auto const &[from, to] : state_arcs)
                 state_arc_values.emplace(std::make_pair(from->value, to->value));
             for (auto const &state_from : unique_states) {
                 for (auto const &state_to : unique_states) {
