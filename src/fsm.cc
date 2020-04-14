@@ -99,41 +99,60 @@ std::set<std::pair<const Node *, const Node *>> FSMResult::syntax_arc() const {
     auto comp_edges = Graph::find_connection_cond(node_, cond);
     for (auto const node_edge : comp_edges) {
         auto node_comp = node_edge->to;
-        Node *node_comp_control;
+        std::vector<const Node *> node_comp_control_set;
         if (node_comp->has_type(NodeType::Control)) {
-            node_comp_control = node_comp;
+            node_comp_control_set = {node_comp};
         } else {
             assert_(node_comp->edges_to.size() == 1, "condition has 1 fan-out");
-            node_comp_control = node_comp->edges_to.begin()->get()->to;
+            auto temp_node = node_comp;
+            while (temp_node->edges_to.size() == 1 &&
+                   temp_node->edges_to.begin()->get()->is_assign()) {
+                temp_node = temp_node->edges_to.begin()->get()->to;
+            }
+            // whether it is a named variable or not. if it is, it means that a named wire
+            // is used as a condition, typically in Chisel
+            // if not, it means we're using normal net
+            if (temp_node->name.empty()) {
+                node_comp_control_set = {node_comp->edges_to.begin()->get()->to};
+            } else {
+                for (auto const &edge : temp_node->edges_to) {
+                    auto nn = edge->to;
+                    if (nn->has_type(NodeType ::Control) && nn->op != NetOpType::LogicalNot) {
+                        node_comp_control_set.emplace_back(nn);
+                    }
+                }
+            }
         }
         // find the assign nodes
         for (auto const &edge : const_src_) {
             auto assign_node = edge->to;
-            // find out if it has false path
-            Edge *false_edge = nullptr;
-            for (auto const &edge_to : node_comp_control->edges_to) {
-                if (edge_to->has_type(EdgeType::False)) {
-                    false_edge = edge_to.get();
-                    break;
-                }
-            }
-            if (assign_node->child_of(node_comp_control)) {
-                if (false_edge) {
-                    if (assign_node->child_of(false_edge->to)) {
-                        continue;
+            for (auto const node_comp_control : node_comp_control_set) {
+                // find out if it has false path
+                Edge *false_edge = nullptr;
+                for (auto const &edge_to : node_comp_control->edges_to) {
+                    if (edge_to->has_type(EdgeType::False)) {
+                        false_edge = edge_to.get();
+                        break;
                     }
                 }
-                // this is one transition arc
-                auto const_to = edge->from;
-                Node *const_from = nullptr;
-                for (auto const e : node_comp->edges_from) {
-                    if (!const_from) {
-                        const_from = get_direct_const(e);
+                if (assign_node->child_of(node_comp_control)) {
+                    if (false_edge) {
+                        if (assign_node->child_of(false_edge->to)) {
+                            continue;
+                        }
                     }
-                }
+                    // this is one transition arc
+                    auto const_to = edge->from;
+                    Node *const_from = nullptr;
+                    for (auto const e : node_comp->edges_from) {
+                        if (!const_from) {
+                            const_from = get_direct_const(e);
+                        }
+                    }
 
-                assert_(const_from != nullptr, "Unable to find const from");
-                result.emplace(std::make_pair(const_from, const_to));
+                    assert_(const_from != nullptr, "Unable to find const from");
+                    result.emplace(std::make_pair(const_from, const_to));
+                }
             }
         }
     }

@@ -51,8 +51,8 @@ TEST_F(GraphTest, fsm_extract_fsm2) {  // NOLINT
     EXPECT_FALSE(fsm.is_counter());
 
     // CHISEL is not working yet
-    //auto s_arcs = fsm.syntax_arc();
-    //EXPECT_EQ(s_arcs.size(), 4);
+    auto s_arcs = fsm.syntax_arc();
+    EXPECT_EQ(s_arcs.size(), 4);
 }
 
 TEST_F(GraphTest, fsm_extract_fsm3) {  // NOLINT
