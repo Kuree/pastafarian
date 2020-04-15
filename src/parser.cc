@@ -17,17 +17,7 @@ void parse_verilog(SourceManager &source) {
     // need to run slang to get the ast json
     // make sure slang exists
     // if SLANG is set in the env
-    std::string slang;
-    auto slang_char = std::getenv("SLANG");
-    if (slang_char) {
-        slang = std::string(slang_char);
-    }
-    if (slang.empty()) {
-        slang = fs::which("slang");
-        if (slang.empty()) {
-            slang = fs::which("slang-driver");
-        }
-    }
+    auto slang = Parser::get_slang();
     if (slang.empty()) throw std::runtime_error("Unable to find slang driver");
     // prepare for the slang arguments
     auto const &filenames = source.src_filenames();
@@ -774,7 +764,7 @@ void Parser::parse(const SourceManager &value) {
     }
     assert_(std::string(doc["name"].as_string()) == "$root", "invalid slang output");
     auto const &members = doc["members"].as_array();
-    for (auto const &member : members) {
+    for (auto const member : members) {
         parse_dispatch(member, graph_, nullptr);
     }
     parser_result_ = value;
@@ -791,6 +781,25 @@ void Parser::parse(const std::string &filename) {
 
     parse(r);
     parser_result_ = r;
+}
+
+bool Parser::has_slang() {
+    return !get_slang().empty();
+}
+
+std::string Parser::get_slang() {
+    std::string slang;
+    auto slang_char = std::getenv("SLANG");
+    if (slang_char) {
+        slang = std::string(slang_char);
+    }
+    if (slang.empty()) {
+        slang = fs::which("slang");
+        if (slang.empty()) {
+            slang = fs::which("slang-driver");
+        }
+    }
+    return slang;
 }
 
 }  // namespace fsm

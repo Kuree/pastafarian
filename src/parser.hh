@@ -19,6 +19,9 @@ public:
 
     [[nodiscard]] const SourceManager &parser_result() const { return parser_result_; }
 
+    [[nodiscard]] static bool has_slang();
+    [[nodiscard]] static std::string get_slang();
+
 private:
     Graph *graph_;
     SourceManager parser_result_;

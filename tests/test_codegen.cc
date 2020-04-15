@@ -3,6 +3,9 @@
 #include "util.hh"
 
 TEST_F(GraphTest, fsm1_codegen) {  // NOLINT
+    if (!fsm::Parser::has_slang()) {
+        GTEST_SKIP_("slang doesn't exist");
+    }
     parse("fsm1.sv");
     auto fsms = g.identify_fsms();
     fsm::VerilogModule m(&g, p->parser_result());
