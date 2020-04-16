@@ -50,9 +50,30 @@ TEST_F(GraphTest, fsm_extract_fsm3) {  // NOLINT
 
     EXPECT_FALSE(fsm.is_counter());
 
-    auto syntax_arcs = fsm.syntax_arc();
-    EXPECT_FALSE(syntax_arcs.empty());
-
     auto s_arcs = fsm.syntax_arc();
     EXPECT_EQ(s_arcs.size(), 5);
+}
+
+TEST_F(GraphTest, fsm_extract_fsm4) {  // NOLINT
+    parse("fsm4.json");
+    auto fsms = g.identify_fsms();
+    EXPECT_EQ(fsms.size(), 1);
+    auto const &fsm = fsms[0];
+
+    EXPECT_EQ(fsm.node()->name, "release_state");
+
+    auto states = fsm.unique_states();
+    // NOTICE: rocket chip DCache has dead code (unreachable state) when the test is generated
+    //   i.e. release_state <= s_probe_retry;
+    EXPECT_EQ(states.size(), 7);
+    auto const_comp_states = fsm.comp_const();
+    // 0 is never compared against
+    EXPECT_EQ(const_comp_states.size(), 7);
+
+    EXPECT_FALSE(fsm.is_counter());
+
+    auto s_arcs = fsm.syntax_arc();
+    // NOTICE: this high number is due to dead code generation. In scala there aren't as many
+    //  state transition as in verilog.
+    EXPECT_EQ(s_arcs.size(), 47);
 }

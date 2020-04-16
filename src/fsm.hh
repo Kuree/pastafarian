@@ -16,6 +16,7 @@ public:
         return const_src_;
     }
     [[nodiscard]] inline bool is_counter() const { return is_counter_; }
+    [[nodiscard]] std::unordered_set<const Node*> comp_const() const;
 
     // get state transition arcs from heuristics
     [[nodiscard]] std::set<std::pair<const Node *, const Node *>> syntax_arc() const;

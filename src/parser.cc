@@ -442,7 +442,14 @@ Node *parse_unary(T value, Graph *g) {
     auto op_code_raw = value["op"];
     assert_(op_code_raw.error == SUCCESS, "op is null for unary");
     auto op_str = std::string(op_code_raw.as_string());
-    if (op_str == "LogicalNot") node->op = NetOpType::LogicalNot;
+    if (op_str == "LogicalNot")
+        node->op = NetOpType::LogicalNot;
+    else if (op_str == "BinaryOr")
+        node->op = NetOpType::BinaryOr;
+    else if (op_str == "BinaryAnd")
+        node->op = NetOpType::BinaryAnd;
+    else if (op_str == "BitwiseNot")
+        node->op = NetOpType::BitwiseNot;
     op_node->add_edge(node);
     return node;
 }
@@ -783,9 +790,7 @@ void Parser::parse(const std::string &filename) {
     parser_result_ = r;
 }
 
-bool Parser::has_slang() {
-    return !get_slang().empty();
-}
+bool Parser::has_slang() { return !get_slang().empty(); }
 
 std::string Parser::get_slang() {
     std::string slang;

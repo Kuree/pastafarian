@@ -1,6 +1,7 @@
 #include "fsm.hh"
 
 #include <map>
+#include <queue>
 #include <utility>
 
 #include "util.hh"
@@ -26,6 +27,52 @@ Node *get_direct_const(const Edge *edge) {
     return nullptr;
 };
 
+auto comp_cond = [](const Edge *edge) -> bool {
+    if (edge->is_assign()) {
+        auto node_to = edge->to;
+        if (node_to->op == NetOpType::Equal) {
+            // notice that we only deal with if (state == a) case
+            // it's a comparison
+            auto const &edges_from = node_to->edges_from;
+            Node *n = nullptr;
+            for (auto const edge_from : edges_from) {
+                if (!n && edge_from->is_assign()) {
+                    n = get_direct_const(edge_from);
+                }
+            }
+            return n != nullptr;
+        }
+    }
+
+    return false;
+};
+
+std::unordered_set<const Node *> FSMResult::comp_const() const {
+    auto comp_edges = Graph::find_connection_cond(node_, comp_cond);
+    std::unordered_set<const Node *> result;
+    for (auto const node_edge : comp_edges) {
+        auto node_comp = node_edge->to;
+        Node *const_from = nullptr;
+        for (auto const e : node_comp->edges_from) {
+            if (!const_from) {
+                const_from = get_direct_const(e);
+            }
+        }
+        assert_(const_from != nullptr, "const is null");
+        result.emplace(const_from);
+    }
+    // make the value unique
+    std::unordered_set<const Node *> unique_result;
+    std::unordered_set<int64_t> unique_values;
+    for (auto const node : result) {
+        if (unique_values.find(node->value) == unique_values.end()) {
+            unique_values.emplace(node->value);
+            unique_result.emplace(node);
+        }
+    }
+    return unique_result;
+}
+
 std::set<std::pair<const Node *, const Node *>> FSMResult::syntax_arc() const {
     // notice that this is not guaranteed to be complete, but have zero false positive.
 
@@ -33,30 +80,10 @@ std::set<std::pair<const Node *, const Node *>> FSMResult::syntax_arc() const {
     // counter based doesn't have arc transition
     if (is_counter_) return result;
 
-    auto cond = [](const Edge *edge) -> bool {
-        if (edge->is_assign()) {
-            auto node_to = edge->to;
-            if (node_to->op == NetOpType::Equal) {
-                // notice that we only deal with if (state == a) case
-                // it's a comparison
-                auto const &edges_from = node_to->edges_from;
-                Node *n = nullptr;
-                for (auto const edge_from : edges_from) {
-                    if (!n && edge_from->is_assign()) {
-                        n = get_direct_const(edge_from);
-                    }
-                }
-                return n != nullptr;
-            }
-        }
-
-        return false;
-    };
-
     // find all the comparison nodes that compare the state variable with different
     // constants
 
-    auto comp_edges = Graph::find_connection_cond(node_, cond);
+    auto comp_edges = Graph::find_connection_cond(node_, comp_cond);
     for (auto const node_edge : comp_edges) {
         auto node_comp = node_edge->to;
         std::vector<const Node *> node_comp_control_set;
@@ -75,10 +102,35 @@ std::set<std::pair<const Node *, const Node *>> FSMResult::syntax_arc() const {
             if (temp_node->name.empty()) {
                 node_comp_control_set = {node_comp->edges_to.begin()->get()->to};
             } else {
-                for (auto const &edge : temp_node->edges_to) {
-                    auto nn = edge->to;
-                    if (nn->has_type(NodeType ::Control) && nn->op != NetOpType::LogicalNot) {
-                        node_comp_control_set.emplace_back(nn);
+                std::queue<const Node *> working_set;
+                std::unordered_set<const Node *> visited;
+                working_set.emplace(temp_node);
+                while (!working_set.empty()) {
+                    auto n = working_set.front();
+                    working_set.pop();
+                    if (visited.find(n) != visited.end()) {
+                        continue;
+                    } else {
+                        visited.emplace(n);
+                    }
+                    const static std::unordered_set<NetOpType> allowed_ops = {NetOpType::BinaryAnd,
+                                                                              NetOpType::BinaryOr};
+                    const static std::unordered_set<NetOpType> disallowed_ops = {
+                        NetOpType::LogicalNot, NetOpType::BitwiseNot};
+                    for (auto const &edge : n->edges_to) {
+                        auto nn = edge->to;
+                        if (nn->has_type(NodeType ::Control) &&
+                            disallowed_ops.find(nn->op) == disallowed_ops.end() && nn->parent) {
+                            node_comp_control_set.emplace_back(nn);
+                        } else if (edge->is_assign() && !nn->has_type(NodeType::Control) &&
+                                   (!nn->name.empty() ||
+                                    allowed_ops.find(nn->op) != allowed_ops.end())) {  // NOLINT
+                            working_set.emplace(nn);
+                        } else if (edge->is_assign() && nn->edges_to.size() == 1 &&
+                                   (*nn->edges_to.begin())->is_assign() &&
+                                   !nn->has_type(NodeType::Control)) {
+                            working_set.emplace(nn);
+                        }
                     }
                 }
             }
@@ -126,7 +178,7 @@ std::set<std::pair<const Node *, const Node *>> FSMResult::syntax_arc() const {
         }
     }
 
-    return result;
+    return unique_result;
 }
 
 std::vector<const Node *> FSMResult::unique_states() const {
