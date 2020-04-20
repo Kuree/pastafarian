@@ -177,6 +177,7 @@ int main(int argc, char *argv[]) {
     std::string clock_name;
     std::string reset_name;
     std::vector<std::string> param_values;
+    std::optional<uint32_t> num_cpu;
     app.add_option("-i,--input", filenames, "SystemVerilog design files")->required();
     app.add_option("-I,--include", include_dirs, "SystemVerilog include search directory");
     app.add_option("--json", output_filename, "Output JSON. Use - for stdout");
@@ -186,8 +187,15 @@ int main(int argc, char *argv[]) {
     app.add_option("--reset", reset_name, "Reset pin name");
     app.add_option("--clock", clock_name, "Clock pin name");
     app.add_option("-P", param_values, "Override top port parameters");
+    app.add_option("-n,--num-cpu", num_cpu, "Number of CPU. Set to 0 to use all available cores");
 
     CLI11_PARSE(app, argc, argv)
+
+    // multi-threading support
+    if (num_cpu) {
+        uint32_t cpu = *num_cpu;
+        fsm::set_num_cpus(cpu);
+    }
 
     auto print_verilog_filenames = fsm::string::join(filenames.begin(), filenames.end(), " ");
     std::cout << "Start parsing verilog file " << print_verilog_filenames << std::endl;
