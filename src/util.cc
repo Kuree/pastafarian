@@ -1,15 +1,12 @@
 #include "util.hh"
 
-#include <fmt/format.h>
-
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
+#include <optional>
 #include <thread>
 
 #include "source.hh"
-
-using fmt::format;
 
 // we only support Linux
 #define INCLUDE_FILESYSTEM
@@ -22,7 +19,7 @@ void assert_(bool condition, const std::string &what) {
     }
 }
 
-static std::optional<uint32_t>_num_cpu;
+static std::optional<uint32_t> _num_cpu;
 
 uint32_t get_num_cpus() {
     if (!_num_cpu) {
@@ -232,7 +229,7 @@ JSONWriter &JSONWriter::start_object(std::string_view name) {
     return *this;
 }
 
-JSONWriter & JSONWriter::start_object() {
+JSONWriter &JSONWriter::start_object() {
     end();
     indent();
     stream_ << '{' << std::endl;
@@ -262,5 +259,5 @@ void JSONWriter::end() {
     }
 }
 
-}
+}  // namespace json
 }  // namespace fsm
