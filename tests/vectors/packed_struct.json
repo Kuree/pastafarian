@@ -1,0 +1,590 @@
+{
+  "name": "$root",
+  "kind": "Root",
+  "addr": 94185350097584,
+  "members": [
+    {
+      "name": "",
+      "kind": "CompilationUnit",
+      "addr": 94185350089968,
+      "members": [
+        {
+          "name": "s1",
+          "kind": "TypeAlias",
+          "addr": 94185350090224,
+          "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+        },
+        {
+          "name": "mod",
+          "kind": "Definition",
+          "addr": 94185350090400,
+          "members": [
+            {
+              "name": "in",
+              "kind": "Port",
+              "addr": 94185350091592,
+              "type": {
+                "name": "s1",
+                "kind": "TypeAlias",
+                "addr": 94185350090224,
+                "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+              },
+              "direction": "In",
+              "internalSymbol": "94185350091816 in"
+            },
+            {
+              "name": "in",
+              "kind": "Net",
+              "addr": 94185350091816,
+              "type": {
+                "name": "s1",
+                "kind": "TypeAlias",
+                "addr": 94185350090224,
+                "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+              }
+            },
+            {
+              "name": "clk",
+              "kind": "Port",
+              "addr": 94185350221344,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "94185350221568 clk"
+            },
+            {
+              "name": "clk",
+              "kind": "Net",
+              "addr": 94185350221568,
+              "type": "logic"
+            },
+            {
+              "name": "value1",
+              "kind": "Variable",
+              "addr": 94185350221736,
+              "type": {
+                "name": "s1",
+                "kind": "TypeAlias",
+                "addr": 94185350090224,
+                "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+              },
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "value2",
+              "kind": "Variable",
+              "addr": 94185350221904,
+              "type": {
+                "name": "s1",
+                "kind": "TypeAlias",
+                "addr": 94185350090224,
+                "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+              },
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "value3",
+              "kind": "Variable",
+              "addr": 94185350222072,
+              "type": {
+                "name": "s1",
+                "kind": "TypeAlias",
+                "addr": 94185350090224,
+                "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+              },
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "",
+              "kind": "ContinuousAssign",
+              "addr": 94185350222240,
+              "assignment": {
+                "kind": "Assignment",
+                "type": {
+                  "name": "s1",
+                  "kind": "TypeAlias",
+                  "addr": 94185350090224,
+                  "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+                },
+                "left": {
+                  "kind": "NamedValue",
+                  "type": {
+                    "name": "s1",
+                    "kind": "TypeAlias",
+                    "addr": 94185350090224,
+                    "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+                  },
+                  "symbol": "94185350221736 value1",
+                  "isHierarchical": false
+                },
+                "right": {
+                  "kind": "NamedValue",
+                  "type": {
+                    "name": "s1",
+                    "kind": "TypeAlias",
+                    "addr": 94185350090224,
+                    "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+                  },
+                  "symbol": "94185350091816 in",
+                  "isHierarchical": false
+                },
+                "isNonBlocking": false
+              }
+            },
+            {
+              "name": "",
+              "kind": "ContinuousAssign",
+              "addr": 94185350222328,
+              "assignment": {
+                "kind": "Assignment",
+                "type": "logic[3:0]",
+                "left": {
+                  "kind": "MemberAccess",
+                  "type": "logic[3:0]",
+                  "field": "94185350224304 a",
+                  "value": {
+                    "kind": "NamedValue",
+                    "type": {
+                      "name": "s1",
+                      "kind": "TypeAlias",
+                      "addr": 94185350090224,
+                      "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+                    },
+                    "symbol": "94185350221904 value2",
+                    "isHierarchical": false
+                  }
+                },
+                "right": {
+                  "kind": "MemberAccess",
+                  "type": "logic[3:0]",
+                  "field": "94185350224304 a",
+                  "value": {
+                    "kind": "NamedValue",
+                    "type": {
+                      "name": "s1",
+                      "kind": "TypeAlias",
+                      "addr": 94185350090224,
+                      "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+                    },
+                    "symbol": "94185350091816 in",
+                    "isHierarchical": false
+                  }
+                },
+                "isNonBlocking": false
+              }
+            },
+            {
+              "name": "",
+              "kind": "ProceduralBlock",
+              "addr": 94185350091224,
+              "procedureKind": "AlwaysFF",
+              "body": {
+                "kind": "Timed",
+                "timing": {
+                  "kind": "SignalEvent",
+                  "expr": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "94185350221568 clk",
+                    "isHierarchical": false
+                  },
+                  "edge": "PosEdge"
+                },
+                "stmt": {
+                  "kind": "Block",
+                  "blockKind": "Sequential",
+                  "body": {
+                    "kind": "List",
+                    "list": [
+                      {
+                        "kind": "ExpressionStatement",
+                        "expr": {
+                          "kind": "Assignment",
+                          "type": {
+                            "name": "s1",
+                            "kind": "TypeAlias",
+                            "addr": 94185350090224,
+                            "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+                          },
+                          "left": {
+                            "kind": "NamedValue",
+                            "type": {
+                              "name": "s1",
+                              "kind": "TypeAlias",
+                              "addr": 94185350090224,
+                              "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+                            },
+                            "symbol": "94185350222072 value3",
+                            "isHierarchical": false
+                          },
+                          "right": {
+                            "kind": "NamedValue",
+                            "type": {
+                              "name": "s1",
+                              "kind": "TypeAlias",
+                              "addr": 94185350090224,
+                              "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+                            },
+                            "symbol": "94185350091816 in",
+                            "isHierarchical": false
+                          },
+                          "isNonBlocking": true
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "name": "",
+              "kind": "ProceduralBlock",
+              "addr": 94185350091408,
+              "procedureKind": "AlwaysComb",
+              "body": {
+                "kind": "Block",
+                "blockKind": "Sequential",
+                "body": {
+                  "kind": "List",
+                  "list": [
+                    {
+                      "kind": "ExpressionStatement",
+                      "expr": {
+                        "kind": "Assignment",
+                        "type": "logic[1:0]",
+                        "left": {
+                          "kind": "MemberAccess",
+                          "type": "logic[1:0]",
+                          "field": "94185350223808 b",
+                          "value": {
+                            "kind": "NamedValue",
+                            "type": {
+                              "name": "s1",
+                              "kind": "TypeAlias",
+                              "addr": 94185350090224,
+                              "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+                            },
+                            "symbol": "94185350221904 value2",
+                            "isHierarchical": false
+                          }
+                        },
+                        "right": {
+                          "kind": "MemberAccess",
+                          "type": "logic[1:0]",
+                          "field": "94185350223808 b",
+                          "value": {
+                            "kind": "NamedValue",
+                            "type": {
+                              "name": "s1",
+                              "kind": "TypeAlias",
+                              "addr": 94185350090224,
+                              "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+                            },
+                            "symbol": "94185350091816 in",
+                            "isHierarchical": false
+                          }
+                        },
+                        "isNonBlocking": false
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "definitionKind": "Module"
+        }
+      ]
+    },
+    {
+      "name": "mod",
+      "kind": "ModuleInstance",
+      "addr": 94185350222416,
+      "members": [
+        {
+          "name": "in",
+          "kind": "Port",
+          "addr": 94185350228912,
+          "type": {
+            "name": "s1",
+            "kind": "TypeAlias",
+            "addr": 94185350090224,
+            "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+          },
+          "direction": "In",
+          "internalSymbol": "94185350229136 in"
+        },
+        {
+          "name": "in",
+          "kind": "Net",
+          "addr": 94185350229136,
+          "type": {
+            "name": "s1",
+            "kind": "TypeAlias",
+            "addr": 94185350090224,
+            "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+          }
+        },
+        {
+          "name": "clk",
+          "kind": "Port",
+          "addr": 94185350229304,
+          "type": "logic",
+          "direction": "In",
+          "internalSymbol": "94185350229528 clk"
+        },
+        {
+          "name": "clk",
+          "kind": "Net",
+          "addr": 94185350229528,
+          "type": "logic"
+        },
+        {
+          "name": "value1",
+          "kind": "Variable",
+          "addr": 94185350229696,
+          "type": {
+            "name": "s1",
+            "kind": "TypeAlias",
+            "addr": 94185350090224,
+            "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+          },
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "value2",
+          "kind": "Variable",
+          "addr": 94185350229864,
+          "type": {
+            "name": "s1",
+            "kind": "TypeAlias",
+            "addr": 94185350090224,
+            "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+          },
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "value3",
+          "kind": "Variable",
+          "addr": 94185350230032,
+          "type": {
+            "name": "s1",
+            "kind": "TypeAlias",
+            "addr": 94185350090224,
+            "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+          },
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "",
+          "kind": "ContinuousAssign",
+          "addr": 94185350230200,
+          "assignment": {
+            "kind": "Assignment",
+            "type": {
+              "name": "s1",
+              "kind": "TypeAlias",
+              "addr": 94185350090224,
+              "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+            },
+            "left": {
+              "kind": "NamedValue",
+              "type": {
+                "name": "s1",
+                "kind": "TypeAlias",
+                "addr": 94185350090224,
+                "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+              },
+              "symbol": "94185350229696 value1",
+              "isHierarchical": false
+            },
+            "right": {
+              "kind": "NamedValue",
+              "type": {
+                "name": "s1",
+                "kind": "TypeAlias",
+                "addr": 94185350090224,
+                "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+              },
+              "symbol": "94185350229136 in",
+              "isHierarchical": false
+            },
+            "isNonBlocking": false
+          }
+        },
+        {
+          "name": "",
+          "kind": "ContinuousAssign",
+          "addr": 94185350230288,
+          "assignment": {
+            "kind": "Assignment",
+            "type": "logic[3:0]",
+            "left": {
+              "kind": "MemberAccess",
+              "type": "logic[3:0]",
+              "field": "94185350224304 a",
+              "value": {
+                "kind": "NamedValue",
+                "type": {
+                  "name": "s1",
+                  "kind": "TypeAlias",
+                  "addr": 94185350090224,
+                  "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+                },
+                "symbol": "94185350229864 value2",
+                "isHierarchical": false
+              }
+            },
+            "right": {
+              "kind": "MemberAccess",
+              "type": "logic[3:0]",
+              "field": "94185350224304 a",
+              "value": {
+                "kind": "NamedValue",
+                "type": {
+                  "name": "s1",
+                  "kind": "TypeAlias",
+                  "addr": 94185350090224,
+                  "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+                },
+                "symbol": "94185350229136 in",
+                "isHierarchical": false
+              }
+            },
+            "isNonBlocking": false
+          }
+        },
+        {
+          "name": "",
+          "kind": "ProceduralBlock",
+          "addr": 94185350223112,
+          "procedureKind": "AlwaysFF",
+          "body": {
+            "kind": "Timed",
+            "timing": {
+              "kind": "SignalEvent",
+              "expr": {
+                "kind": "NamedValue",
+                "type": "logic",
+                "symbol": "94185350229528 clk",
+                "isHierarchical": false
+              },
+              "edge": "PosEdge"
+            },
+            "stmt": {
+              "kind": "Block",
+              "blockKind": "Sequential",
+              "body": {
+                "kind": "List",
+                "list": [
+                  {
+                    "kind": "ExpressionStatement",
+                    "expr": {
+                      "kind": "Assignment",
+                      "type": {
+                        "name": "s1",
+                        "kind": "TypeAlias",
+                        "addr": 94185350090224,
+                        "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+                      },
+                      "left": {
+                        "kind": "NamedValue",
+                        "type": {
+                          "name": "s1",
+                          "kind": "TypeAlias",
+                          "addr": 94185350090224,
+                          "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+                        },
+                        "symbol": "94185350230032 value3",
+                        "isHierarchical": false
+                      },
+                      "right": {
+                        "kind": "NamedValue",
+                        "type": {
+                          "name": "s1",
+                          "kind": "TypeAlias",
+                          "addr": 94185350090224,
+                          "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+                        },
+                        "symbol": "94185350229136 in",
+                        "isHierarchical": false
+                      },
+                      "isNonBlocking": true
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "",
+          "kind": "ProceduralBlock",
+          "addr": 94185350223296,
+          "procedureKind": "AlwaysComb",
+          "body": {
+            "kind": "Block",
+            "blockKind": "Sequential",
+            "body": {
+              "kind": "List",
+              "list": [
+                {
+                  "kind": "ExpressionStatement",
+                  "expr": {
+                    "kind": "Assignment",
+                    "type": "logic[1:0]",
+                    "left": {
+                      "kind": "MemberAccess",
+                      "type": "logic[1:0]",
+                      "field": "94185350223808 b",
+                      "value": {
+                        "kind": "NamedValue",
+                        "type": {
+                          "name": "s1",
+                          "kind": "TypeAlias",
+                          "addr": 94185350090224,
+                          "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+                        },
+                        "symbol": "94185350229864 value2",
+                        "isHierarchical": false
+                      }
+                    },
+                    "right": {
+                      "kind": "MemberAccess",
+                      "type": "logic[1:0]",
+                      "field": "94185350223808 b",
+                      "value": {
+                        "kind": "NamedValue",
+                        "type": {
+                          "name": "s1",
+                          "kind": "TypeAlias",
+                          "addr": 94185350090224,
+                          "target": "struct packed{logic[3:0] a;logic[1:0] b;}s$1"
+                        },
+                        "symbol": "94185350229136 in",
+                        "isHierarchical": false
+                      }
+                    },
+                    "isNonBlocking": false
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "definition": "94185350090400 mod"
+    }
+  ]
+}

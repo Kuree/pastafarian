@@ -19,7 +19,17 @@ enum class NodeType {
     Assign = 1u << 6u
 };
 
-enum class NetOpType { Ignore, Add, Subtract, Ternary, Equal, LogicalNot, BinaryAnd, BinaryOr, BitwiseNot };
+enum class NetOpType {
+    Ignore,
+    Add,
+    Subtract,
+    Ternary,
+    Equal,
+    LogicalNot,
+    BinaryAnd,
+    BinaryOr,
+    BitwiseNot
+};
 
 enum class PortType { None, Input, Output };
 enum class EventType { None, Posedge, Negedge };
@@ -31,7 +41,7 @@ inline NodeType operator&(NodeType a, NodeType b) {
     return static_cast<NodeType>(static_cast<uint32_t>(a) & static_cast<uint32_t>(b));
 }
 
-enum class EdgeType {
+enum class EdgeType : unsigned int {
     Blocking = 1u << 0u,
     NonBlocking = 1u << 1u,
     Slice = 1u << 2u,
@@ -82,6 +92,9 @@ public:
     EventType event_type = EventType::None;
     // only for module instances
     std::unique_ptr<ModuleDefInfo> module_def;
+    // member access
+    // for interface and packed struct
+    std::unordered_map<std::string, Node*> members;
 
     Node(uint64_t id, std::string name) : id(id), name(std::move(name)) {}
     Node(uint64_t id, std::string name, Node* parent)
@@ -128,8 +141,6 @@ private:
         template <typename... Args>
         explicit sink(Args const&...) {}
     };
-
-    // this is used to construct
 };
 
 struct Edge {
@@ -200,7 +211,7 @@ public:
     std::vector<FSMResult> identify_fsms();
     std::vector<FSMResult> identify_fsms(const Node* top);
     static std::unordered_map<const Node*, std::unordered_set<const Node*>> group_fsms(
-        const std::vector<FSMResult>& fsms, bool fast_mode=true);
+        const std::vector<FSMResult>& fsms, bool fast_mode = true);
 
     uint64_t get_free_id() { return free_id_ptr_--; }
 

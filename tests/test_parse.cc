@@ -91,6 +91,24 @@ TEST_F(ParserTest, op) {  // NOLINT
     EXPECT_TRUE(g.has_path(a, f));
 }
 
+TEST_F(ParserTest, packed_struct) {  // NOLINT
+    parse("packed_struct.json");
+    auto value1_a = g.select("mod.value1.a");
+    auto in_a = g.select("mod.in.a");
+    EXPECT_NE(value1_a, nullptr);
+    EXPECT_NE(in_a, nullptr);
+    EXPECT_TRUE(g.has_path(in_a, value1_a));
+    EXPECT_EQ(in_a->edges_to.size(), 3);
+
+    auto value3_a = g.select("mod.value3.a");
+    EXPECT_NE(value3_a, nullptr);
+    EXPECT_TRUE(g.has_path(in_a, value3_a));
+    EXPECT_EQ(value3_a->edges_from.size(), 1);
+    auto edge = *value3_a->edges_from.begin();
+    EXPECT_TRUE(edge->is_assign());
+    EXPECT_EQ(edge->type, fsm::EdgeType::NonBlocking);
+}
+
 TEST_F(ParserTest, fsm1) {  // NOLINT
     parse("fsm1.json");
 

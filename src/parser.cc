@@ -289,6 +289,19 @@ Node *parse_module(T &value, Graph *g, Node *parent) {
 }
 
 template <class T>
+Node *parse_member_access(T &value, Graph *g) {
+    auto field = value["field"];
+    assert_(field.error == SUCCESS, "unable to find field from member access");
+    auto field_str = std::string(field.as_string());
+    field_str = parse_internal_symbol_name(field_str);
+    auto v = value["value"];
+    Node *n = parse_dispatch(v, g, nullptr);
+    assert_(n->members.find(field_str) != n->members.end(), "unable to find " + field_str);
+    auto child = n->members.at(field_str);
+    return child;
+}
+
+template <class T>
 Node *parse_block(T value, Graph *g, Node *parent) {
     uint64_t addr;
     if (value["addr"].error == SUCCESS) {
@@ -590,6 +603,22 @@ Node *parse_case(T value, Graph *g, Node *parent) {
 }
 
 template <class T>
+void add_assignment_node(T value, Graph *g, Node *parent, const uint64_t addr, Node *left_node,
+                         Node *right_node) {
+    // create an assignment node
+    auto n = g->add_node(addr, "", NodeType::Assign);
+    right_node->add_edge(n, EdgeType::Blocking);
+    if (right_node != parent && parent && parent->has_type(NodeType::Control)) {
+        // it's a control edge
+        parent->add_edge(n, EdgeType::Control);
+    }
+    auto non_blocking = value["isNonBlocking"].as_bool();
+    auto edge_type = non_blocking ? EdgeType::NonBlocking : EdgeType::Blocking;
+    n->add_edge(left_node, edge_type);
+    n->parent = parent;
+}
+
+template <class T>
 Node *parse_assignment(T value, Graph *g, Node *parent) {
     auto const &left = value["left"];
     auto const &right = value["right"];
@@ -603,17 +632,19 @@ Node *parse_assignment(T value, Graph *g, Node *parent) {
         // right is just the parent
         right_node = parent;
     }
-    // create an assignment node
-    auto n = g->add_node(addr, "", NodeType::Assign);
-    right_node->add_edge(n, EdgeType::Blocking);
-    if (right_node != parent && parent && parent->has_type(NodeType::Control)) {
-        // it's a control edge
-        parent->add_edge(n, EdgeType::Control);
+    if (right_node->members.empty()) {
+        add_assignment_node(value, g, parent, addr, left_node, right_node);
+    } else {
+        assert_(right_node->members.size() == left_node->members.size(),
+                "only packed struct to packed struct allowed");
+        for (auto const &[var_name, node_l] : left_node->members) {
+            assert_(right_node->members.find(var_name) != right_node->members.end(),
+                    ::format("unable to find {0} form {1}", var_name, right_node->name));
+            auto node_r = right_node->members.at(var_name);
+            add_assignment_node(value, g, parent, addr, node_l, node_r);
+        }
     }
-    auto non_blocking = value["isNonBlocking"].as_bool();
-    auto edge_type = non_blocking ? EdgeType::NonBlocking : EdgeType::Blocking;
-    n->add_edge(left_node, edge_type);
-    n->parent = parent;
+
     return nullptr;
 }
 
@@ -639,6 +670,35 @@ Node *parse_generate_block(T value, Graph *g, Node *parent) {
 }
 
 template <class T>
+void parse_type_alias(Graph *g, Node *node, const T &elem) {
+    auto target_ = elem["target"];
+    if (target_.error == SUCCESS) {
+        auto target_str = std::string(target_.as_string());
+        const static std::string PACKED_STRUCT = "struct packed";
+        auto target_pos = target_str.find(PACKED_STRUCT);
+        if (target_pos != std::string::npos) {
+            auto def_str = target_str.substr(target_pos + PACKED_STRUCT.size());
+            auto tokens1 = string::get_tokens(def_str, ";");
+            for (auto const &t : tokens1) {
+                auto values = string::get_tokens(t, " ");
+                if (values.size() == 2) {
+                    auto var_name = values[1];
+                    if (node->members.find(var_name) == node->members.end()) {
+                        // create a new var
+                        auto n = g->get_node(g->get_free_id());
+                        n->name = var_name;
+                        n->wire_type = values[1];
+                        n->parent = node;
+                        node->members.emplace(n->name, n);
+                        node->children.emplace_back(n);
+                    }
+                }
+            }
+        }
+    }
+}
+
+template <class T>
 Node *parse_net(T value, Graph *g, Node *parent) {
     auto name_json = value["name"];
     assert_(name_json.error == SUCCESS, "name not found in net");
@@ -657,6 +717,14 @@ Node *parse_net(T value, Graph *g, Node *parent) {
         auto elem = wire_str.value;
         if (elem.is_string()) {
             n->wire_type = wire_str;
+        } else if (elem.is_object()) {
+            auto kind = elem["kind"];
+            if (kind.error == SUCCESS) {
+                auto kind_str_ = std::string(kind.as_string());
+                if (kind_str_ == "TypeAlias") {
+                    parse_type_alias(g, n, elem);
+                }
+            }
         }
     }
     if (value["internalSymbol"].error == SUCCESS) {
@@ -755,6 +823,8 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
         parse_event_list(value, g, parent);
     } else if (ast_kind == "SignalEvent") {
         parse_signal_event(value, g, parent);
+    } else if (ast_kind == "MemberAccess") {
+        return parse_member_access(value, g);
     } else {
         std::cerr << "Unable to parse AST node kind " << ast_kind << std::endl;
     }
