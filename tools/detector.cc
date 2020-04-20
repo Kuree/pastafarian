@@ -180,7 +180,7 @@ int main(int argc, char *argv[]) {
     app.add_option("-i,--input", filenames, "SystemVerilog design files")->required();
     app.add_option("-I,--include", include_dirs, "SystemVerilog include search directory");
     app.add_option("--json", output_filename, "Output JSON. Use - for stdout");
-    app.add_flag("--coupled-fsm", compute_coupled_fsm, "Whether to compute coupled FSM");
+    app.add_flag("-c,--coupled-fsm", compute_coupled_fsm, "Whether to compute coupled FSM");
     app.add_flag("--formal", use_formal, "Whether to use formal tools to determine FSM properties");
     app.add_option("--top", top, "Specify the design top");
     app.add_option("--reset", reset_name, "Reset pin name");

@@ -200,7 +200,7 @@ public:
     std::vector<FSMResult> identify_fsms();
     std::vector<FSMResult> identify_fsms(const Node* top);
     static std::unordered_map<const Node*, std::unordered_set<const Node*>> group_fsms(
-        const std::vector<FSMResult>& fsms);
+        const std::vector<FSMResult>& fsms, bool fast_mode=true);
 
     uint64_t get_free_id() { return free_id_ptr_--; }
 

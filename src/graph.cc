@@ -94,8 +94,7 @@ bool Graph::has_path(Node *from, Node *to, const std::function<bool(const Edge *
         for (auto const &nn : edges) {
             if (visited.find(nn->to) != visited.end()) continue;
             bool add_cond = cond(nn.get());
-            if (add_cond)
-                nodes.push(nn->to);
+            if (add_cond) nodes.push(nn->to);
         }
         visited.emplace(n);
     }
@@ -535,8 +534,9 @@ std::vector<FSMResult> Graph::identify_fsms(const Node *top) {
                 bool control_loop = Graph::has_control_loop(reg);
                 if (control_loop) {
                     // this is the fsm
+                    FSMResult fsm(reg, const_src);
                     mutex.lock();
-                    result.emplace_back(FSMResult(reg, const_src));
+                    result.emplace_back(fsm);
                     mutex.unlock();
                 }
             }
@@ -574,8 +574,15 @@ Node *Graph::copy_node(const Node *node, bool copy_connection) {
     return n;
 }
 
-std::pair<const Node *, const Node *> coupled_fsms(const Node *fsm_from, const Node *fsm_to) {
-    if (reachable_control_loop(fsm_from, fsm_to)) {
+std::pair<const Node *, const Node *> coupled_fsms(const Node *fsm_from, const Node *fsm_to,
+                                                   bool fast_mode) {
+    bool coupled = false;
+    if (fast_mode) {
+        coupled = Graph::reachable(fsm_from, fsm_to);
+    } else {
+        reachable_control_loop(fsm_from, fsm_to);
+    }
+    if (coupled) {
         return {fsm_from, fsm_to};
     } else {
         return {nullptr, nullptr};
@@ -583,7 +590,7 @@ std::pair<const Node *, const Node *> coupled_fsms(const Node *fsm_from, const N
 }
 
 std::unordered_map<const Node *, std::unordered_set<const Node *>> Graph::group_fsms(
-    const std::vector<FSMResult> &fsms) {
+    const std::vector<FSMResult> &fsms, bool fast_mode) {
     std::unordered_map<const Node *, std::unordered_set<const Node *>> result;
     auto num_cpus = get_num_cpus();
     cxxpool::thread_pool pool{num_cpus};
@@ -595,7 +602,7 @@ std::unordered_map<const Node *, std::unordered_set<const Node *>> Graph::group_
         for (uint64_t j = 0; j < fsms.size(); j++) {
             if (i == j) continue;
             auto const &fsm_to = fsms[j].node();
-            auto t = pool.push([=]() { return coupled_fsms(fsm_from, fsm_to); });
+            auto t = pool.push([=]() { return coupled_fsms(fsm_from, fsm_to, fast_mode); });
             tasks.emplace_back(std::move(t));
         }
     }
