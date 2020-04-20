@@ -226,9 +226,11 @@ Node *parse_signal_event(T value, Graph *g, Node *parent) {
     auto edge = std::string(edge_raw.as_string());
     if (edge == "PosEdge") {
         expr->event_type = EventType::Posedge;
-    } else {
-        assert_(edge == "NegEdge", "Unknown edge type " + edge);
+    } else if (edge == "NegEdge") {
         expr->event_type = EventType::Negedge;
+    } else {
+        assert_(edge == "None", "Unknown edge type " + edge);
+        expr->event_type = EventType::None;
     }
     return nullptr;
 }
