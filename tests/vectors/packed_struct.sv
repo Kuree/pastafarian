@@ -5,15 +5,18 @@ typedef struct packed {
 
 module mod (
     input s1 in,
-    input logic clk
+    input logic clk,
+    input s1 in_array[1:0]
 );
 
 s1 value1;
 s1 value2;
 s1 value3;
+s1 value4;
 
 assign value1 = in;
 assign value2.a = in.a;
+assign value4.a = in_array[0].a;
 
 always_ff @(posedge clk) begin
     value3 <= in;

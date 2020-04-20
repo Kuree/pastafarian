@@ -670,10 +670,18 @@ Node *parse_generate_block(T value, Graph *g, Node *parent) {
 }
 
 template <class T>
-void parse_type_alias(Graph *g, Node *node, const T &elem) {
+void parse_complex_struct(Graph *g, Node *node, const T &elem) {
     auto target_ = elem["target"];
+    std::string target_str;
     if (target_.error == SUCCESS) {
-        auto target_str = std::string(target_.as_string());
+        target_str = std::string(target_.as_string());
+    } else {
+        if (elem.is_string()) {
+            target_str = std::string(elem.as_string());
+        }
+    }
+
+    if (!target_str.empty()) {
         const static std::string PACKED_STRUCT = "struct packed";
         auto target_pos = target_str.find(PACKED_STRUCT);
         if (target_pos != std::string::npos) {
@@ -683,6 +691,8 @@ void parse_type_alias(Graph *g, Node *node, const T &elem) {
                 auto values = string::get_tokens(t, " ");
                 if (values.size() == 2) {
                     auto var_name = values[1];
+                    var_name.erase(std::remove(var_name.begin(), var_name.end(), '{'),
+                                   var_name.end());
                     if (node->members.find(var_name) == node->members.end()) {
                         // create a new var
                         auto n = g->get_node(g->get_free_id());
@@ -715,16 +725,23 @@ Node *parse_net(T value, Graph *g, Node *parent) {
     if constexpr (std::is_same_v<typeof(wire_str),
                                  simdjson::document::element_result<simdjson::document::element>>) {
         auto elem = wire_str.value;
-        if (elem.is_string()) {
-            n->wire_type = wire_str;
-        } else if (elem.is_object()) {
+        bool complex_struct = false;
+        if (elem.is_object()) {
             auto kind = elem["kind"];
             if (kind.error == SUCCESS) {
                 auto kind_str_ = std::string(kind.as_string());
                 if (kind_str_ == "TypeAlias") {
-                    parse_type_alias(g, n, elem);
+                    complex_struct = true;
                 }
             }
+        } else if (elem.is_string()) {
+            n->wire_type = wire_str;
+            if (n->wire_type.find('$') != std::string::npos) {
+                complex_struct = true;
+            }
+        }
+        if (complex_struct) {
+            parse_complex_struct(g, n, elem);
         }
     }
     if (value["internalSymbol"].error == SUCCESS) {
