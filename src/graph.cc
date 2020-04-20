@@ -597,13 +597,24 @@ std::unordered_map<const Node *, std::unordered_set<const Node *>> Graph::group_
     cxxpool::thread_pool pool{num_cpus};
     std::vector<std::future<std::pair<const Node *, const Node *>>> tasks;
     tasks.reserve(fsms.size() * fsms.size());
+    tqdm bar;
+    std::mutex mutex;
+    uint32_t count = 0;
+    const uint32_t max_fsm = fsms.size() * (fsms.size() - 1);
 
     for (uint64_t i = 0; i < fsms.size(); i++) {
         auto const &fsm_from = fsms[i].node();
         for (uint64_t j = 0; j < fsms.size(); j++) {
             if (i == j) continue;
             auto const &fsm_to = fsms[j].node();
-            auto t = pool.push([=]() { return coupled_fsms(fsm_from, fsm_to, fast_mode); });
+            auto t = pool.push([=, &mutex, &count, &bar]() {
+                mutex.lock();
+                count++;
+                bar.progress(count, max_fsm);
+                mutex.unlock();
+
+                return coupled_fsms(fsm_from, fsm_to, fast_mode);
+            });
             tasks.emplace_back(std::move(t));
         }
     }
