@@ -99,7 +99,12 @@ void print_grouped_fsm(
     for (auto const &[node, linked_nodes] : result) {
         if (linked_nodes.empty()) continue;
         std::cout << node->handle_name(m.top()) << ": " << std::endl;
-        for (auto const linked_node : linked_nodes) {
+        // sort linked nodes
+        auto nodes = std::vector<const fsm::Node *>(linked_nodes.begin(), linked_nodes.end());
+        std::sort(nodes.begin(), nodes.end(), [=](const auto a, const auto b) {
+            return a->handle_name(m.top()) < b->handle_name(m.top());
+        });
+        for (auto const linked_node : nodes) {
             std::cout << "  - " << linked_node->handle_name(m.top()) << std::endl;
         }
 
