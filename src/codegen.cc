@@ -162,9 +162,9 @@ void VerilogModule::create_properties() {
             // this is for reachable state
             auto const &fsm = fsm_results_[i];
             if (fsm.is_counter()) {
+                mutex.lock();
                 auto property = std::make_shared<Property>(id_count++, root_module_, clock_name_,
                                                            fsm.node(), nullptr);
-                mutex.lock();
                 properties_.emplace(property->id, property);
                 property_id_to_fsm_.emplace(property->id, i);
                 mutex.unlock();
@@ -173,10 +173,10 @@ void VerilogModule::create_properties() {
                 auto unique_states = fsm.unique_states();
                 for (auto const &state : unique_states) {
                     // so single variable
+                    mutex.lock();
                     auto property = std::make_shared<Property>(id_count++, root_module_,
                                                                clock_name_, fsm.node(), state);
                     property->should_be_valid = true;
-                    mutex.lock();
                     properties_.emplace(property->id, property);
                     property_id_to_fsm_.emplace(property->id, i);
                     mutex.unlock();
@@ -189,6 +189,7 @@ void VerilogModule::create_properties() {
                     state_arc_values.emplace(std::make_pair(from->value, to->value));
                 for (auto const &state_from : unique_states) {
                     for (auto const &state_to : unique_states) {
+                        mutex.lock();
                         auto property = std::make_shared<Property>(
                             id_count++, root_module_, clock_name_, fsm.node(), state_from,
                             fsm.node(), state_to);
@@ -196,7 +197,6 @@ void VerilogModule::create_properties() {
                         if (state_arc_values.find(state_pair) != state_arc_values.end())
                             property->should_be_valid = true;
                         property->delay = 1;
-                        mutex.lock();
                         properties_.emplace(property->id, property);
                         property_id_to_fsm_.emplace(property->id, i);
                         mutex.unlock();
