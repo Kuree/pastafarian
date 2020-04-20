@@ -523,11 +523,12 @@ std::vector<FSMResult> Graph::identify_fsms(const Node *top) {
         if (top && !reg->child_of(top)) continue;
         // I think the constant driver is faster?
         auto t = pool.push([reg, &mutex, &count, &bar, num_registers, &result]() -> void {
-            auto const_src = Graph::get_constant_source(reg);
             mutex.lock();
             count++;
             bar.progress(count, num_registers);
             mutex.unlock();
+
+            auto const_src = Graph::get_constant_source(reg);
 
             if (const_src.size() > 1) {
                 // next one is to check if there is a constant loop

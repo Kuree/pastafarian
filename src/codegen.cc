@@ -1,6 +1,8 @@
 #include "codegen.hh"
 
+#include <cxxpool.h>
 #include <fmt/format.h>
+#include <tqdm.h>
 
 #include <fstream>
 #include <iostream>
@@ -121,8 +123,8 @@ VerilogModule::VerilogModule(fsm::Graph *graph, SourceManager parser_result,
         assert_(!modules.empty(), "no top module found");
         root_module_ = modules.begin()->second;
         if (root_module_->name != top_name) {
-            std::cerr << "Unable to find " << top_name << ". Use "
-                      << root_module_->name << " instead" << std::endl;
+            std::cerr << "Unable to find " << top_name << ". Use " << root_module_->name
+                      << " instead" << std::endl;
         }
     }
 
@@ -141,45 +143,76 @@ VerilogModule::VerilogModule(fsm::Graph *graph, SourceManager parser_result,
 void VerilogModule::create_properties() {
     // compute the coupled FSM here?
     uint32_t id_count = 0;
+    auto num_cpus = get_num_cpus();
+    cxxpool::thread_pool pool{num_cpus};
+    std::vector<std::future<void>> tasks;
+    tasks.reserve(fsm_results_.size());
+    std::mutex mutex;
+    tqdm bar;
+    uint32_t count = 0;
+    uint32_t num_fsm = fsm_results_.size();
+
     for (uint32_t i = 0; i < fsm_results_.size(); i++) {
-        // this is for reachable state
-        auto const &fsm = fsm_results_[i];
-        if (fsm.is_counter()) {
-            auto property = std::make_shared<Property>(id_count++, root_module_, clock_name_,
-                                                       fsm.node(), nullptr);
-            properties_.emplace(property->id, property);
-            property_id_to_fsm_.emplace(property->id, i);
-            continue;
-        } else {
-            auto unique_states = fsm.unique_states();
-            for (auto const &state : unique_states) {
-                // so single variable
+        auto t = pool.push([this, &id_count, i, &mutex, &count, num_fsm, &bar]() {
+            mutex.lock();
+            count++;
+            bar.progress(count, num_fsm);
+            mutex.unlock();
+
+            // this is for reachable state
+            auto const &fsm = fsm_results_[i];
+            if (fsm.is_counter()) {
                 auto property = std::make_shared<Property>(id_count++, root_module_, clock_name_,
-                                                           fsm.node(), state);
-                property->should_be_valid = true;
+                                                           fsm.node(), nullptr);
+                mutex.lock();
                 properties_.emplace(property->id, property);
                 property_id_to_fsm_.emplace(property->id, i);
-            }
-            // state transition
-            // get the absolute correct ones
-            auto state_arcs = fsm.syntax_arc();
-            std::set<std::pair<int64_t, int64_t>> state_arc_values;
-            for (auto const &[from, to] : state_arcs)
-                state_arc_values.emplace(std::make_pair(from->value, to->value));
-            for (auto const &state_from : unique_states) {
-                for (auto const &state_to : unique_states) {
-                    auto property =
-                        std::make_shared<Property>(id_count++, root_module_, clock_name_,
-                                                   fsm.node(), state_from, fsm.node(), state_to);
-                    auto state_pair = std::make_pair(state_from->value, state_to->value);
-                    if (state_arc_values.find(state_pair) != state_arc_values.end())
-                        property->should_be_valid = true;
-                    property->delay = 1;
+                mutex.unlock();
+                return;
+            } else {
+                auto unique_states = fsm.unique_states();
+                for (auto const &state : unique_states) {
+                    // so single variable
+                    auto property = std::make_shared<Property>(id_count++, root_module_,
+                                                               clock_name_, fsm.node(), state);
+                    property->should_be_valid = true;
+                    mutex.lock();
                     properties_.emplace(property->id, property);
                     property_id_to_fsm_.emplace(property->id, i);
+                    mutex.unlock();
+                }
+                // state transition
+                // get the absolute correct ones
+                auto state_arcs = fsm.syntax_arc();
+                std::set<std::pair<int64_t, int64_t>> state_arc_values;
+                for (auto const &[from, to] : state_arcs)
+                    state_arc_values.emplace(std::make_pair(from->value, to->value));
+                for (auto const &state_from : unique_states) {
+                    for (auto const &state_to : unique_states) {
+                        auto property = std::make_shared<Property>(
+                            id_count++, root_module_, clock_name_, fsm.node(), state_from,
+                            fsm.node(), state_to);
+                        auto state_pair = std::make_pair(state_from->value, state_to->value);
+                        if (state_arc_values.find(state_pair) != state_arc_values.end())
+                            property->should_be_valid = true;
+                        property->delay = 1;
+                        mutex.lock();
+                        properties_.emplace(property->id, property);
+                        property_id_to_fsm_.emplace(property->id, i);
+                        mutex.unlock();
+                    }
                 }
             }
-        }
+        });
+
+        tasks.emplace_back(std::move(t));
+    }
+
+    for (auto &t : tasks) {
+        t.wait();
+    }
+    for (auto &t : tasks) {
+        t.get();
     }
 }
 
