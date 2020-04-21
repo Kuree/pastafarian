@@ -810,7 +810,7 @@ Node *parse_net(T value, Graph *g, Node *parent) {
 
 static std::unordered_set<std::string> don_t_care_kind = {  // NOLINT
     "TransparentMember", "TypeAlias", "StatementBlock",     "Subroutine",
-    "EmptyArgument",     "Empty",     "VariableDeclaration"};
+    "EmptyArgument",     "Empty",     "VariableDeclaration", "ImplicitEvent"};
 
 template <class T>
 Node *parse_dispatch(T value, Graph *g, Node *parent) {
