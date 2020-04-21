@@ -181,6 +181,7 @@ public:
     inline void alias_node(uint64_t key, Node* node) { nodes_map_.emplace(key, node); }
 
     bool has_node(uint64_t key) const { return nodes_map_.find(key) != nodes_map_.end(); }
+    inline void remove_node(uint64_t key) { nodes_map_.erase(key); }
 
     Node* get_node(uint64_t key);
 

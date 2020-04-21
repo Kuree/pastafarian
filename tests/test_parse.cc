@@ -99,6 +99,8 @@ TEST_F(ParserTest, packed_struct) {  // NOLINT
     EXPECT_NE(in_a, nullptr);
     EXPECT_TRUE(g.has_path(in_a, value1_a));
     EXPECT_EQ(in_a->edges_to.size(), 3);
+    auto in_b = g.select("mod.in.b");
+    EXPECT_EQ(in_b->edges_to.size(), 3);
 
     auto value3_a = g.select("mod.value3.a");
     EXPECT_NE(value3_a, nullptr);
@@ -107,6 +109,10 @@ TEST_F(ParserTest, packed_struct) {  // NOLINT
     auto edge = *value3_a->edges_from.begin();
     EXPECT_TRUE(edge->is_assign());
     EXPECT_EQ(edge->type, fsm::EdgeType::NonBlocking);
+
+    auto in2_d_a = g.select("mod.in2.d.b");
+    EXPECT_NE(in2_d_a, nullptr);
+    EXPECT_EQ(in2_d_a->edges_to.size(), 1);
 }
 
 TEST_F(ParserTest, fsm1) {  // NOLINT

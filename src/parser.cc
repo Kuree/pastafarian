@@ -671,13 +671,17 @@ Node *parse_generate_block(T value, Graph *g, Node *parent) {
 
 template <class T>
 void parse_complex_struct(Graph *g, Node *node, const T &elem) {
-    auto target_ = elem["target"];
     std::string target_str;
-    if (target_.error == SUCCESS) {
-        target_str = std::string(target_.as_string());
+    if constexpr (std::is_same_v<T, std::string>) {
+        target_str = elem;
     } else {
-        if (elem.is_string()) {
-            target_str = std::string(elem.as_string());
+        auto target_ = elem["target"];
+        if (target_.error == SUCCESS) {
+            target_str = std::string(target_.as_string());
+        } else {
+            if (elem.is_string()) {
+                target_str = std::string(elem.as_string());
+            }
         }
     }
 
@@ -686,22 +690,51 @@ void parse_complex_struct(Graph *g, Node *node, const T &elem) {
         auto target_pos = target_str.find(PACKED_STRUCT);
         if (target_pos != std::string::npos) {
             auto def_str = target_str.substr(target_pos + PACKED_STRUCT.size());
-            auto tokens1 = string::get_tokens(def_str, ";");
-            for (auto const &t : tokens1) {
+            auto begin = def_str.find_first_of('{');
+            auto end = def_str.find_last_of('}');
+            def_str = def_str.substr(begin + 1, end - begin - 2);
+            std::vector<std::string> tokens;
+            // TODO: hacky way to parse the definition
+            //  only two levels
+            begin = def_str.find_first_of('{');
+            if (begin != std::string::npos) {
+                end = def_str.find_last_of('}');
+                // chop chunk of
+                auto begin_p = def_str.find_last_of(';', begin);
+                auto end_p = def_str.find_first_of(';', end);
+                tokens.emplace_back(def_str.substr(begin_p + 1, end_p - begin_p - 1));
+                def_str.erase(begin_p, end_p - begin_p);
+            }
+            auto tokens_ = string::get_tokens(def_str, ";");
+            tokens.insert(tokens.end(), tokens_.begin(), tokens_.end());
+            for (auto const &t : tokens) {
+                if (t.empty()) continue;
+                bool node_added = false;
+                // create a new var
+                auto n = g->get_node(g->get_free_id());
                 auto values = string::get_tokens(t, " ");
-                if (values.size() == 2) {
-                    auto var_name = values[1];
-                    var_name.erase(std::remove(var_name.begin(), var_name.end(), '{'),
-                                   var_name.end());
-                    if (node->members.find(var_name) == node->members.end()) {
-                        // create a new var
-                        auto n = g->get_node(g->get_free_id());
-                        n->name = var_name;
-                        n->wire_type = values[1];
-                        n->parent = node;
-                        node->members.emplace(n->name, n);
-                        node->children.emplace_back(n);
+                auto var_name = values.back();
+                n->name = var_name;
+                n->parent = node;
+                if (t.find(PACKED_STRUCT) != std::string::npos) {
+                    node->members.emplace(n->name, n);
+                    node->children.emplace_back(n);
+                    node_added = true;
+                    // recursively
+                    parse_complex_struct(g, n, t);
+
+                } else {
+                    if (values.size() == 2) {
+                        if (node->members.find(var_name) == node->members.end()) {
+                            n->wire_type = values[0];
+                            node->members.emplace(n->name, n);
+                            node->children.emplace_back(n);
+                            node_added = true;
+                        }
                     }
+                }
+                if (!node_added) {
+                    g->remove_node(n->id);
                 }
             }
         }
