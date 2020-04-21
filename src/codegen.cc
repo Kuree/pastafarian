@@ -122,7 +122,7 @@ VerilogModule::VerilogModule(fsm::Graph *graph, SourceManager parser_result,
     } else {
         assert_(!modules.empty(), "no top module found");
         root_module_ = modules.begin()->second;
-        if (root_module_->name != top_name) {
+        if (root_module_->name != top_name && !top_name.empty()) {
             std::cerr << "Unable to find " << top_name << ". Use " << root_module_->name
                       << " instead" << std::endl;
         }
