@@ -23,6 +23,7 @@ public:
 
     [[nodiscard]] std::vector<const Node *> unique_states() const;
 
+    [[nodiscard]] std::unordered_set<const Node*> counter_values() const;
 
     FSMResult() = delete;
 

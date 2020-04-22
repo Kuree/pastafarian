@@ -10,36 +10,44 @@
 #include "util.hh"
 
 std::vector<std::pair<const fsm::Property *, std::vector<const fsm::Property *>>> sort_fsm_result(
-    const std::vector<const fsm::Property *> &properties) {
+    const fsm::FSMResult &fsm_result, const std::vector<const fsm::Property *> &properties) {
     std::vector<std::pair<const fsm::Property *, std::vector<const fsm::Property *>>> result;
     std::map<const fsm::Node *, std::vector<const fsm::Property *>> entries;
     std::map<const fsm::Node *, const fsm::Property *> states;
 
-    for (auto const property : properties) {
-        if (property->state_var2) {
-            fsm::assert_(property->state_var2 == property->state_var1, "only single FSM supported");
-            entries[property->state_value1].emplace_back(property);
-        } else {
-            states[property->state_value1] = property;
+    if (fsm_result.is_counter()) {
+        for (auto const property: properties) {
+            result.emplace_back(std::make_pair(property, std::vector<const fsm::Property *>{}));
         }
-    }
-    // merge result
-    result.reserve(entries.size());
-    for (auto &[node, ps] : entries) {
-        auto p = states.at(node);
-        // sort the properties
-        std::sort(ps.begin(), ps.end(), [](auto const &left, auto const &right) {
-            return left->state_value2 < right->state_value2;
-        });
-        result.emplace_back(std::make_pair(p, ps));
+    } else {
+        for (auto const property : properties) {
+            if (property->state_var2) {
+                fsm::assert_(property->state_var2 == property->state_var1, "only single FSM supported");
+                entries[property->state_value1].emplace_back(property);
+            } else {
+                states[property->state_value1] = property;
+            }
+        }
+        // merge result
+        result.reserve(entries.size());
+        for (auto &[node, ps] : entries) {
+            auto p = states.at(node);
+            // sort the properties
+            std::sort(ps.begin(), ps.end(), [](auto const &left, auto const &right) {
+              return left->state_value2 < right->state_value2;
+            });
+            result.emplace_back(std::make_pair(p, ps));
+        }
     }
 
     // sort the result as well
     std::sort(result.begin(), result.end(), [](auto const &left, auto const &right) {
-        return left.first->state_value1 < right.first->state_value1;
+      return left.first->state_value1 < right.first->state_value1;
     });
 
     return result;
+
+
 }
 
 void print_fsm_value(const fsm::Node *node) {
@@ -53,38 +61,41 @@ void print_fsm_value(const fsm::Node *node) {
 void print_out_fsm(const fsm::FSMResult &fsm_result, const fsm::VerilogModule &m, bool formal) {
     auto state_node = fsm_result.node();
     std::cout << "State variable name: " << state_node->handle_name(m.top()) << std::endl;
+    std::string fsm_label;
     if (fsm_result.is_counter()) {
         std::cout << "  State: counter" << std::endl;
+        fsm_label = "Value";
     } else {
-        auto properties = m.get_property(state_node);
-        auto sorted_result = sort_fsm_result(properties);
-        for (auto const &[state_p, ps] : sorted_result) {
-            auto state = state_p->state_value1;
-            std::cout << "  State: ";
-            print_fsm_value(state);
-            if (!state_p->valid && formal) {
-                std::cout << " [UNREACHABLE]";
-            }
-            std::cout << ":" << std::endl;
-            if (formal) {
-                for (auto const &next_state : ps) {
-                    bool should_print_next = next_state->should_be_valid | next_state->valid;
-                    if (should_print_next) {
-                        std::cout << "    - Next: ";
-                        print_fsm_value(next_state->state_value2);
-                        if (!next_state->valid) {
-                            std::cout << " [UNREACHABLE]";
-                        }
-                        std::cout << std::endl;
+        fsm_label = "State";
+    }
+    auto properties = m.get_property(state_node);
+    auto sorted_result = sort_fsm_result(fsm_result, properties);
+    for (auto const &[state_p, ps] : sorted_result) {
+        auto state = state_p->state_value1;
+        std::cout << "  " << fsm_label << ": ";
+        print_fsm_value(state);
+        if (!state_p->valid && formal) {
+            std::cout << " [UNREACHABLE]";
+        }
+        std::cout << ":" << std::endl;
+        if (formal) {
+            for (auto const &next_state : ps) {
+                bool should_print_next = next_state->should_be_valid | next_state->valid;
+                if (should_print_next) {
+                    std::cout << "    - Next: ";
+                    print_fsm_value(next_state->state_value2);
+                    if (!next_state->valid) {
+                        std::cout << " [UNREACHABLE]";
                     }
+                    std::cout << std::endl;
                 }
-            } else {
-                for (auto const &next_state : ps) {
-                    if (next_state->should_be_valid) {
-                        std::cout << "    - Next: ";
-                        print_fsm_value(next_state->state_value2);
-                        std::cout << std::endl;
-                    }
+            }
+        } else {
+            for (auto const &next_state : ps) {
+                if (next_state->should_be_valid) {
+                    std::cout << "    - Next: ";
+                    print_fsm_value(next_state->state_value2);
+                    std::cout << std::endl;
                 }
             }
         }

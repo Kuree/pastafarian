@@ -197,4 +197,30 @@ std::vector<const Node *> FSMResult::unique_states() const {
     return result;
 }
 
+std::unordered_set<const Node *> FSMResult::counter_values() const {
+    if (!is_counter_) return {};
+    // need to compute counter values
+    // this is the values that used explicitly test to control the circuit logic
+    // such as max, etc
+    // this will be used to test if these values are reachable or not
+    // notice that this is only used when we have a comparison
+    // hence we can re-use the comp const function here
+    auto values_comp = comp_const();
+    // also the const src
+    auto states = unique_states();
+    values_comp.insert(states.begin(), states.end());
+
+    std::unordered_set<const Node *> result;
+    std::unordered_set<int64_t> values;
+
+    for (auto const node: values_comp) {
+        if (values.find(node->value) == values.end()) {
+            values.emplace(node->value);
+            result.emplace(node);
+        }
+    }
+
+    return result;
+}
+
 }  // namespace fsm

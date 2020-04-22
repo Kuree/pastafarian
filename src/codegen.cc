@@ -162,13 +162,16 @@ void VerilogModule::create_properties() {
             // this is for reachable state
             auto const &fsm = fsm_results_[i];
             if (fsm.is_counter()) {
-                mutex.lock();
-                auto property = std::make_shared<Property>(id_count++, root_module_, clock_name_,
-                                                           fsm.node(), nullptr);
-                properties_.emplace(property->id, property);
-                property_id_to_fsm_.emplace(property->id, i);
-                mutex.unlock();
-                return;
+                // get comp values
+                auto counter_values = fsm.counter_values();
+                for (auto const value : counter_values) {
+                    mutex.lock();
+                    auto property = std::make_shared<Property>(id_count++, root_module_,
+                                                               clock_name_, fsm.node(), value);
+                    properties_.emplace(property->id, property);
+                    property_id_to_fsm_.emplace(property->id, i);
+                    mutex.unlock();
+                }
             } else {
                 auto unique_states = fsm.unique_states();
                 for (auto const &state : unique_states) {
