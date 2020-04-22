@@ -29,14 +29,14 @@ std::vector<std::pair<const fsm::Property *, std::vector<const fsm::Property *>>
         auto p = states.at(node);
         // sort the properties
         std::sort(ps.begin(), ps.end(), [](auto const &left, auto const &right) {
-            return left->state_value2 > right->state_value2;
+            return left->state_value2 < right->state_value2;
         });
         result.emplace_back(std::make_pair(p, ps));
     }
 
     // sort the result as well
     std::sort(result.begin(), result.end(), [](auto const &left, auto const &right) {
-        return left.first->state_value1 > right.first->state_value1;
+        return left.first->state_value1 < right.first->state_value1;
     });
 
     return result;
