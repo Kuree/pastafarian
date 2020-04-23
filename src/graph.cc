@@ -386,6 +386,11 @@ std::unordered_set<const Edge *> Graph::get_constant_source(const Node *node) {
     return result;
 }
 
+bool is_counter_op(const Node *node) {
+    if (node->type != NodeType::Net) return false;
+    return node->op == NetOpType::Add || node->op == NetOpType::Subtract;
+}
+
 bool is_counter_(const Node *target, const Node *node) {
     // if there is any + or - based operator on the target node
     // first we do a search and figure out every assigned nodes
@@ -404,8 +409,7 @@ bool is_counter_(const Node *target, const Node *node) {
             for (auto const edge : edges_from) {
                 if (!edge->has_type(EdgeType::Control)) {
                     auto nn = edge->from;
-                    if (Graph::reachable(target, nn) &&
-                        (nn->op == NetOpType::Add || nn->op == NetOpType::Subtract)) {
+                    if (Graph::reachable(target, nn) && is_counter_op(nn)) {
                         return true;
                     }
                 }
@@ -431,21 +435,35 @@ bool Graph::is_counter(const Node *node, const std::unordered_set<const Edge *> 
             const_edges.emplace(node_from->value, edge);
         }
     }
+    uint32_t arith_count = 0;
     for (auto const &iter : const_edges) {
         auto const edge = iter.second;
         auto assign_to = edge->to;
         // net is only created
         if (assign_to->type == NodeType::Net) {
-            return true;
+            if (is_counter_op(assign_to)) {
+                arith_count++;
+                continue;
+            } else {
+                return true;
+            }
         }
         assert_(assign_to->has_type(NodeType::Assign));
         assert_(assign_to->edges_to.size() == 1);
         auto edge_to = assign_to->edges_to.front().get();
         const Node *n = edge_to->to;
         auto r = is_counter_(node, n);
-        if (r)
-            return true;
+        if (r) {
+            arith_count++;
+        }
     }
+
+    // if we have arith, use some heuristics to identify
+    auto assign_size = const_edges.size();
+    if (arith_count) {
+        return assign_size - arith_count >= 1;
+    }
+
     return false;
 }
 
