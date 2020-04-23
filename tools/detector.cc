@@ -68,6 +68,7 @@ void print_out_fsm(const fsm::FSMResult &fsm_result, const fsm::VerilogModule &m
     } else {
         fsm_label = "State";
     }
+    if (!m.has_property(state_node)) return;
     auto properties = m.get_property(state_node);
     auto sorted_result = sort_fsm_result(fsm_result, properties);
     for (auto const &[state_p, ps] : sorted_result) {

@@ -164,6 +164,7 @@ void VerilogModule::create_properties() {
             if (fsm.is_counter()) {
                 // get comp values
                 auto counter_values = fsm.counter_values();
+                if (counter_values.empty()) return;
                 for (auto const value : counter_values) {
                     mutex.lock();
                     auto property = std::make_shared<Property>(id_count++, root_module_,
@@ -258,6 +259,16 @@ std::vector<const Property *> VerilogModule::get_property(const Node *node) cons
     }
     assert_(!result.empty(), "no FSM states found");
     return result;
+}
+
+bool VerilogModule::has_property(const Node *node) const {
+    for (auto const &iter : properties_) {
+        auto const &prop = iter.second;
+        if (prop->state_var1 == node) {
+            return true;
+        }
+    }
+    return false;
 }
 
 std::vector<const Property *> VerilogModule::get_property(const Node *node1,

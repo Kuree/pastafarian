@@ -47,8 +47,17 @@ auto comp_cond = [](const Edge *edge) -> bool {
     return false;
 };
 
+auto comp_terminate = [](const Edge *edge) -> bool {
+    if (edge->is_assign()) {
+        auto node_to = edge->to;
+        if (node_to->op != NetOpType::Ignore) return true;
+        if (node_to->edges_from.size() > 1) return true;
+    }
+    return false;
+};
+
 std::unordered_set<const Node *> FSMResult::comp_const() const {
-    auto comp_edges = Graph::find_connection_cond(node_, comp_cond);
+    auto comp_edges = Graph::find_connection_cond(node_, comp_cond, comp_terminate);
     std::unordered_set<const Node *> result;
     for (auto const node_edge : comp_edges) {
         auto node_comp = node_edge->to;
@@ -206,17 +215,25 @@ std::unordered_set<const Node *> FSMResult::counter_values() const {
     // notice that this is only used when we have a comparison
     // hence we can re-use the comp const function here
     auto values_comp = comp_const();
-    // also the const src
-    auto states = unique_states();
-    values_comp.insert(states.begin(), states.end());
 
     std::unordered_set<const Node *> result;
     std::unordered_set<int64_t> values;
 
-    for (auto const node: values_comp) {
+    for (auto const node : values_comp) {
         if (values.find(node->value) == values.end()) {
             values.emplace(node->value);
             result.emplace(node);
+        }
+    }
+
+    for (auto const &edge : const_src_) {
+        auto to = edge->to;
+        if (!to->has_type(NodeType::Assign)) continue;
+        auto n = edge->from;
+        auto v = n->value;
+        if (values.find(v) == values.end()) {
+            values.emplace(v);
+            result.emplace(n);
         }
     }
 

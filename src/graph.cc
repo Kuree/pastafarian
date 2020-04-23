@@ -481,6 +481,12 @@ bool Graph::in_direct_assign_chain(const Node *from, const Node *to) {
 
 std::unordered_set<const Edge *> Graph::find_connection_cond(
     const Node *from, const std::function<bool(const Edge *)> &predicate) {
+    return find_connection_cond(from, predicate, [](const Edge *) { return false; });
+}
+
+std::unordered_set<const Edge *> Graph::find_connection_cond(
+    const Node *from, const std::function<bool(const Edge *)> &predicate,
+    const std::function<bool(const Edge *)> &terminate) {
     std::unordered_set<const Edge *> result;
     std::queue<const Node *> working_set;
     std::unordered_set<const Node *> visited;
@@ -493,7 +499,7 @@ std::unordered_set<const Edge *> Graph::find_connection_cond(
         visited.emplace(node);
 
         for (auto const &edge : node->edges_to) {
-            working_set.emplace(edge->to);
+            if (!terminate(edge.get())) working_set.emplace(edge->to);
             if (predicate(edge.get())) {
                 result.emplace(edge.get());
             }

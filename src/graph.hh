@@ -208,6 +208,9 @@ public:
     static bool in_direct_assign_chain(const Node* from, const Node* to);
     static std::unordered_set<const Edge*> find_connection_cond(
         const Node* from, const std::function<bool(const Edge*)>& predicate);
+    static std::unordered_set<const Edge*> find_connection_cond(
+        const Node* from, const std::function<bool(const Edge*)>& predicate,
+        const std::function<bool(const Edge*)>& terminate);
 
     std::vector<FSMResult> identify_fsms();
     std::vector<FSMResult> identify_fsms(const Node* top);

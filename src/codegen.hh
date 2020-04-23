@@ -48,6 +48,7 @@ public:
     [[nodiscard]] Property *get_property(const Node *node, uint32_t state_from,
                                          uint32_t state_to) const;
     [[nodiscard]] std::vector<const Property *> get_property(const Node *node) const;
+    [[nodiscard]] bool has_property(const Node *node) const;
     [[nodiscard]] std::vector<const Property *> get_property(const Node *node1,
                                                              const Node *node2) const;
 
