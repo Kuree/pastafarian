@@ -412,6 +412,8 @@ bool is_counter_(const Node *target, const Node *node) {
             }
         }
         for (auto const &edge : n->edges_to) {
+            auto to = edge->to;
+            if (to->edges_from.size() > 1) continue;
             working_set.emplace(edge->to);
         }
     }
@@ -441,7 +443,8 @@ bool Graph::is_counter(const Node *node, const std::unordered_set<const Edge *> 
         auto edge_to = assign_to->edges_to.front().get();
         const Node *n = edge_to->to;
         auto r = is_counter_(node, n);
-        if (r) return true;
+        if (r)
+            return true;
     }
     return false;
 }
