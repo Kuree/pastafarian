@@ -563,6 +563,11 @@ std::vector<FSMResult> Graph::identify_fsms(const Node *top) {
                 if (control_loop) {
                     // this is the fsm
                     FSMResult fsm(reg, const_src);
+                    // filter result
+                    if (!fsm.is_counter()) {
+                        auto states = fsm.unique_states();
+                        if (states.size() < 2) return;
+                    }
                     mutex.lock();
                     result.emplace_back(fsm);
                     mutex.unlock();
