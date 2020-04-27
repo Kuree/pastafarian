@@ -31,6 +31,18 @@ void parse_verilog(SourceManager &source) {
         args.emplace_back("-I");
         args.insert(args.end(), include_dirs.begin(), include_dirs.end());
     }
+    // if we have any macros
+    auto const &macros = source.macros();
+    if (!macros.empty()) {
+        std::vector<std::string> values;
+        values.reserve(macros.size());
+        for (auto const &[name, value]: macros) {
+            auto v = ::format("{0}={1}", name, value);
+            values.emplace_back(v);
+        }
+        auto v_str = string::join(values.begin(), values.end(), " ");
+        args.emplace_back(::format("-D {0}", v_str));
+    }
     // json output
     // get a random filename
     std::string temp_dir = fs::temp_directory_path();

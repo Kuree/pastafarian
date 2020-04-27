@@ -16,13 +16,14 @@ std::vector<std::pair<const fsm::Property *, std::vector<const fsm::Property *>>
     std::map<const fsm::Node *, const fsm::Property *> states;
 
     if (fsm_result.is_counter()) {
-        for (auto const property: properties) {
+        for (auto const property : properties) {
             result.emplace_back(std::make_pair(property, std::vector<const fsm::Property *>{}));
         }
     } else {
         for (auto const property : properties) {
             if (property->state_var2) {
-                fsm::assert_(property->state_var2 == property->state_var1, "only single FSM supported");
+                fsm::assert_(property->state_var2 == property->state_var1,
+                             "only single FSM supported");
                 entries[property->state_value1].emplace_back(property);
             } else {
                 states[property->state_value1] = property;
@@ -34,7 +35,7 @@ std::vector<std::pair<const fsm::Property *, std::vector<const fsm::Property *>>
             auto p = states.at(node);
             // sort the properties
             std::sort(ps.begin(), ps.end(), [](auto const &left, auto const &right) {
-              return left->state_value2 < right->state_value2;
+                return left->state_value2 < right->state_value2;
             });
             result.emplace_back(std::make_pair(p, ps));
         }
@@ -42,12 +43,10 @@ std::vector<std::pair<const fsm::Property *, std::vector<const fsm::Property *>>
 
     // sort the result as well
     std::sort(result.begin(), result.end(), [](auto const &left, auto const &right) {
-      return left.first->state_value1 < right.first->state_value1;
+        return left.first->state_value1 < right.first->state_value1;
     });
 
     return result;
-
-
 }
 
 void print_fsm_value(const fsm::Node *node) {
@@ -165,10 +164,11 @@ std::string output_json(
     return w.str();
 }
 
-std::unordered_map<std::string, int64_t> get_param_values(const std::vector<std::string> &params) {
+std::unordered_map<std::string, int64_t> get_token_values(const std::vector<std::string> &values,
+                                                          bool allow_empty = false) {
     std::unordered_map<std::string, int64_t> result;
-    for (auto const &param : params) {
-        auto tokens = fsm::string::get_tokens(param, "=");
+    for (auto const &value : values) {
+        auto tokens = fsm::string::get_tokens(value, "=");
         if (tokens.size() == 2) {
             auto const &param_name = tokens[0];
             auto const &val_str = tokens[1];
@@ -177,6 +177,9 @@ std::unordered_map<std::string, int64_t> get_param_values(const std::vector<std:
                 result.emplace(param_name, v);
             } catch (...) {
             }
+        } else if (tokens.size() == 1 && allow_empty) {
+            auto const param_name = tokens[0];
+            result.emplace(param_name, 1);
         }
     }
 
@@ -194,6 +197,7 @@ int main(int argc, char *argv[]) {
     std::string clock_name;
     std::string reset_name;
     std::vector<std::string> param_values;
+    std::vector<std::string> macro_values;
     std::optional<uint32_t> num_cpu;
     app.add_option("-i,--input", filenames, "SystemVerilog design files")->required();
     app.add_option("-I,--include", include_dirs, "SystemVerilog include search directory");
@@ -204,6 +208,7 @@ int main(int argc, char *argv[]) {
     app.add_option("--reset", reset_name, "Reset pin name");
     app.add_option("--clock", clock_name, "Clock pin name");
     app.add_option("-P", param_values, "Override top port parameters");
+    app.add_option("-D", macro_values, "Define preprocessor macros");
     app.add_option("-n,--num-cpu", num_cpu, "Number of CPU. Set to 0 to use all available cores");
 
     CLI11_PARSE(app, argc, argv)
@@ -224,6 +229,8 @@ int main(int argc, char *argv[]) {
         manager.set_json_filename(filenames[0]);
     } else {
         manager = fsm::SourceManager(filenames, include_dirs);
+        auto macros = get_token_values(macro_values, true);
+        manager.set_macros(macros);
         fsm::parse_verilog(manager);
     }
 
@@ -271,7 +278,7 @@ int main(int argc, char *argv[]) {
     // set properties
     if (use_formal) {
         fsm::JasperGoldGeneration jg(m);
-        auto parameters = get_param_values(param_values);
+        auto parameters = get_token_values(param_values);
         m.set_param_values(parameters);
         jg.run();
     }
