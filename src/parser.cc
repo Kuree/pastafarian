@@ -36,7 +36,7 @@ void parse_verilog(SourceManager &source) {
     if (!macros.empty()) {
         std::vector<std::string> values;
         values.reserve(macros.size());
-        for (auto const &[name, value]: macros) {
+        for (auto const &[name, value] : macros) {
             auto v = ::format("{0}={1}", name, value);
             values.emplace_back(v);
         }
@@ -61,6 +61,28 @@ void parse_verilog(SourceManager &source) {
 template <class T>
 Node *parse_dispatch(T value, Graph *g, Node *parent);
 int64_t parse_num_literal(std::string_view str);
+
+template <class T>
+Node *parse_real_literal(T value, Graph *g) {
+    auto type_node = value["type"];
+    assert_(type_node.error == SUCCESS, "unable to find type in real_literal");
+    auto type_str = type_node.as_string();
+    assert_(std::string(type_str) == "real", "only real can be parsed");
+    auto real_value = value["constant"];
+    auto real_str = std::string(real_value.as_string());
+    double real = 0;
+
+    try {
+        real = std::stod(real_str);
+    } catch (...) {
+        std::cerr << "Unable to parse " << real_str << std::endl;
+    }
+
+    auto node = g->add_node(g->get_free_id(), "", NodeType::Constant);
+    node->value = static_cast<int64_t>(real);
+
+    return node;
+}
 
 template <class T>
 uint64_t get_address(T value) {
@@ -821,8 +843,9 @@ Node *parse_net(T value, Graph *g, Node *parent) {
 }
 
 static std::unordered_set<std::string> don_t_care_kind = {  // NOLINT
-    "TransparentMember", "TypeAlias", "StatementBlock",     "Subroutine",
-    "EmptyArgument",     "Empty",     "VariableDeclaration", "ImplicitEvent"};
+    "TransparentMember",   "TypeAlias",     "StatementBlock",
+    "Subroutine",          "EmptyArgument", "Empty",
+    "VariableDeclaration", "ImplicitEvent", "Delay"};
 
 template <class T>
 Node *parse_dispatch(T value, Graph *g, Node *parent) {
@@ -887,6 +910,8 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
         parse_signal_event(value, g, parent);
     } else if (ast_kind == "MemberAccess") {
         return parse_member_access(value, g);
+    } else if (ast_kind == "RealLiteral") {
+        return parse_real_literal(value, g);
     } else {
         std::cerr << "Unable to parse AST node kind " << ast_kind << std::endl;
     }
