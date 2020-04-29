@@ -18,7 +18,7 @@ TEST_F(GraphTest, fsm1_codegen) {  // NOLINT
     // clk, rst, in, out
     EXPECT_EQ(m.ports.size(), 4);
     EXPECT_FALSE(result.empty());
-    EXPECT_TRUE(m.posedge_reset());
+    EXPECT_EQ(m.reset_type(), fsm::ResetType::Posedge);
     EXPECT_NE(result.find(
                   "@(posedge clk) mod.Color_current_state == 1 |=> mod.Color_current_state == 1;"),
               std::string::npos);
@@ -52,7 +52,7 @@ TEST_F(GraphTest, fsm1_codegen_parse) { // NOLINT
     // clk, rst, in, out
     EXPECT_EQ(m.ports.size(), 4);
     EXPECT_FALSE(result.empty());
-    EXPECT_TRUE(m.posedge_reset());
+    EXPECT_EQ(m.reset_type(), fsm::ResetType::Posedge);
     EXPECT_NE(result.find(
         "@(posedge clk) mod.Color_current_state == 1 |=> mod.Color_current_state == 1;"),
               std::string::npos);

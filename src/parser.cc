@@ -683,6 +683,12 @@ Node *parse_assignment(T value, Graph *g, Node *parent) {
 }
 
 template <class T>
+Node *parse_gate(T, Graph *, Node *) {
+    // TODO: slang doesn't seem to parse gate properly
+    return nullptr;
+}
+
+template <class T>
 Node *parse_continuous_assignment(T value, Graph *g, Node *parent) {
     auto const &assignment = value["assignment"];
     assert_(assignment.error == SUCCESS, "assignment not found in continuous assignment");
@@ -898,7 +904,7 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
         return parse_unary(value, g);
     } else if (ast_kind == "Replication") {
         return parse_replication(value, g);
-    } else if (ast_kind == "ForLoop") {
+    } else if (ast_kind == "ForLoop" || ast_kind == "ForeverLoop") {
         return parse_for_loop(value, g, parent);
     } else if (ast_kind == "Call") {
         return parse_call(value, g, parent);
@@ -912,6 +918,8 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
         return parse_member_access(value, g);
     } else if (ast_kind == "RealLiteral") {
         return parse_real_literal(value, g);
+    } else if (ast_kind == "Gate") {
+        return parse_gate(value, g, parent);
     } else {
         std::cerr << "Unable to parse AST node kind " << ast_kind << std::endl;
     }
