@@ -1,7 +1,6 @@
 #ifndef PASTAFARIAN_CODEGEN_HH
 #define PASTAFARIAN_CODEGEN_HH
 #include <map>
-#include <optional>
 
 #include "graph.hh"
 #include "source.hh"
@@ -11,6 +10,13 @@ namespace fsm {
 
 constexpr char TOP_NAME[] = "TOP";
 constexpr char PROPERTY_LABEL_PREFIX[] = "FSM_STATE_";
+
+enum class ResetType {
+    Default,
+    None,
+    Posedge,
+    Negedge
+};
 
 class Property {
 public:
@@ -54,17 +60,17 @@ public:
 
     void set_reset_name(const std::string &reset_name) { reset_name_ = reset_name; }
     void set_clock_name(const std::string &clock_name) { clock_name_ = clock_name; }
-    void set_posedge_reset(bool value) { posedge_reset_ = value; }
+    void set_reset_type(ResetType value) { reset_type_ = value; }
     [[nodiscard]] const std::string &clock_name() const { return clock_name_; }
     [[nodiscard]] const std::string &reset_name() const { return reset_name_; }
-    [[nodiscard]] bool posedge_reset() const { return posedge_reset_ ? *posedge_reset_ : true; }
+    [[nodiscard]] ResetType reset_type() const { return reset_type_; }
     [[nodiscard]] const SourceManager &parser_result() const { return parser_result_; }
     void analyze_pins();
 
     [[nodiscard]] inline const Node *top() const { return root_module_; }
 
     [[nodiscard]] std::string str() const;
-    void to_file(const std::string &filename);
+    void to_file(const std::string &filename) const;
 
     void set_param_values(const std::unordered_map<std::string, int64_t> &params);
 
@@ -75,7 +81,7 @@ private:
     std::map<uint32_t, std::shared_ptr<Property>> properties_;
     std::string clock_name_;
     std::string reset_name_;
-    std::optional<bool> posedge_reset_;
+    ResetType reset_type_ = ResetType::Default;
     std::unordered_map<uint32_t, uint32_t> property_id_to_fsm_;
     std::unordered_map<std::string, int64_t> param_values_;
 

@@ -311,17 +311,18 @@ void VerilogModule::analyze_pins() {
     } else {
         assert_(ports.find(reset_name_) != ports.end(), "Unable to find " + clock_name_);
     }
-    if (neg_reset_names.find(reset_name_) != neg_reset_names.end() && !posedge_reset_) {
-        posedge_reset_ = false;
+    if (neg_reset_names.find(reset_name_) != neg_reset_names.end() &&
+        reset_type_ == ResetType::Default) {
+        reset_type_ = ResetType::Negedge;
     }
 
     analyze_reset();
 }
 
 void VerilogModule::analyze_reset() {
-    assert_(!reset_name_.empty(), "reset pin is empty");
     // skip if it already has value
-    if (posedge_reset_.has_value()) return;
+    if (reset_type_ == ResetType::None) return;
+    assert_(!reset_name_.empty(), "reset pin is empty");
     if (ports.find(reset_name_) != ports.end()) {
         auto reset = ports.at(reset_name_);
         // loop through the connection to see the reset type
@@ -331,7 +332,8 @@ void VerilogModule::analyze_reset() {
         for (auto const node : sinks) {
             if (node->event_type != EventType::None) {
                 // TODO: need to make sure that it's not inverted
-                posedge_reset_ = node->event_type == EventType::Posedge;
+                reset_type_ = node->event_type == EventType::Posedge ? ResetType::Posedge
+                                                                     : ResetType::Negedge;
                 found = true;
                 break;
             }
@@ -395,7 +397,7 @@ std::string VerilogModule::str() const {
     return result.str();
 }
 
-void VerilogModule::to_file(const std::string &filename) {
+void VerilogModule::to_file(const std::string &filename) const {
     std::ofstream f(filename);
     f << str();
 }
@@ -438,10 +440,15 @@ void JasperGoldGeneration::create_command_file(const std::string &cmd_filename,
     assert_(!module_.reset_name().empty(), "reset name cannot be empty");
     stream << "reset -expression ";
     // notice that this is some forms of heretics
-    if (module_.posedge_reset()) {
-        stream << module_.reset_name() << ";" << std::endl;
-    } else {
-        stream << "~" << module_.reset_name() << ";" << std::endl;
+    auto reset = module_.reset_type();
+    assert_(reset != ResetType::Default,
+            "reset type cannot be default. need to set reset type first");
+    if (reset != ResetType::None) {
+        if (reset == ResetType::Posedge) {
+            stream << module_.reset_name() << ";" << std::endl;
+        } else {
+            stream << "~" << module_.reset_name() << ";" << std::endl;
+        }
     }
 
     // prove them all

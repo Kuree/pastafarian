@@ -199,17 +199,27 @@ int main(int argc, char *argv[]) {
     std::vector<std::string> param_values;
     std::vector<std::string> macro_values;
     std::optional<uint32_t> num_cpu;
+
+    fsm::ResetType reset_type = fsm::ResetType::Default;
+    std::map<std::string, fsm::ResetType> reset_type_map{
+        {"none", fsm::ResetType::None},       {"default", fsm::ResetType::Default},
+        {"high", fsm::ResetType::Posedge},    {"pos", fsm::ResetType::Posedge},
+        {"posedge", fsm::ResetType::Posedge}, {"low", fsm::ResetType::Negedge},
+        {"neg", fsm::ResetType::Negedge},     {"negedge", fsm::ResetType::Negedge}};
+
     app.add_option("-i,--input", filenames, "SystemVerilog design files")->required();
     app.add_option("-I,--include", include_dirs, "SystemVerilog include search directory");
     app.add_option("--json", output_filename, "Output JSON. Use - for stdout");
     app.add_flag("-c,--coupled-fsm", compute_coupled_fsm, "Whether to compute coupled FSM");
     app.add_flag("--formal", use_formal, "Whether to use formal tools to determine FSM properties");
     app.add_option("--top", top, "Specify the design top");
-    app.add_option("--reset", reset_name, "Reset pin name");
+    app.add_option("-r,--reset,--reset-name", reset_name, "Reset pin name");
     app.add_option("--clock", clock_name, "Clock pin name");
     app.add_option("-P", param_values, "Override top port parameters");
     app.add_option("-D", macro_values, "Define preprocessor macros");
     app.add_option("-n,--num-cpu", num_cpu, "Number of CPU. Set to 0 to use all available cores");
+    app.add_option("-R,--reset-type", reset_type, "Reset type")
+        ->transform(CLI::CheckedTransformer(reset_type_map, CLI::ignore_case));
 
     CLI11_PARSE(app, argc, argv)
 
@@ -246,6 +256,9 @@ int main(int argc, char *argv[]) {
 
     // top module
     fsm::VerilogModule m(&g, manager, top);
+
+    // assign reset types
+    m.set_reset_type(reset_type);
 
     // get FSMs
     std::cout << "Detecting FSM..." << std::endl;
