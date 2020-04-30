@@ -386,8 +386,6 @@ std::string VerilogModule::str() const {
     for (auto const &iter : properties_) {
         // skip the counter one
         auto const &prop = iter.second;
-        auto const &fsm = fsm_results_[property_id_to_fsm_.at(prop->id)];
-        if (fsm.is_counter()) continue;
         result << prop->str() << std::endl;
     }
 
