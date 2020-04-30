@@ -1,0 +1,1608 @@
+{
+  "name": "$root",
+  "kind": "Root",
+  "addr": 94892732181424,
+  "members": [
+    {
+      "name": "",
+      "kind": "CompilationUnit",
+      "addr": 94892732188168,
+      "members": [
+        {
+          "name": "mod",
+          "kind": "Definition",
+          "addr": 94892732188344,
+          "members": [
+            {
+              "name": "clk",
+              "kind": "Port",
+              "addr": 94892732332240,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "94892732332432 clk"
+            },
+            {
+              "name": "clk",
+              "kind": "Net",
+              "addr": 94892732332432,
+              "type": "logic"
+            },
+            {
+              "name": "rst_n",
+              "kind": "Port",
+              "addr": 94892732332568,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "94892732332760 rst_n"
+            },
+            {
+              "name": "rst_n",
+              "kind": "Net",
+              "addr": 94892732332760,
+              "type": "logic"
+            },
+            {
+              "name": "wen",
+              "kind": "Port",
+              "addr": 94892732332896,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "94892732333088 wen"
+            },
+            {
+              "name": "wen",
+              "kind": "Net",
+              "addr": 94892732333088,
+              "type": "logic"
+            },
+            {
+              "name": "ren",
+              "kind": "Port",
+              "addr": 94892732333224,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "94892732333416 ren"
+            },
+            {
+              "name": "ren",
+              "kind": "Net",
+              "addr": 94892732333416,
+              "type": "logic"
+            },
+            {
+              "name": "IDLE",
+              "kind": "TransparentMember",
+              "addr": 94892732190488
+            },
+            {
+              "name": "MODIFY",
+              "kind": "TransparentMember",
+              "addr": 94892732190560
+            },
+            {
+              "name": "READ",
+              "kind": "TransparentMember",
+              "addr": 94892732190632
+            },
+            {
+              "name": "r_w_seq_state",
+              "kind": "TypeAlias",
+              "addr": 94892732188632,
+              "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+            },
+            {
+              "name": "r_w_seq_current_state",
+              "kind": "Variable",
+              "addr": 94892732333552,
+              "type": {
+                "name": "r_w_seq_state",
+                "kind": "TypeAlias",
+                "addr": 94892732188632,
+                "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+              },
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "r_w_seq_next_state",
+              "kind": "Variable",
+              "addr": 94892732333688,
+              "type": {
+                "name": "r_w_seq_state",
+                "kind": "TypeAlias",
+                "addr": 94892732188632,
+                "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+              },
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "",
+              "kind": "ProceduralBlock",
+              "addr": 94892732188920,
+              "procedureKind": "AlwaysFF",
+              "body": {
+                "kind": "Timed",
+                "timing": {
+                  "kind": "EventList",
+                  "events": [
+                    {
+                      "kind": "SignalEvent",
+                      "expr": {
+                        "kind": "NamedValue",
+                        "type": "logic",
+                        "symbol": "94892732332432 clk",
+                        "isHierarchical": false
+                      },
+                      "edge": "PosEdge"
+                    },
+                    {
+                      "kind": "SignalEvent",
+                      "expr": {
+                        "kind": "NamedValue",
+                        "type": "logic",
+                        "symbol": "94892732332760 rst_n",
+                        "isHierarchical": false
+                      },
+                      "edge": "NegEdge"
+                    }
+                  ]
+                },
+                "stmt": {
+                  "kind": "Block",
+                  "blockKind": "Sequential",
+                  "body": {
+                    "kind": "List",
+                    "list": [
+                      {
+                        "kind": "Conditional",
+                        "cond": {
+                          "kind": "UnaryOp",
+                          "type": "logic",
+                          "op": "LogicalNot",
+                          "operand": {
+                            "kind": "NamedValue",
+                            "type": "logic",
+                            "symbol": "94892732332760 rst_n",
+                            "isHierarchical": false
+                          }
+                        },
+                        "ifTrue": {
+                          "kind": "Block",
+                          "blockKind": "Sequential",
+                          "body": {
+                            "kind": "List",
+                            "list": [
+                              {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "r_w_seq_state",
+                                    "kind": "TypeAlias",
+                                    "addr": 94892732188632,
+                                    "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "r_w_seq_state",
+                                      "kind": "TypeAlias",
+                                      "addr": 94892732188632,
+                                      "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                                    },
+                                    "symbol": "94892732333552 r_w_seq_current_state",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1",
+                                    "constant": "2'b0",
+                                    "symbol": "94892732189576 IDLE",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": true
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "ifFalse": {
+                          "kind": "ExpressionStatement",
+                          "expr": {
+                            "kind": "Assignment",
+                            "type": {
+                              "name": "r_w_seq_state",
+                              "kind": "TypeAlias",
+                              "addr": 94892732188632,
+                              "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                            },
+                            "left": {
+                              "kind": "NamedValue",
+                              "type": {
+                                "name": "r_w_seq_state",
+                                "kind": "TypeAlias",
+                                "addr": 94892732188632,
+                                "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                              },
+                              "symbol": "94892732333552 r_w_seq_current_state",
+                              "isHierarchical": false
+                            },
+                            "right": {
+                              "kind": "NamedValue",
+                              "type": {
+                                "name": "r_w_seq_state",
+                                "kind": "TypeAlias",
+                                "addr": 94892732188632,
+                                "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                              },
+                              "symbol": "94892732333688 r_w_seq_next_state",
+                              "isHierarchical": false
+                            },
+                            "isNonBlocking": true
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "name": "",
+              "kind": "ProceduralBlock",
+              "addr": 94892732189056,
+              "procedureKind": "AlwaysComb",
+              "body": {
+                "kind": "Block",
+                "blockKind": "Sequential",
+                "body": {
+                  "kind": "List",
+                  "list": [
+                    {
+                      "kind": "ExpressionStatement",
+                      "expr": {
+                        "kind": "Assignment",
+                        "type": {
+                          "name": "r_w_seq_state",
+                          "kind": "TypeAlias",
+                          "addr": 94892732188632,
+                          "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                        },
+                        "left": {
+                          "kind": "NamedValue",
+                          "type": {
+                            "name": "r_w_seq_state",
+                            "kind": "TypeAlias",
+                            "addr": 94892732188632,
+                            "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                          },
+                          "symbol": "94892732333688 r_w_seq_next_state",
+                          "isHierarchical": false
+                        },
+                        "right": {
+                          "kind": "NamedValue",
+                          "type": {
+                            "name": "r_w_seq_state",
+                            "kind": "TypeAlias",
+                            "addr": 94892732188632,
+                            "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                          },
+                          "symbol": "94892732333552 r_w_seq_current_state",
+                          "isHierarchical": false
+                        },
+                        "isNonBlocking": false
+                      }
+                    },
+                    {
+                      "kind": "Case",
+                      "condition": "Normal",
+                      "check": "Unique",
+                      "expr": {
+                        "kind": "NamedValue",
+                        "type": {
+                          "name": "r_w_seq_state",
+                          "kind": "TypeAlias",
+                          "addr": 94892732188632,
+                          "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                        },
+                        "symbol": "94892732333552 r_w_seq_current_state",
+                        "isHierarchical": false
+                      },
+                      "items": [
+                        {
+                          "expressions": [
+                            {
+                              "kind": "NamedValue",
+                              "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1",
+                              "constant": "2'b0",
+                              "symbol": "94892732189576 IDLE",
+                              "isHierarchical": false
+                            }
+                          ],
+                          "stmt": {
+                            "kind": "Conditional",
+                            "cond": {
+                              "kind": "BinaryOp",
+                              "type": "logic",
+                              "op": "BinaryAnd",
+                              "left": {
+                                "kind": "UnaryOp",
+                                "type": "logic",
+                                "op": "BitwiseNot",
+                                "operand": {
+                                  "kind": "NamedValue",
+                                  "type": "logic",
+                                  "symbol": "94892732333088 wen",
+                                  "isHierarchical": false
+                                }
+                              },
+                              "right": {
+                                "kind": "UnaryOp",
+                                "type": "logic",
+                                "op": "BitwiseNot",
+                                "operand": {
+                                  "kind": "NamedValue",
+                                  "type": "logic",
+                                  "symbol": "94892732333416 ren",
+                                  "isHierarchical": false
+                                }
+                              }
+                            },
+                            "ifTrue": {
+                              "kind": "Block",
+                              "blockKind": "Sequential",
+                              "body": {
+                                "kind": "List",
+                                "list": [
+                                  {
+                                    "kind": "ExpressionStatement",
+                                    "expr": {
+                                      "kind": "Assignment",
+                                      "type": {
+                                        "name": "r_w_seq_state",
+                                        "kind": "TypeAlias",
+                                        "addr": 94892732188632,
+                                        "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                                      },
+                                      "left": {
+                                        "kind": "NamedValue",
+                                        "type": {
+                                          "name": "r_w_seq_state",
+                                          "kind": "TypeAlias",
+                                          "addr": 94892732188632,
+                                          "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                                        },
+                                        "symbol": "94892732333688 r_w_seq_next_state",
+                                        "isHierarchical": false
+                                      },
+                                      "right": {
+                                        "kind": "NamedValue",
+                                        "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1",
+                                        "constant": "2'b0",
+                                        "symbol": "94892732189576 IDLE",
+                                        "isHierarchical": false
+                                      },
+                                      "isNonBlocking": false
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "ifFalse": {
+                              "kind": "Conditional",
+                              "cond": {
+                                "kind": "NamedValue",
+                                "type": "logic",
+                                "symbol": "94892732333088 wen",
+                                "isHierarchical": false
+                              },
+                              "ifTrue": {
+                                "kind": "Block",
+                                "blockKind": "Sequential",
+                                "body": {
+                                  "kind": "List",
+                                  "list": [
+                                    {
+                                      "kind": "ExpressionStatement",
+                                      "expr": {
+                                        "kind": "Assignment",
+                                        "type": {
+                                          "name": "r_w_seq_state",
+                                          "kind": "TypeAlias",
+                                          "addr": 94892732188632,
+                                          "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                                        },
+                                        "left": {
+                                          "kind": "NamedValue",
+                                          "type": {
+                                            "name": "r_w_seq_state",
+                                            "kind": "TypeAlias",
+                                            "addr": 94892732188632,
+                                            "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                                          },
+                                          "symbol": "94892732333688 r_w_seq_next_state",
+                                          "isHierarchical": false
+                                        },
+                                        "right": {
+                                          "kind": "NamedValue",
+                                          "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1",
+                                          "constant": "2'b1",
+                                          "symbol": "94892732189944 MODIFY",
+                                          "isHierarchical": false
+                                        },
+                                        "isNonBlocking": false
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "ifFalse": {
+                                "kind": "Conditional",
+                                "cond": {
+                                  "kind": "BinaryOp",
+                                  "type": "logic",
+                                  "op": "BinaryAnd",
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": "logic",
+                                    "symbol": "94892732333416 ren",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "UnaryOp",
+                                    "type": "logic",
+                                    "op": "BitwiseNot",
+                                    "operand": {
+                                      "kind": "NamedValue",
+                                      "type": "logic",
+                                      "symbol": "94892732333088 wen",
+                                      "isHierarchical": false
+                                    }
+                                  }
+                                },
+                                "ifTrue": {
+                                  "kind": "Block",
+                                  "blockKind": "Sequential",
+                                  "body": {
+                                    "kind": "List",
+                                    "list": [
+                                      {
+                                        "kind": "ExpressionStatement",
+                                        "expr": {
+                                          "kind": "Assignment",
+                                          "type": {
+                                            "name": "r_w_seq_state",
+                                            "kind": "TypeAlias",
+                                            "addr": 94892732188632,
+                                            "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                                          },
+                                          "left": {
+                                            "kind": "NamedValue",
+                                            "type": {
+                                              "name": "r_w_seq_state",
+                                              "kind": "TypeAlias",
+                                              "addr": 94892732188632,
+                                              "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                                            },
+                                            "symbol": "94892732333688 r_w_seq_next_state",
+                                            "isHierarchical": false
+                                          },
+                                          "right": {
+                                            "kind": "NamedValue",
+                                            "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1",
+                                            "constant": "2'b10",
+                                            "symbol": "94892732190216 READ",
+                                            "isHierarchical": false
+                                          },
+                                          "isNonBlocking": false
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "expressions": [
+                            {
+                              "kind": "NamedValue",
+                              "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1",
+                              "constant": "2'b1",
+                              "symbol": "94892732189944 MODIFY",
+                              "isHierarchical": false
+                            }
+                          ],
+                          "stmt": {
+                            "kind": "Conditional",
+                            "cond": {
+                              "kind": "IntegerLiteral",
+                              "type": "bit[0:0]",
+                              "constant": "1'b1"
+                            },
+                            "ifTrue": {
+                              "kind": "Block",
+                              "blockKind": "Sequential",
+                              "body": {
+                                "kind": "List",
+                                "list": [
+                                  {
+                                    "kind": "ExpressionStatement",
+                                    "expr": {
+                                      "kind": "Assignment",
+                                      "type": {
+                                        "name": "r_w_seq_state",
+                                        "kind": "TypeAlias",
+                                        "addr": 94892732188632,
+                                        "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                                      },
+                                      "left": {
+                                        "kind": "NamedValue",
+                                        "type": {
+                                          "name": "r_w_seq_state",
+                                          "kind": "TypeAlias",
+                                          "addr": 94892732188632,
+                                          "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                                        },
+                                        "symbol": "94892732333688 r_w_seq_next_state",
+                                        "isHierarchical": false
+                                      },
+                                      "right": {
+                                        "kind": "NamedValue",
+                                        "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1",
+                                        "constant": "2'b0",
+                                        "symbol": "94892732189576 IDLE",
+                                        "isHierarchical": false
+                                      },
+                                      "isNonBlocking": false
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "expressions": [
+                            {
+                              "kind": "NamedValue",
+                              "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1",
+                              "constant": "2'b10",
+                              "symbol": "94892732190216 READ",
+                              "isHierarchical": false
+                            }
+                          ],
+                          "stmt": {
+                            "kind": "Conditional",
+                            "cond": {
+                              "kind": "BinaryOp",
+                              "type": "logic",
+                              "op": "BinaryAnd",
+                              "left": {
+                                "kind": "UnaryOp",
+                                "type": "logic",
+                                "op": "BitwiseNot",
+                                "operand": {
+                                  "kind": "NamedValue",
+                                  "type": "logic",
+                                  "symbol": "94892732333088 wen",
+                                  "isHierarchical": false
+                                }
+                              },
+                              "right": {
+                                "kind": "UnaryOp",
+                                "type": "logic",
+                                "op": "BitwiseNot",
+                                "operand": {
+                                  "kind": "NamedValue",
+                                  "type": "logic",
+                                  "symbol": "94892732333416 ren",
+                                  "isHierarchical": false
+                                }
+                              }
+                            },
+                            "ifTrue": {
+                              "kind": "Block",
+                              "blockKind": "Sequential",
+                              "body": {
+                                "kind": "List",
+                                "list": [
+                                  {
+                                    "kind": "ExpressionStatement",
+                                    "expr": {
+                                      "kind": "Assignment",
+                                      "type": {
+                                        "name": "r_w_seq_state",
+                                        "kind": "TypeAlias",
+                                        "addr": 94892732188632,
+                                        "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                                      },
+                                      "left": {
+                                        "kind": "NamedValue",
+                                        "type": {
+                                          "name": "r_w_seq_state",
+                                          "kind": "TypeAlias",
+                                          "addr": 94892732188632,
+                                          "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                                        },
+                                        "symbol": "94892732333688 r_w_seq_next_state",
+                                        "isHierarchical": false
+                                      },
+                                      "right": {
+                                        "kind": "NamedValue",
+                                        "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1",
+                                        "constant": "2'b0",
+                                        "symbol": "94892732189576 IDLE",
+                                        "isHierarchical": false
+                                      },
+                                      "isNonBlocking": false
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "ifFalse": {
+                              "kind": "Conditional",
+                              "cond": {
+                                "kind": "NamedValue",
+                                "type": "logic",
+                                "symbol": "94892732333088 wen",
+                                "isHierarchical": false
+                              },
+                              "ifTrue": {
+                                "kind": "Block",
+                                "blockKind": "Sequential",
+                                "body": {
+                                  "kind": "List",
+                                  "list": [
+                                    {
+                                      "kind": "ExpressionStatement",
+                                      "expr": {
+                                        "kind": "Assignment",
+                                        "type": {
+                                          "name": "r_w_seq_state",
+                                          "kind": "TypeAlias",
+                                          "addr": 94892732188632,
+                                          "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                                        },
+                                        "left": {
+                                          "kind": "NamedValue",
+                                          "type": {
+                                            "name": "r_w_seq_state",
+                                            "kind": "TypeAlias",
+                                            "addr": 94892732188632,
+                                            "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                                          },
+                                          "symbol": "94892732333688 r_w_seq_next_state",
+                                          "isHierarchical": false
+                                        },
+                                        "right": {
+                                          "kind": "NamedValue",
+                                          "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1",
+                                          "constant": "2'b1",
+                                          "symbol": "94892732189944 MODIFY",
+                                          "isHierarchical": false
+                                        },
+                                        "isNonBlocking": false
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "ifFalse": {
+                                "kind": "Conditional",
+                                "cond": {
+                                  "kind": "BinaryOp",
+                                  "type": "logic",
+                                  "op": "BinaryAnd",
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": "logic",
+                                    "symbol": "94892732333416 ren",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "UnaryOp",
+                                    "type": "logic",
+                                    "op": "BitwiseNot",
+                                    "operand": {
+                                      "kind": "NamedValue",
+                                      "type": "logic",
+                                      "symbol": "94892732333088 wen",
+                                      "isHierarchical": false
+                                    }
+                                  }
+                                },
+                                "ifTrue": {
+                                  "kind": "Block",
+                                  "blockKind": "Sequential",
+                                  "body": {
+                                    "kind": "List",
+                                    "list": [
+                                      {
+                                        "kind": "ExpressionStatement",
+                                        "expr": {
+                                          "kind": "Assignment",
+                                          "type": {
+                                            "name": "r_w_seq_state",
+                                            "kind": "TypeAlias",
+                                            "addr": 94892732188632,
+                                            "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                                          },
+                                          "left": {
+                                            "kind": "NamedValue",
+                                            "type": {
+                                              "name": "r_w_seq_state",
+                                              "kind": "TypeAlias",
+                                              "addr": 94892732188632,
+                                              "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                                            },
+                                            "symbol": "94892732333688 r_w_seq_next_state",
+                                            "isHierarchical": false
+                                          },
+                                          "right": {
+                                            "kind": "NamedValue",
+                                            "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1",
+                                            "constant": "2'b10",
+                                            "symbol": "94892732190216 READ",
+                                            "isHierarchical": false
+                                          },
+                                          "isNonBlocking": false
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ],
+                      "defaultCase": {
+                        "kind": "ExpressionStatement",
+                        "expr": {
+                          "kind": "Assignment",
+                          "type": {
+                            "name": "r_w_seq_state",
+                            "kind": "TypeAlias",
+                            "addr": 94892732188632,
+                            "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                          },
+                          "left": {
+                            "kind": "NamedValue",
+                            "type": {
+                              "name": "r_w_seq_state",
+                              "kind": "TypeAlias",
+                              "addr": 94892732188632,
+                              "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                            },
+                            "symbol": "94892732333688 r_w_seq_next_state",
+                            "isHierarchical": false
+                          },
+                          "right": {
+                            "kind": "NamedValue",
+                            "type": {
+                              "name": "r_w_seq_state",
+                              "kind": "TypeAlias",
+                              "addr": 94892732188632,
+                              "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$1"
+                            },
+                            "symbol": "94892732333552 r_w_seq_current_state",
+                            "isHierarchical": false
+                          },
+                          "isNonBlocking": false
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "definitionKind": "Module"
+        }
+      ]
+    },
+    {
+      "name": "mod",
+      "kind": "ModuleInstance",
+      "addr": 94892732333824,
+      "members": [
+        {
+          "name": "clk",
+          "kind": "Port",
+          "addr": 94892732349048,
+          "type": "logic",
+          "direction": "In",
+          "internalSymbol": "94892732349240 clk"
+        },
+        {
+          "name": "clk",
+          "kind": "Net",
+          "addr": 94892732349240,
+          "type": "logic"
+        },
+        {
+          "name": "rst_n",
+          "kind": "Port",
+          "addr": 94892732349376,
+          "type": "logic",
+          "direction": "In",
+          "internalSymbol": "94892732349568 rst_n"
+        },
+        {
+          "name": "rst_n",
+          "kind": "Net",
+          "addr": 94892732349568,
+          "type": "logic"
+        },
+        {
+          "name": "wen",
+          "kind": "Port",
+          "addr": 94892732349704,
+          "type": "logic",
+          "direction": "In",
+          "internalSymbol": "94892732349896 wen"
+        },
+        {
+          "name": "wen",
+          "kind": "Net",
+          "addr": 94892732349896,
+          "type": "logic"
+        },
+        {
+          "name": "ren",
+          "kind": "Port",
+          "addr": 94892732350032,
+          "type": "logic",
+          "direction": "In",
+          "internalSymbol": "94892732350224 ren"
+        },
+        {
+          "name": "ren",
+          "kind": "Net",
+          "addr": 94892732350224,
+          "type": "logic"
+        },
+        {
+          "name": "IDLE",
+          "kind": "TransparentMember",
+          "addr": 94892732348832
+        },
+        {
+          "name": "MODIFY",
+          "kind": "TransparentMember",
+          "addr": 94892732348904
+        },
+        {
+          "name": "READ",
+          "kind": "TransparentMember",
+          "addr": 94892732348976
+        },
+        {
+          "name": "r_w_seq_state",
+          "kind": "TypeAlias",
+          "addr": 94892732334048,
+          "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+        },
+        {
+          "name": "r_w_seq_current_state",
+          "kind": "Variable",
+          "addr": 94892732350360,
+          "type": {
+            "name": "r_w_seq_state",
+            "kind": "TypeAlias",
+            "addr": 94892732334048,
+            "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+          },
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "r_w_seq_next_state",
+          "kind": "Variable",
+          "addr": 94892732350496,
+          "type": {
+            "name": "r_w_seq_state",
+            "kind": "TypeAlias",
+            "addr": 94892732334048,
+            "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+          },
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "",
+          "kind": "ProceduralBlock",
+          "addr": 94892732334336,
+          "procedureKind": "AlwaysFF",
+          "body": {
+            "kind": "Timed",
+            "timing": {
+              "kind": "EventList",
+              "events": [
+                {
+                  "kind": "SignalEvent",
+                  "expr": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "94892732349240 clk",
+                    "isHierarchical": false
+                  },
+                  "edge": "PosEdge"
+                },
+                {
+                  "kind": "SignalEvent",
+                  "expr": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "94892732349568 rst_n",
+                    "isHierarchical": false
+                  },
+                  "edge": "NegEdge"
+                }
+              ]
+            },
+            "stmt": {
+              "kind": "Block",
+              "blockKind": "Sequential",
+              "body": {
+                "kind": "List",
+                "list": [
+                  {
+                    "kind": "Conditional",
+                    "cond": {
+                      "kind": "UnaryOp",
+                      "type": "logic",
+                      "op": "LogicalNot",
+                      "operand": {
+                        "kind": "NamedValue",
+                        "type": "logic",
+                        "symbol": "94892732349568 rst_n",
+                        "isHierarchical": false
+                      }
+                    },
+                    "ifTrue": {
+                      "kind": "Block",
+                      "blockKind": "Sequential",
+                      "body": {
+                        "kind": "List",
+                        "list": [
+                          {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "r_w_seq_state",
+                                "kind": "TypeAlias",
+                                "addr": 94892732334048,
+                                "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "r_w_seq_state",
+                                  "kind": "TypeAlias",
+                                  "addr": 94892732334048,
+                                  "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                                },
+                                "symbol": "94892732350360 r_w_seq_current_state",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2",
+                                "constant": "2'b0",
+                                "symbol": "94892732348016 IDLE",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": true
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "ifFalse": {
+                      "kind": "ExpressionStatement",
+                      "expr": {
+                        "kind": "Assignment",
+                        "type": {
+                          "name": "r_w_seq_state",
+                          "kind": "TypeAlias",
+                          "addr": 94892732334048,
+                          "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                        },
+                        "left": {
+                          "kind": "NamedValue",
+                          "type": {
+                            "name": "r_w_seq_state",
+                            "kind": "TypeAlias",
+                            "addr": 94892732334048,
+                            "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                          },
+                          "symbol": "94892732350360 r_w_seq_current_state",
+                          "isHierarchical": false
+                        },
+                        "right": {
+                          "kind": "NamedValue",
+                          "type": {
+                            "name": "r_w_seq_state",
+                            "kind": "TypeAlias",
+                            "addr": 94892732334048,
+                            "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                          },
+                          "symbol": "94892732350496 r_w_seq_next_state",
+                          "isHierarchical": false
+                        },
+                        "isNonBlocking": true
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "",
+          "kind": "ProceduralBlock",
+          "addr": 94892732334472,
+          "procedureKind": "AlwaysComb",
+          "body": {
+            "kind": "Block",
+            "blockKind": "Sequential",
+            "body": {
+              "kind": "List",
+              "list": [
+                {
+                  "kind": "ExpressionStatement",
+                  "expr": {
+                    "kind": "Assignment",
+                    "type": {
+                      "name": "r_w_seq_state",
+                      "kind": "TypeAlias",
+                      "addr": 94892732334048,
+                      "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                    },
+                    "left": {
+                      "kind": "NamedValue",
+                      "type": {
+                        "name": "r_w_seq_state",
+                        "kind": "TypeAlias",
+                        "addr": 94892732334048,
+                        "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                      },
+                      "symbol": "94892732350496 r_w_seq_next_state",
+                      "isHierarchical": false
+                    },
+                    "right": {
+                      "kind": "NamedValue",
+                      "type": {
+                        "name": "r_w_seq_state",
+                        "kind": "TypeAlias",
+                        "addr": 94892732334048,
+                        "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                      },
+                      "symbol": "94892732350360 r_w_seq_current_state",
+                      "isHierarchical": false
+                    },
+                    "isNonBlocking": false
+                  }
+                },
+                {
+                  "kind": "Case",
+                  "condition": "Normal",
+                  "check": "Unique",
+                  "expr": {
+                    "kind": "NamedValue",
+                    "type": {
+                      "name": "r_w_seq_state",
+                      "kind": "TypeAlias",
+                      "addr": 94892732334048,
+                      "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                    },
+                    "symbol": "94892732350360 r_w_seq_current_state",
+                    "isHierarchical": false
+                  },
+                  "items": [
+                    {
+                      "expressions": [
+                        {
+                          "kind": "NamedValue",
+                          "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2",
+                          "constant": "2'b0",
+                          "symbol": "94892732348016 IDLE",
+                          "isHierarchical": false
+                        }
+                      ],
+                      "stmt": {
+                        "kind": "Conditional",
+                        "cond": {
+                          "kind": "BinaryOp",
+                          "type": "logic",
+                          "op": "BinaryAnd",
+                          "left": {
+                            "kind": "UnaryOp",
+                            "type": "logic",
+                            "op": "BitwiseNot",
+                            "operand": {
+                              "kind": "NamedValue",
+                              "type": "logic",
+                              "symbol": "94892732349896 wen",
+                              "isHierarchical": false
+                            }
+                          },
+                          "right": {
+                            "kind": "UnaryOp",
+                            "type": "logic",
+                            "op": "BitwiseNot",
+                            "operand": {
+                              "kind": "NamedValue",
+                              "type": "logic",
+                              "symbol": "94892732350224 ren",
+                              "isHierarchical": false
+                            }
+                          }
+                        },
+                        "ifTrue": {
+                          "kind": "Block",
+                          "blockKind": "Sequential",
+                          "body": {
+                            "kind": "List",
+                            "list": [
+                              {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "r_w_seq_state",
+                                    "kind": "TypeAlias",
+                                    "addr": 94892732334048,
+                                    "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "r_w_seq_state",
+                                      "kind": "TypeAlias",
+                                      "addr": 94892732334048,
+                                      "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                                    },
+                                    "symbol": "94892732350496 r_w_seq_next_state",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2",
+                                    "constant": "2'b0",
+                                    "symbol": "94892732348016 IDLE",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": false
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "ifFalse": {
+                          "kind": "Conditional",
+                          "cond": {
+                            "kind": "NamedValue",
+                            "type": "logic",
+                            "symbol": "94892732349896 wen",
+                            "isHierarchical": false
+                          },
+                          "ifTrue": {
+                            "kind": "Block",
+                            "blockKind": "Sequential",
+                            "body": {
+                              "kind": "List",
+                              "list": [
+                                {
+                                  "kind": "ExpressionStatement",
+                                  "expr": {
+                                    "kind": "Assignment",
+                                    "type": {
+                                      "name": "r_w_seq_state",
+                                      "kind": "TypeAlias",
+                                      "addr": 94892732334048,
+                                      "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                                    },
+                                    "left": {
+                                      "kind": "NamedValue",
+                                      "type": {
+                                        "name": "r_w_seq_state",
+                                        "kind": "TypeAlias",
+                                        "addr": 94892732334048,
+                                        "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                                      },
+                                      "symbol": "94892732350496 r_w_seq_next_state",
+                                      "isHierarchical": false
+                                    },
+                                    "right": {
+                                      "kind": "NamedValue",
+                                      "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2",
+                                      "constant": "2'b1",
+                                      "symbol": "94892732348288 MODIFY",
+                                      "isHierarchical": false
+                                    },
+                                    "isNonBlocking": false
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "ifFalse": {
+                            "kind": "Conditional",
+                            "cond": {
+                              "kind": "BinaryOp",
+                              "type": "logic",
+                              "op": "BinaryAnd",
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": "logic",
+                                "symbol": "94892732350224 ren",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "UnaryOp",
+                                "type": "logic",
+                                "op": "BitwiseNot",
+                                "operand": {
+                                  "kind": "NamedValue",
+                                  "type": "logic",
+                                  "symbol": "94892732349896 wen",
+                                  "isHierarchical": false
+                                }
+                              }
+                            },
+                            "ifTrue": {
+                              "kind": "Block",
+                              "blockKind": "Sequential",
+                              "body": {
+                                "kind": "List",
+                                "list": [
+                                  {
+                                    "kind": "ExpressionStatement",
+                                    "expr": {
+                                      "kind": "Assignment",
+                                      "type": {
+                                        "name": "r_w_seq_state",
+                                        "kind": "TypeAlias",
+                                        "addr": 94892732334048,
+                                        "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                                      },
+                                      "left": {
+                                        "kind": "NamedValue",
+                                        "type": {
+                                          "name": "r_w_seq_state",
+                                          "kind": "TypeAlias",
+                                          "addr": 94892732334048,
+                                          "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                                        },
+                                        "symbol": "94892732350496 r_w_seq_next_state",
+                                        "isHierarchical": false
+                                      },
+                                      "right": {
+                                        "kind": "NamedValue",
+                                        "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2",
+                                        "constant": "2'b10",
+                                        "symbol": "94892732348560 READ",
+                                        "isHierarchical": false
+                                      },
+                                      "isNonBlocking": false
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "expressions": [
+                        {
+                          "kind": "NamedValue",
+                          "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2",
+                          "constant": "2'b1",
+                          "symbol": "94892732348288 MODIFY",
+                          "isHierarchical": false
+                        }
+                      ],
+                      "stmt": {
+                        "kind": "Conditional",
+                        "cond": {
+                          "kind": "IntegerLiteral",
+                          "type": "bit[0:0]",
+                          "constant": "1'b1"
+                        },
+                        "ifTrue": {
+                          "kind": "Block",
+                          "blockKind": "Sequential",
+                          "body": {
+                            "kind": "List",
+                            "list": [
+                              {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "r_w_seq_state",
+                                    "kind": "TypeAlias",
+                                    "addr": 94892732334048,
+                                    "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "r_w_seq_state",
+                                      "kind": "TypeAlias",
+                                      "addr": 94892732334048,
+                                      "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                                    },
+                                    "symbol": "94892732350496 r_w_seq_next_state",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2",
+                                    "constant": "2'b0",
+                                    "symbol": "94892732348016 IDLE",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": false
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "expressions": [
+                        {
+                          "kind": "NamedValue",
+                          "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2",
+                          "constant": "2'b10",
+                          "symbol": "94892732348560 READ",
+                          "isHierarchical": false
+                        }
+                      ],
+                      "stmt": {
+                        "kind": "Conditional",
+                        "cond": {
+                          "kind": "BinaryOp",
+                          "type": "logic",
+                          "op": "BinaryAnd",
+                          "left": {
+                            "kind": "UnaryOp",
+                            "type": "logic",
+                            "op": "BitwiseNot",
+                            "operand": {
+                              "kind": "NamedValue",
+                              "type": "logic",
+                              "symbol": "94892732349896 wen",
+                              "isHierarchical": false
+                            }
+                          },
+                          "right": {
+                            "kind": "UnaryOp",
+                            "type": "logic",
+                            "op": "BitwiseNot",
+                            "operand": {
+                              "kind": "NamedValue",
+                              "type": "logic",
+                              "symbol": "94892732350224 ren",
+                              "isHierarchical": false
+                            }
+                          }
+                        },
+                        "ifTrue": {
+                          "kind": "Block",
+                          "blockKind": "Sequential",
+                          "body": {
+                            "kind": "List",
+                            "list": [
+                              {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "r_w_seq_state",
+                                    "kind": "TypeAlias",
+                                    "addr": 94892732334048,
+                                    "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "r_w_seq_state",
+                                      "kind": "TypeAlias",
+                                      "addr": 94892732334048,
+                                      "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                                    },
+                                    "symbol": "94892732350496 r_w_seq_next_state",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2",
+                                    "constant": "2'b0",
+                                    "symbol": "94892732348016 IDLE",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": false
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "ifFalse": {
+                          "kind": "Conditional",
+                          "cond": {
+                            "kind": "NamedValue",
+                            "type": "logic",
+                            "symbol": "94892732349896 wen",
+                            "isHierarchical": false
+                          },
+                          "ifTrue": {
+                            "kind": "Block",
+                            "blockKind": "Sequential",
+                            "body": {
+                              "kind": "List",
+                              "list": [
+                                {
+                                  "kind": "ExpressionStatement",
+                                  "expr": {
+                                    "kind": "Assignment",
+                                    "type": {
+                                      "name": "r_w_seq_state",
+                                      "kind": "TypeAlias",
+                                      "addr": 94892732334048,
+                                      "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                                    },
+                                    "left": {
+                                      "kind": "NamedValue",
+                                      "type": {
+                                        "name": "r_w_seq_state",
+                                        "kind": "TypeAlias",
+                                        "addr": 94892732334048,
+                                        "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                                      },
+                                      "symbol": "94892732350496 r_w_seq_next_state",
+                                      "isHierarchical": false
+                                    },
+                                    "right": {
+                                      "kind": "NamedValue",
+                                      "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2",
+                                      "constant": "2'b1",
+                                      "symbol": "94892732348288 MODIFY",
+                                      "isHierarchical": false
+                                    },
+                                    "isNonBlocking": false
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "ifFalse": {
+                            "kind": "Conditional",
+                            "cond": {
+                              "kind": "BinaryOp",
+                              "type": "logic",
+                              "op": "BinaryAnd",
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": "logic",
+                                "symbol": "94892732350224 ren",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "UnaryOp",
+                                "type": "logic",
+                                "op": "BitwiseNot",
+                                "operand": {
+                                  "kind": "NamedValue",
+                                  "type": "logic",
+                                  "symbol": "94892732349896 wen",
+                                  "isHierarchical": false
+                                }
+                              }
+                            },
+                            "ifTrue": {
+                              "kind": "Block",
+                              "blockKind": "Sequential",
+                              "body": {
+                                "kind": "List",
+                                "list": [
+                                  {
+                                    "kind": "ExpressionStatement",
+                                    "expr": {
+                                      "kind": "Assignment",
+                                      "type": {
+                                        "name": "r_w_seq_state",
+                                        "kind": "TypeAlias",
+                                        "addr": 94892732334048,
+                                        "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                                      },
+                                      "left": {
+                                        "kind": "NamedValue",
+                                        "type": {
+                                          "name": "r_w_seq_state",
+                                          "kind": "TypeAlias",
+                                          "addr": 94892732334048,
+                                          "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                                        },
+                                        "symbol": "94892732350496 r_w_seq_next_state",
+                                        "isHierarchical": false
+                                      },
+                                      "right": {
+                                        "kind": "NamedValue",
+                                        "type": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2",
+                                        "constant": "2'b10",
+                                        "symbol": "94892732348560 READ",
+                                        "isHierarchical": false
+                                      },
+                                      "isNonBlocking": false
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "defaultCase": {
+                    "kind": "ExpressionStatement",
+                    "expr": {
+                      "kind": "Assignment",
+                      "type": {
+                        "name": "r_w_seq_state",
+                        "kind": "TypeAlias",
+                        "addr": 94892732334048,
+                        "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                      },
+                      "left": {
+                        "kind": "NamedValue",
+                        "type": {
+                          "name": "r_w_seq_state",
+                          "kind": "TypeAlias",
+                          "addr": 94892732334048,
+                          "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                        },
+                        "symbol": "94892732350496 r_w_seq_next_state",
+                        "isHierarchical": false
+                      },
+                      "right": {
+                        "kind": "NamedValue",
+                        "type": {
+                          "name": "r_w_seq_state",
+                          "kind": "TypeAlias",
+                          "addr": 94892732334048,
+                          "target": "enum{IDLE=2'd0,MODIFY=2'd1,READ=2'd2}mod.e$2"
+                        },
+                        "symbol": "94892732350360 r_w_seq_current_state",
+                        "isHierarchical": false
+                      },
+                      "isNonBlocking": false
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "definition": "94892732188344 mod"
+    }
+  ]
+}
