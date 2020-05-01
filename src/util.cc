@@ -144,6 +144,28 @@ std::string basename(const std::string &filename) {
 #endif
 }
 
+std::string resolve(const std::string &filename, const std::string &base) {
+#if defined(INCLUDE_FILESYSTEM)
+    std::filesystem::path p(filename);
+    if (p.is_relative()) {
+        return std::filesystem::canonical(base / p);
+    } else {
+        return filename;
+    }
+#else
+    throw std::runtime_error("not implemented");
+#endif
+}
+
+std::string dirname(const std::string &filename) {
+#if defined(INCLUDE_FILESYSTEM)
+    std::filesystem::path path(filename);
+    return path.parent_path();
+#else
+    throw std::runtime_error("not implemented");
+#endif
+}
+
 char separator() {
 #ifdef _WIN32
     return '\\';

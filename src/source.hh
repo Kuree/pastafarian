@@ -29,6 +29,9 @@ private:
     std::vector<std::string> src_filenames_;
     std::vector<std::string> src_include_dirs_;
     std::unordered_map<std::string, int64_t> macros_;
+
+    void read_file_list(const std::string &filename);
+    static bool is_file_lit(const std::string &filename);
 };
 
 }  // namespace fsm
