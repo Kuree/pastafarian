@@ -1,6 +1,7 @@
 #include "parser.hh"
 
 #include <iostream>
+#include <queue>
 
 #include "fmt/format.h"
 #include "simdjson/simdjson.h"
@@ -709,6 +710,83 @@ Node *parse_generate_block(T value, Graph *g, Node *parent) {
     return nullptr;
 }
 
+struct ParseNode {
+    ParseNode *parent = nullptr;
+    std::vector<ParseNode *> children;
+    std::string name;
+};
+
+ParseNode *get_parse_node(std::vector<std::unique_ptr<ParseNode>> &nodes) {
+    auto p = std::make_unique<ParseNode>();
+    auto ptr = p.get();
+    nodes.emplace_back(std::move(p));
+    return ptr;
+}
+
+void parse_struct_str(const std::string &string, Node *root, Graph *g) {
+    std::vector<std::unique_ptr<ParseNode>> nodes;
+    ParseNode* parent = nullptr;
+    std::string name;
+
+    for (auto const c : string) {
+        switch (c) {
+            case '{': {
+                name = "";
+                auto new_node = get_parse_node(nodes);
+                if (parent)
+                    parent->children.emplace_back(new_node);
+                new_node->parent = parent;
+                parent = new_node;
+                break;
+            }
+            case ' ': {
+                name = "";
+                break;
+            } case ';': {
+                // a member
+                assert_(parent != nullptr, "parsing state error");
+                if (!parent->children.empty() && parent->children.back()->name.empty()) {
+                    parent->children.back()->name = name;
+                } else {
+                    // new member
+                    auto new_node = get_parse_node(nodes);
+                    parent->children.emplace_back(new_node);
+                    new_node->parent = parent;
+                    new_node->name = name;
+                }
+                name = "";
+                break;
+            } case '}': {
+                if (parent->parent)
+                    parent = parent->parent;
+                break;
+            }
+            default: {
+                name += c;
+            }
+        }
+    }
+    std::queue<ParseNode*> working_set;
+    working_set.emplace(parent);
+    std::unordered_map<ParseNode*, Node*> node_map = {{parent, root}};
+    while (!working_set.empty()) {
+        auto p_n = working_set.front();
+        working_set.pop();
+        auto g_n = node_map.at(p_n);
+        for (auto const c_n: p_n->children) {
+            assert_(!c_n->name.empty(), "member name empty");
+            if (g_n->members.find(c_n->name) != g_n->members.end()) continue;
+            auto new_node = g->add_node(g->get_free_id(), c_n->name);
+            g_n->members.emplace(new_node->name, new_node);
+            g_n->children.emplace_back(new_node);
+            new_node->parent = g_n;
+            node_map.emplace(c_n, new_node);
+
+            working_set.emplace(c_n);
+        }
+    }
+}
+
 template <class T>
 void parse_complex_struct(Graph *g, Node *node, const T &elem) {
     std::string target_str;
@@ -729,54 +807,7 @@ void parse_complex_struct(Graph *g, Node *node, const T &elem) {
         const static std::string PACKED_STRUCT = "struct packed";
         auto target_pos = target_str.find(PACKED_STRUCT);
         if (target_pos != std::string::npos) {
-            auto def_str = target_str.substr(target_pos + PACKED_STRUCT.size());
-            auto begin = def_str.find_first_of('{');
-            auto end = def_str.find_last_of('}');
-            def_str = def_str.substr(begin + 1, end - begin - 2);
-            std::vector<std::string> tokens;
-            // TODO: hacky way to parse the definition
-            //  only two levels
-            begin = def_str.find_first_of('{');
-            if (begin != std::string::npos) {
-                end = def_str.find_last_of('}');
-                // chop chunk of
-                auto begin_p = def_str.find_last_of(';', begin);
-                auto end_p = def_str.find_first_of(';', end);
-                tokens.emplace_back(def_str.substr(begin_p + 1, end_p - begin_p - 1));
-                def_str.erase(begin_p, end_p - begin_p);
-            }
-            auto tokens_ = string::get_tokens(def_str, ";");
-            tokens.insert(tokens.end(), tokens_.begin(), tokens_.end());
-            for (auto const &t : tokens) {
-                if (t.empty()) continue;
-                bool node_added = false;
-                // create a new var
-                auto n = g->get_node(g->get_free_id());
-                auto values = string::get_tokens(t, " ");
-                auto var_name = values.back();
-                n->name = var_name;
-                n->parent = node;
-                if (t.find(PACKED_STRUCT) != std::string::npos) {
-                    node->members.emplace(n->name, n);
-                    node->children.emplace_back(n);
-                    node_added = true;
-                    // recursively
-                    parse_complex_struct(g, n, t);
-
-                } else {
-                    if (values.size() == 2) {
-                        if (node->members.find(var_name) == node->members.end()) {
-                            n->wire_type = values[0];
-                            node->members.emplace(n->name, n);
-                            node->children.emplace_back(n);
-                            node_added = true;
-                        }
-                    }
-                }
-                if (!node_added) {
-                    g->remove_node(n->id);
-                }
-            }
+            parse_struct_str(target_str, node, g);
         }
     }
 }
