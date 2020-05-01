@@ -243,7 +243,10 @@ bool constant_driver(const Node *node, std::unordered_set<const Node *> &self_as
     }
 
     if (result) {
-        if (const_sources.empty()) result = false;
+        if (const_sources.empty() && !node->has_type(NodeType::Assign)) {
+            result = false;
+            const_sources.clear();
+        }
     } else {
         const_sources.clear();
     }

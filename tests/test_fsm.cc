@@ -77,3 +77,17 @@ TEST_F(GraphTest, fsm_extract_fsm4) {  // NOLINT
     //  state transition as in verilog.
     EXPECT_EQ(s_arcs.size(), 47);
 }
+
+TEST_F(GraphTest, fsm_extract_fsm5) {  // NOLINT
+    parse("fsm5.json");
+    auto fsms = g.identify_fsms();
+    EXPECT_EQ(fsms.size(), 1);
+    auto const &fsm = fsms[0];
+
+    EXPECT_EQ(fsm.node()->name, "r_w_seq_current_state");
+
+    auto states = fsm.unique_states();
+    EXPECT_EQ(states.size(), 3);
+
+    EXPECT_FALSE(fsm.is_counter());
+}
