@@ -756,7 +756,7 @@ Node *parse_generated_block_array(T value, Graph *g, Node *parent) {
                 std::cerr << "Unable to parse blocks from " << parent->handle_name() << "."
                           << name_str << std::endl;
             } else {
-                auto module_name = ::format("{0}[1]", name_str, *index);
+                auto module_name = ::format("{0}[{1}]", name_str, *index);
                 auto module = g->add_node(g->get_free_id(), module_name, NodeType::Module);
                 parent->children.emplace_back(module);
                 module->parent = parent;

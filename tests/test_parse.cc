@@ -115,6 +115,18 @@ TEST_F(ParserTest, packed_struct) {  // NOLINT
     EXPECT_EQ(in2_d_a->edges_to.size(), 1);
 }
 
+TEST_F(ParserTest, genvar_array) {  // NOLINT
+    parse("genvar_blocks.json");
+
+    // do selection
+    for (int i = 0; i < 4; i++) {
+        auto a_name = "mod.block[" + std::to_string(i) + "].c.a";
+        auto a = g.select(a_name);
+        EXPECT_NE(a, nullptr);
+    }
+}
+
+
 TEST_F(ParserTest, fsm1) {  // NOLINT
     parse("fsm1.json");
 

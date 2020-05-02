@@ -1,0 +1,1137 @@
+{
+  "name": "$root",
+  "kind": "Root",
+  "addr": 94239601736208,
+  "members": [
+    {
+      "name": "",
+      "kind": "CompilationUnit",
+      "addr": 94239601728712,
+      "members": [
+        {
+          "name": "child",
+          "kind": "Definition",
+          "addr": 94239601728888,
+          "members": [
+            {
+              "name": "a",
+              "kind": "Port",
+              "addr": 94239601729872,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "94239601730064 a"
+            },
+            {
+              "name": "a",
+              "kind": "Net",
+              "addr": 94239601730064,
+              "type": "logic"
+            },
+            {
+              "name": "b",
+              "kind": "Port",
+              "addr": 94239601730200,
+              "type": "logic",
+              "direction": "Out",
+              "internalSymbol": "94239601730392 b"
+            },
+            {
+              "name": "b",
+              "kind": "Variable",
+              "addr": 94239601730392,
+              "type": "logic",
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "",
+              "kind": "ContinuousAssign",
+              "addr": 94239601730528,
+              "assignment": {
+                "kind": "Assignment",
+                "type": "logic",
+                "left": {
+                  "kind": "NamedValue",
+                  "type": "logic",
+                  "symbol": "94239601730392 b",
+                  "isHierarchical": false
+                },
+                "right": {
+                  "kind": "NamedValue",
+                  "type": "logic",
+                  "symbol": "94239601730064 a",
+                  "isHierarchical": false
+                },
+                "isNonBlocking": false
+              }
+            }
+          ],
+          "definitionKind": "Module"
+        },
+        {
+          "name": "mod",
+          "kind": "Definition",
+          "addr": 94239601729248,
+          "members": [
+            {
+              "name": "a",
+              "kind": "Variable",
+              "addr": 94239601729464,
+              "type": "logic[3:0]",
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "b",
+              "kind": "Variable",
+              "addr": 94239601729600,
+              "type": "logic[3:0]",
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "i",
+              "kind": "Genvar",
+              "addr": 94239601729736
+            },
+            {
+              "name": "block",
+              "kind": "GenerateBlockArray",
+              "addr": 94239601730600,
+              "members": [
+                {
+                  "name": "",
+                  "kind": "GenerateBlock",
+                  "addr": 94239601863080,
+                  "members": [
+                    {
+                      "name": "i",
+                      "kind": "Parameter",
+                      "addr": 94239601863200,
+                      "type": "integer",
+                      "value": "0",
+                      "isLocal": true,
+                      "isPort": false,
+                      "isBody": true
+                    },
+                    {
+                      "name": "c",
+                      "kind": "ModuleInstance",
+                      "addr": 94239601864672,
+                      "members": [
+                        {
+                          "name": "a",
+                          "kind": "Port",
+                          "addr": 94239601864968,
+                          "type": "logic",
+                          "direction": "In",
+                          "internalSymbol": "94239601865160 a",
+                          "externalConnection": {
+                            "kind": "ElementSelect",
+                            "type": "logic",
+                            "value": {
+                              "kind": "NamedValue",
+                              "type": "logic[3:0]",
+                              "symbol": "94239601729464 a",
+                              "isHierarchical": false
+                            },
+                            "selector": {
+                              "kind": "NamedValue",
+                              "type": "integer",
+                              "constant": "0",
+                              "symbol": "94239601863200 i",
+                              "isHierarchical": false
+                            }
+                          }
+                        },
+                        {
+                          "name": "a",
+                          "kind": "Net",
+                          "addr": 94239601865160,
+                          "type": "logic"
+                        },
+                        {
+                          "name": "b",
+                          "kind": "Port",
+                          "addr": 94239601865296,
+                          "type": "logic",
+                          "direction": "Out",
+                          "internalSymbol": "94239601865488 b",
+                          "externalConnection": {
+                            "kind": "Assignment",
+                            "type": "logic",
+                            "left": {
+                              "kind": "ElementSelect",
+                              "type": "logic",
+                              "value": {
+                                "kind": "NamedValue",
+                                "type": "logic[3:0]",
+                                "symbol": "94239601729600 b",
+                                "isHierarchical": false
+                              },
+                              "selector": {
+                                "kind": "NamedValue",
+                                "type": "integer",
+                                "constant": "0",
+                                "symbol": "94239601863200 i",
+                                "isHierarchical": false
+                              }
+                            },
+                            "right": {
+                              "kind": "EmptyArgument",
+                              "type": "logic"
+                            },
+                            "isNonBlocking": false
+                          }
+                        },
+                        {
+                          "name": "b",
+                          "kind": "Variable",
+                          "addr": 94239601865488,
+                          "type": "logic",
+                          "lifetime": "Static",
+                          "isConstant": false,
+                          "isCompilerGenerated": false
+                        },
+                        {
+                          "name": "",
+                          "kind": "ContinuousAssign",
+                          "addr": 94239601865624,
+                          "assignment": {
+                            "kind": "Assignment",
+                            "type": "logic",
+                            "left": {
+                              "kind": "NamedValue",
+                              "type": "logic",
+                              "symbol": "94239601865488 b",
+                              "isHierarchical": false
+                            },
+                            "right": {
+                              "kind": "NamedValue",
+                              "type": "logic",
+                              "symbol": "94239601865160 a",
+                              "isHierarchical": false
+                            },
+                            "isNonBlocking": false
+                          }
+                        }
+                      ],
+                      "definition": "94239601728888 child"
+                    }
+                  ],
+                  "constructIndex": 1,
+                  "isInstantiated": true
+                },
+                {
+                  "name": "",
+                  "kind": "GenerateBlock",
+                  "addr": 94239601863424,
+                  "members": [
+                    {
+                      "name": "i",
+                      "kind": "Parameter",
+                      "addr": 94239601863544,
+                      "type": "integer",
+                      "value": "1",
+                      "isLocal": true,
+                      "isPort": false,
+                      "isBody": true
+                    },
+                    {
+                      "name": "c",
+                      "kind": "ModuleInstance",
+                      "addr": 94239601865848,
+                      "members": [
+                        {
+                          "name": "a",
+                          "kind": "Port",
+                          "addr": 94239601866144,
+                          "type": "logic",
+                          "direction": "In",
+                          "internalSymbol": "94239601866336 a",
+                          "externalConnection": {
+                            "kind": "ElementSelect",
+                            "type": "logic",
+                            "value": {
+                              "kind": "NamedValue",
+                              "type": "logic[3:0]",
+                              "symbol": "94239601729464 a",
+                              "isHierarchical": false
+                            },
+                            "selector": {
+                              "kind": "NamedValue",
+                              "type": "integer",
+                              "constant": "1",
+                              "symbol": "94239601863544 i",
+                              "isHierarchical": false
+                            }
+                          }
+                        },
+                        {
+                          "name": "a",
+                          "kind": "Net",
+                          "addr": 94239601866336,
+                          "type": "logic"
+                        },
+                        {
+                          "name": "b",
+                          "kind": "Port",
+                          "addr": 94239601875968,
+                          "type": "logic",
+                          "direction": "Out",
+                          "internalSymbol": "94239601876160 b",
+                          "externalConnection": {
+                            "kind": "Assignment",
+                            "type": "logic",
+                            "left": {
+                              "kind": "ElementSelect",
+                              "type": "logic",
+                              "value": {
+                                "kind": "NamedValue",
+                                "type": "logic[3:0]",
+                                "symbol": "94239601729600 b",
+                                "isHierarchical": false
+                              },
+                              "selector": {
+                                "kind": "NamedValue",
+                                "type": "integer",
+                                "constant": "1",
+                                "symbol": "94239601863544 i",
+                                "isHierarchical": false
+                              }
+                            },
+                            "right": {
+                              "kind": "EmptyArgument",
+                              "type": "logic"
+                            },
+                            "isNonBlocking": false
+                          }
+                        },
+                        {
+                          "name": "b",
+                          "kind": "Variable",
+                          "addr": 94239601876160,
+                          "type": "logic",
+                          "lifetime": "Static",
+                          "isConstant": false,
+                          "isCompilerGenerated": false
+                        },
+                        {
+                          "name": "",
+                          "kind": "ContinuousAssign",
+                          "addr": 94239601876296,
+                          "assignment": {
+                            "kind": "Assignment",
+                            "type": "logic",
+                            "left": {
+                              "kind": "NamedValue",
+                              "type": "logic",
+                              "symbol": "94239601876160 b",
+                              "isHierarchical": false
+                            },
+                            "right": {
+                              "kind": "NamedValue",
+                              "type": "logic",
+                              "symbol": "94239601866336 a",
+                              "isHierarchical": false
+                            },
+                            "isNonBlocking": false
+                          }
+                        }
+                      ],
+                      "definition": "94239601728888 child"
+                    }
+                  ],
+                  "constructIndex": 1,
+                  "isInstantiated": true
+                },
+                {
+                  "name": "",
+                  "kind": "GenerateBlock",
+                  "addr": 94239601863768,
+                  "members": [
+                    {
+                      "name": "i",
+                      "kind": "Parameter",
+                      "addr": 94239601863888,
+                      "type": "integer",
+                      "value": "2",
+                      "isLocal": true,
+                      "isPort": false,
+                      "isBody": true
+                    },
+                    {
+                      "name": "c",
+                      "kind": "ModuleInstance",
+                      "addr": 94239601876520,
+                      "members": [
+                        {
+                          "name": "a",
+                          "kind": "Port",
+                          "addr": 94239601876816,
+                          "type": "logic",
+                          "direction": "In",
+                          "internalSymbol": "94239601877008 a",
+                          "externalConnection": {
+                            "kind": "ElementSelect",
+                            "type": "logic",
+                            "value": {
+                              "kind": "NamedValue",
+                              "type": "logic[3:0]",
+                              "symbol": "94239601729464 a",
+                              "isHierarchical": false
+                            },
+                            "selector": {
+                              "kind": "NamedValue",
+                              "type": "integer",
+                              "constant": "2",
+                              "symbol": "94239601863888 i",
+                              "isHierarchical": false
+                            }
+                          }
+                        },
+                        {
+                          "name": "a",
+                          "kind": "Net",
+                          "addr": 94239601877008,
+                          "type": "logic"
+                        },
+                        {
+                          "name": "b",
+                          "kind": "Port",
+                          "addr": 94239601877144,
+                          "type": "logic",
+                          "direction": "Out",
+                          "internalSymbol": "94239601877336 b",
+                          "externalConnection": {
+                            "kind": "Assignment",
+                            "type": "logic",
+                            "left": {
+                              "kind": "ElementSelect",
+                              "type": "logic",
+                              "value": {
+                                "kind": "NamedValue",
+                                "type": "logic[3:0]",
+                                "symbol": "94239601729600 b",
+                                "isHierarchical": false
+                              },
+                              "selector": {
+                                "kind": "NamedValue",
+                                "type": "integer",
+                                "constant": "2",
+                                "symbol": "94239601863888 i",
+                                "isHierarchical": false
+                              }
+                            },
+                            "right": {
+                              "kind": "EmptyArgument",
+                              "type": "logic"
+                            },
+                            "isNonBlocking": false
+                          }
+                        },
+                        {
+                          "name": "b",
+                          "kind": "Variable",
+                          "addr": 94239601877336,
+                          "type": "logic",
+                          "lifetime": "Static",
+                          "isConstant": false,
+                          "isCompilerGenerated": false
+                        },
+                        {
+                          "name": "",
+                          "kind": "ContinuousAssign",
+                          "addr": 94239601877472,
+                          "assignment": {
+                            "kind": "Assignment",
+                            "type": "logic",
+                            "left": {
+                              "kind": "NamedValue",
+                              "type": "logic",
+                              "symbol": "94239601877336 b",
+                              "isHierarchical": false
+                            },
+                            "right": {
+                              "kind": "NamedValue",
+                              "type": "logic",
+                              "symbol": "94239601877008 a",
+                              "isHierarchical": false
+                            },
+                            "isNonBlocking": false
+                          }
+                        }
+                      ],
+                      "definition": "94239601728888 child"
+                    }
+                  ],
+                  "constructIndex": 1,
+                  "isInstantiated": true
+                },
+                {
+                  "name": "",
+                  "kind": "GenerateBlock",
+                  "addr": 94239601864112,
+                  "members": [
+                    {
+                      "name": "i",
+                      "kind": "Parameter",
+                      "addr": 94239601864232,
+                      "type": "integer",
+                      "value": "3",
+                      "isLocal": true,
+                      "isPort": false,
+                      "isBody": true
+                    },
+                    {
+                      "name": "c",
+                      "kind": "ModuleInstance",
+                      "addr": 94239601877696,
+                      "members": [
+                        {
+                          "name": "a",
+                          "kind": "Port",
+                          "addr": 94239601877992,
+                          "type": "logic",
+                          "direction": "In",
+                          "internalSymbol": "94239601878184 a",
+                          "externalConnection": {
+                            "kind": "ElementSelect",
+                            "type": "logic",
+                            "value": {
+                              "kind": "NamedValue",
+                              "type": "logic[3:0]",
+                              "symbol": "94239601729464 a",
+                              "isHierarchical": false
+                            },
+                            "selector": {
+                              "kind": "NamedValue",
+                              "type": "integer",
+                              "constant": "3",
+                              "symbol": "94239601864232 i",
+                              "isHierarchical": false
+                            }
+                          }
+                        },
+                        {
+                          "name": "a",
+                          "kind": "Net",
+                          "addr": 94239601878184,
+                          "type": "logic"
+                        },
+                        {
+                          "name": "b",
+                          "kind": "Port",
+                          "addr": 94239601878320,
+                          "type": "logic",
+                          "direction": "Out",
+                          "internalSymbol": "94239601878512 b",
+                          "externalConnection": {
+                            "kind": "Assignment",
+                            "type": "logic",
+                            "left": {
+                              "kind": "ElementSelect",
+                              "type": "logic",
+                              "value": {
+                                "kind": "NamedValue",
+                                "type": "logic[3:0]",
+                                "symbol": "94239601729600 b",
+                                "isHierarchical": false
+                              },
+                              "selector": {
+                                "kind": "NamedValue",
+                                "type": "integer",
+                                "constant": "3",
+                                "symbol": "94239601864232 i",
+                                "isHierarchical": false
+                              }
+                            },
+                            "right": {
+                              "kind": "EmptyArgument",
+                              "type": "logic"
+                            },
+                            "isNonBlocking": false
+                          }
+                        },
+                        {
+                          "name": "b",
+                          "kind": "Variable",
+                          "addr": 94239601878512,
+                          "type": "logic",
+                          "lifetime": "Static",
+                          "isConstant": false,
+                          "isCompilerGenerated": false
+                        },
+                        {
+                          "name": "",
+                          "kind": "ContinuousAssign",
+                          "addr": 94239601878648,
+                          "assignment": {
+                            "kind": "Assignment",
+                            "type": "logic",
+                            "left": {
+                              "kind": "NamedValue",
+                              "type": "logic",
+                              "symbol": "94239601878512 b",
+                              "isHierarchical": false
+                            },
+                            "right": {
+                              "kind": "NamedValue",
+                              "type": "logic",
+                              "symbol": "94239601878184 a",
+                              "isHierarchical": false
+                            },
+                            "isNonBlocking": false
+                          }
+                        }
+                      ],
+                      "definition": "94239601728888 child"
+                    }
+                  ],
+                  "constructIndex": 1,
+                  "isInstantiated": true
+                }
+              ],
+              "constructIndex": 1
+            }
+          ],
+          "definitionKind": "Module"
+        }
+      ]
+    },
+    {
+      "name": "mod",
+      "kind": "ModuleInstance",
+      "addr": 94239601878720,
+      "members": [
+        {
+          "name": "a",
+          "kind": "Variable",
+          "addr": 94239601878872,
+          "type": "logic[3:0]",
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "b",
+          "kind": "Variable",
+          "addr": 94239601879008,
+          "type": "logic[3:0]",
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "i",
+          "kind": "Genvar",
+          "addr": 94239601879144
+        },
+        {
+          "name": "block",
+          "kind": "GenerateBlockArray",
+          "addr": 94239601888432,
+          "members": [
+            {
+              "name": "",
+              "kind": "GenerateBlock",
+              "addr": 94239601889576,
+              "members": [
+                {
+                  "name": "i",
+                  "kind": "Parameter",
+                  "addr": 94239601890064,
+                  "type": "integer",
+                  "value": "0",
+                  "isLocal": true,
+                  "isPort": false,
+                  "isBody": true
+                },
+                {
+                  "name": "c",
+                  "kind": "ModuleInstance",
+                  "addr": 94239601891824,
+                  "members": [
+                    {
+                      "name": "a",
+                      "kind": "Port",
+                      "addr": 94239601892120,
+                      "type": "logic",
+                      "direction": "In",
+                      "internalSymbol": "94239601892312 a",
+                      "externalConnection": {
+                        "kind": "ElementSelect",
+                        "type": "logic",
+                        "value": {
+                          "kind": "NamedValue",
+                          "type": "logic[3:0]",
+                          "symbol": "94239601878872 a",
+                          "isHierarchical": false
+                        },
+                        "selector": {
+                          "kind": "NamedValue",
+                          "type": "integer",
+                          "constant": "0",
+                          "symbol": "94239601890064 i",
+                          "isHierarchical": false
+                        }
+                      }
+                    },
+                    {
+                      "name": "a",
+                      "kind": "Net",
+                      "addr": 94239601892312,
+                      "type": "logic"
+                    },
+                    {
+                      "name": "b",
+                      "kind": "Port",
+                      "addr": 94239601892448,
+                      "type": "logic",
+                      "direction": "Out",
+                      "internalSymbol": "94239601892640 b",
+                      "externalConnection": {
+                        "kind": "Assignment",
+                        "type": "logic",
+                        "left": {
+                          "kind": "ElementSelect",
+                          "type": "logic",
+                          "value": {
+                            "kind": "NamedValue",
+                            "type": "logic[3:0]",
+                            "symbol": "94239601879008 b",
+                            "isHierarchical": false
+                          },
+                          "selector": {
+                            "kind": "NamedValue",
+                            "type": "integer",
+                            "constant": "0",
+                            "symbol": "94239601890064 i",
+                            "isHierarchical": false
+                          }
+                        },
+                        "right": {
+                          "kind": "EmptyArgument",
+                          "type": "logic"
+                        },
+                        "isNonBlocking": false
+                      }
+                    },
+                    {
+                      "name": "b",
+                      "kind": "Variable",
+                      "addr": 94239601892640,
+                      "type": "logic",
+                      "lifetime": "Static",
+                      "isConstant": false,
+                      "isCompilerGenerated": false
+                    },
+                    {
+                      "name": "",
+                      "kind": "ContinuousAssign",
+                      "addr": 94239601892776,
+                      "assignment": {
+                        "kind": "Assignment",
+                        "type": "logic",
+                        "left": {
+                          "kind": "NamedValue",
+                          "type": "logic",
+                          "symbol": "94239601892640 b",
+                          "isHierarchical": false
+                        },
+                        "right": {
+                          "kind": "NamedValue",
+                          "type": "logic",
+                          "symbol": "94239601892312 a",
+                          "isHierarchical": false
+                        },
+                        "isNonBlocking": false
+                      }
+                    }
+                  ],
+                  "definition": "94239601728888 child"
+                }
+              ],
+              "constructIndex": 1,
+              "isInstantiated": true
+            },
+            {
+              "name": "",
+              "kind": "GenerateBlock",
+              "addr": 94239601890288,
+              "members": [
+                {
+                  "name": "i",
+                  "kind": "Parameter",
+                  "addr": 94239601890408,
+                  "type": "integer",
+                  "value": "1",
+                  "isLocal": true,
+                  "isPort": false,
+                  "isBody": true
+                },
+                {
+                  "name": "c",
+                  "kind": "ModuleInstance",
+                  "addr": 94239601893720,
+                  "members": [
+                    {
+                      "name": "a",
+                      "kind": "Port",
+                      "addr": 94239601899632,
+                      "type": "logic",
+                      "direction": "In",
+                      "internalSymbol": "94239601899824 a",
+                      "externalConnection": {
+                        "kind": "ElementSelect",
+                        "type": "logic",
+                        "value": {
+                          "kind": "NamedValue",
+                          "type": "logic[3:0]",
+                          "symbol": "94239601878872 a",
+                          "isHierarchical": false
+                        },
+                        "selector": {
+                          "kind": "NamedValue",
+                          "type": "integer",
+                          "constant": "1",
+                          "symbol": "94239601890408 i",
+                          "isHierarchical": false
+                        }
+                      }
+                    },
+                    {
+                      "name": "a",
+                      "kind": "Net",
+                      "addr": 94239601899824,
+                      "type": "logic"
+                    },
+                    {
+                      "name": "b",
+                      "kind": "Port",
+                      "addr": 94239601899960,
+                      "type": "logic",
+                      "direction": "Out",
+                      "internalSymbol": "94239601900152 b",
+                      "externalConnection": {
+                        "kind": "Assignment",
+                        "type": "logic",
+                        "left": {
+                          "kind": "ElementSelect",
+                          "type": "logic",
+                          "value": {
+                            "kind": "NamedValue",
+                            "type": "logic[3:0]",
+                            "symbol": "94239601879008 b",
+                            "isHierarchical": false
+                          },
+                          "selector": {
+                            "kind": "NamedValue",
+                            "type": "integer",
+                            "constant": "1",
+                            "symbol": "94239601890408 i",
+                            "isHierarchical": false
+                          }
+                        },
+                        "right": {
+                          "kind": "EmptyArgument",
+                          "type": "logic"
+                        },
+                        "isNonBlocking": false
+                      }
+                    },
+                    {
+                      "name": "b",
+                      "kind": "Variable",
+                      "addr": 94239601900152,
+                      "type": "logic",
+                      "lifetime": "Static",
+                      "isConstant": false,
+                      "isCompilerGenerated": false
+                    },
+                    {
+                      "name": "",
+                      "kind": "ContinuousAssign",
+                      "addr": 94239601900288,
+                      "assignment": {
+                        "kind": "Assignment",
+                        "type": "logic",
+                        "left": {
+                          "kind": "NamedValue",
+                          "type": "logic",
+                          "symbol": "94239601900152 b",
+                          "isHierarchical": false
+                        },
+                        "right": {
+                          "kind": "NamedValue",
+                          "type": "logic",
+                          "symbol": "94239601899824 a",
+                          "isHierarchical": false
+                        },
+                        "isNonBlocking": false
+                      }
+                    }
+                  ],
+                  "definition": "94239601728888 child"
+                }
+              ],
+              "constructIndex": 1,
+              "isInstantiated": true
+            },
+            {
+              "name": "",
+              "kind": "GenerateBlock",
+              "addr": 94239601890632,
+              "members": [
+                {
+                  "name": "i",
+                  "kind": "Parameter",
+                  "addr": 94239601890752,
+                  "type": "integer",
+                  "value": "2",
+                  "isLocal": true,
+                  "isPort": false,
+                  "isBody": true
+                },
+                {
+                  "name": "c",
+                  "kind": "ModuleInstance",
+                  "addr": 94239601901232,
+                  "members": [
+                    {
+                      "name": "a",
+                      "kind": "Port",
+                      "addr": 94239601901528,
+                      "type": "logic",
+                      "direction": "In",
+                      "internalSymbol": "94239601901720 a",
+                      "externalConnection": {
+                        "kind": "ElementSelect",
+                        "type": "logic",
+                        "value": {
+                          "kind": "NamedValue",
+                          "type": "logic[3:0]",
+                          "symbol": "94239601878872 a",
+                          "isHierarchical": false
+                        },
+                        "selector": {
+                          "kind": "NamedValue",
+                          "type": "integer",
+                          "constant": "2",
+                          "symbol": "94239601890752 i",
+                          "isHierarchical": false
+                        }
+                      }
+                    },
+                    {
+                      "name": "a",
+                      "kind": "Net",
+                      "addr": 94239601901720,
+                      "type": "logic"
+                    },
+                    {
+                      "name": "b",
+                      "kind": "Port",
+                      "addr": 94239601901856,
+                      "type": "logic",
+                      "direction": "Out",
+                      "internalSymbol": "94239601902048 b",
+                      "externalConnection": {
+                        "kind": "Assignment",
+                        "type": "logic",
+                        "left": {
+                          "kind": "ElementSelect",
+                          "type": "logic",
+                          "value": {
+                            "kind": "NamedValue",
+                            "type": "logic[3:0]",
+                            "symbol": "94239601879008 b",
+                            "isHierarchical": false
+                          },
+                          "selector": {
+                            "kind": "NamedValue",
+                            "type": "integer",
+                            "constant": "2",
+                            "symbol": "94239601890752 i",
+                            "isHierarchical": false
+                          }
+                        },
+                        "right": {
+                          "kind": "EmptyArgument",
+                          "type": "logic"
+                        },
+                        "isNonBlocking": false
+                      }
+                    },
+                    {
+                      "name": "b",
+                      "kind": "Variable",
+                      "addr": 94239601902048,
+                      "type": "logic",
+                      "lifetime": "Static",
+                      "isConstant": false,
+                      "isCompilerGenerated": false
+                    },
+                    {
+                      "name": "",
+                      "kind": "ContinuousAssign",
+                      "addr": 94239601902184,
+                      "assignment": {
+                        "kind": "Assignment",
+                        "type": "logic",
+                        "left": {
+                          "kind": "NamedValue",
+                          "type": "logic",
+                          "symbol": "94239601902048 b",
+                          "isHierarchical": false
+                        },
+                        "right": {
+                          "kind": "NamedValue",
+                          "type": "logic",
+                          "symbol": "94239601901720 a",
+                          "isHierarchical": false
+                        },
+                        "isNonBlocking": false
+                      }
+                    }
+                  ],
+                  "definition": "94239601728888 child"
+                }
+              ],
+              "constructIndex": 1,
+              "isInstantiated": true
+            },
+            {
+              "name": "",
+              "kind": "GenerateBlock",
+              "addr": 94239601890976,
+              "members": [
+                {
+                  "name": "i",
+                  "kind": "Parameter",
+                  "addr": 94239601891096,
+                  "type": "integer",
+                  "value": "3",
+                  "isLocal": true,
+                  "isPort": false,
+                  "isBody": true
+                },
+                {
+                  "name": "c",
+                  "kind": "ModuleInstance",
+                  "addr": 94239601903128,
+                  "members": [
+                    {
+                      "name": "a",
+                      "kind": "Port",
+                      "addr": 94239601903424,
+                      "type": "logic",
+                      "direction": "In",
+                      "internalSymbol": "94239601903744 a",
+                      "externalConnection": {
+                        "kind": "ElementSelect",
+                        "type": "logic",
+                        "value": {
+                          "kind": "NamedValue",
+                          "type": "logic[3:0]",
+                          "symbol": "94239601878872 a",
+                          "isHierarchical": false
+                        },
+                        "selector": {
+                          "kind": "NamedValue",
+                          "type": "integer",
+                          "constant": "3",
+                          "symbol": "94239601891096 i",
+                          "isHierarchical": false
+                        }
+                      }
+                    },
+                    {
+                      "name": "a",
+                      "kind": "Net",
+                      "addr": 94239601903744,
+                      "type": "logic"
+                    },
+                    {
+                      "name": "b",
+                      "kind": "Port",
+                      "addr": 94239601903880,
+                      "type": "logic",
+                      "direction": "Out",
+                      "internalSymbol": "94239601904072 b",
+                      "externalConnection": {
+                        "kind": "Assignment",
+                        "type": "logic",
+                        "left": {
+                          "kind": "ElementSelect",
+                          "type": "logic",
+                          "value": {
+                            "kind": "NamedValue",
+                            "type": "logic[3:0]",
+                            "symbol": "94239601879008 b",
+                            "isHierarchical": false
+                          },
+                          "selector": {
+                            "kind": "NamedValue",
+                            "type": "integer",
+                            "constant": "3",
+                            "symbol": "94239601891096 i",
+                            "isHierarchical": false
+                          }
+                        },
+                        "right": {
+                          "kind": "EmptyArgument",
+                          "type": "logic"
+                        },
+                        "isNonBlocking": false
+                      }
+                    },
+                    {
+                      "name": "b",
+                      "kind": "Variable",
+                      "addr": 94239601904072,
+                      "type": "logic",
+                      "lifetime": "Static",
+                      "isConstant": false,
+                      "isCompilerGenerated": false
+                    },
+                    {
+                      "name": "",
+                      "kind": "ContinuousAssign",
+                      "addr": 94239601904208,
+                      "assignment": {
+                        "kind": "Assignment",
+                        "type": "logic",
+                        "left": {
+                          "kind": "NamedValue",
+                          "type": "logic",
+                          "symbol": "94239601904072 b",
+                          "isHierarchical": false
+                        },
+                        "right": {
+                          "kind": "NamedValue",
+                          "type": "logic",
+                          "symbol": "94239601903744 a",
+                          "isHierarchical": false
+                        },
+                        "isNonBlocking": false
+                      }
+                    }
+                  ],
+                  "definition": "94239601728888 child"
+                }
+              ],
+              "constructIndex": 1,
+              "isInstantiated": true
+            }
+          ],
+          "constructIndex": 1
+        }
+      ],
+      "definition": "94239601729248 mod"
+    }
+  ]
+}
