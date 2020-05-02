@@ -1,6 +1,7 @@
 #include "parser.hh"
 
 #include <iostream>
+#include <optional>
 #include <queue>
 
 #include "fmt/format.h"
@@ -710,6 +711,69 @@ Node *parse_generate_block(T value, Graph *g, Node *parent) {
     return nullptr;
 }
 
+template <class T>
+Node *parse_genvar(T value, Graph *g, Node *parent) {
+    // add it to parent
+    auto name = value["name"];
+    auto name_str = std::string(name.as_string());
+    auto node = g->add_node(g->get_free_id(), name_str);
+    parent->members.emplace(name_str, node);
+
+    return node;
+}
+
+template <class T>
+Node *parse_generated_block_array(T value, Graph *g, Node *parent) {
+    // we instantiate a "fake" module
+    auto name = value["name"];
+    assert_(name.error == SUCCESS, "cannot find name in generated block array");
+    std::string_view name_str = name.as_string();
+    auto members_raw = value["members"];
+    assert_(members_raw.error == SUCCESS, "unable to access members from block array");
+    auto members = members_raw.as_array();
+    if (!name_str.empty()) {
+        for (auto member : members) {
+            auto kind = member["kind"];
+            auto kind_str = std::string(kind.as_string());
+            assert_(kind_str == "GenerateBlock", "none generate block found in block array");
+            auto members_raw_ = member["members"];
+            auto members_ = members_raw_.as_array();
+            std::optional<int> index;
+            for (auto member_ : members_) {
+                auto kind_ = member_["kind"];
+                if (std::string(kind_.as_string()) == "Parameter") {
+                    auto name_raw_ = member_["name"];
+                    auto name_ = std::string(name_raw_);
+                    // find members
+                    if (parent->members.find(name_) != parent->members.end()) {
+                        auto param = parse_param(member_, g, nullptr);
+                        index = param->value;
+                        break;
+                    }
+                }
+            }
+            if (!index) {
+                std::cerr << "Unable to parse blocks from " << parent->handle_name() << "."
+                          << name_str << std::endl;
+            } else {
+                auto module_name = ::format("{0}[1]", name_str, *index);
+                auto module = g->add_node(g->get_free_id(), module_name, NodeType::Module);
+                parent->children.emplace_back(module);
+                module->parent = parent;
+
+                // parse the member
+                parse_generate_block(member, g, module);
+            }
+        }
+
+    } else {
+        // cannot access the genvar block, disable the parsing
+        std::cerr << "Unable to find lable name for generated block array from "
+                  << parent->handle_name() << std::endl;
+    }
+    return nullptr;
+}
+
 struct ParseNode {
     ParseNode *parent = nullptr;
     std::vector<ParseNode *> children;
@@ -725,7 +789,7 @@ ParseNode *get_parse_node(std::vector<std::unique_ptr<ParseNode>> &nodes) {
 
 void parse_struct_str(const std::string &string, Node *root, Graph *g) {
     std::vector<std::unique_ptr<ParseNode>> nodes;
-    ParseNode* parent = nullptr;
+    ParseNode *parent = nullptr;
     std::string name;
 
     for (auto const c : string) {
@@ -733,8 +797,7 @@ void parse_struct_str(const std::string &string, Node *root, Graph *g) {
             case '{': {
                 name = "";
                 auto new_node = get_parse_node(nodes);
-                if (parent)
-                    parent->children.emplace_back(new_node);
+                if (parent) parent->children.emplace_back(new_node);
                 new_node->parent = parent;
                 parent = new_node;
                 break;
@@ -742,7 +805,8 @@ void parse_struct_str(const std::string &string, Node *root, Graph *g) {
             case ' ': {
                 name = "";
                 break;
-            } case ';': {
+            }
+            case ';': {
                 // a member
                 assert_(parent != nullptr, "parsing state error");
                 if (!parent->children.empty() && parent->children.back()->name.empty()) {
@@ -756,9 +820,9 @@ void parse_struct_str(const std::string &string, Node *root, Graph *g) {
                 }
                 name = "";
                 break;
-            } case '}': {
-                if (parent->parent)
-                    parent = parent->parent;
+            }
+            case '}': {
+                if (parent->parent) parent = parent->parent;
                 break;
             }
             default: {
@@ -766,14 +830,14 @@ void parse_struct_str(const std::string &string, Node *root, Graph *g) {
             }
         }
     }
-    std::queue<ParseNode*> working_set;
+    std::queue<ParseNode *> working_set;
     working_set.emplace(parent);
-    std::unordered_map<ParseNode*, Node*> node_map = {{parent, root}};
+    std::unordered_map<ParseNode *, Node *> node_map = {{parent, root}};
     while (!working_set.empty()) {
         auto p_n = working_set.front();
         working_set.pop();
         auto g_n = node_map.at(p_n);
-        for (auto const c_n: p_n->children) {
+        for (auto const c_n : p_n->children) {
             assert_(!c_n->name.empty(), "member name empty");
             if (g_n->members.find(c_n->name) != g_n->members.end()) continue;
             auto new_node = g->add_node(g->get_free_id(), c_n->name);
@@ -919,7 +983,8 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
         return parse_list(value, g, parent);
     } else if (ast_kind == "Conditional") {
         return parse_conditional(value, g, parent);
-    } else if (ast_kind == "IntegerLiteral" || ast_kind == "StringLiteral") {
+    } else if (ast_kind == "IntegerLiteral" || ast_kind == "StringLiteral" ||
+               ast_kind == "UnbasedUnsizedIntegerLiteral") {
         return parse_num_literal(value, g);
     } else if (ast_kind == "Case") {
         return parse_case(value, g, parent);
@@ -951,6 +1016,10 @@ Node *parse_dispatch(T value, Graph *g, Node *parent) {
         return parse_real_literal(value, g);
     } else if (ast_kind == "Gate") {
         return parse_gate(value, g, parent);
+    } else if (ast_kind == "GenerateBlockArray") {
+        return parse_generated_block_array(value, g, parent);
+    } else if (ast_kind == "Genvar") {
+        return parse_genvar(value, g, parent);
     } else {
         std::cerr << "Unable to parse AST node kind " << ast_kind << std::endl;
     }
