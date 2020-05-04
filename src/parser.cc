@@ -747,18 +747,24 @@ Node *parse_generated_block_array(T value, Graph *g, Node *parent) {
         auto members_raw_ = member["members"];
         auto members_ = members_raw_.as_array();
         std::optional<int> index;
+        Node *param_node = nullptr;
         for (auto member_ : members_) {
             auto kind_ = member_["kind"];
             if (std::string(kind_.as_string()) == "Parameter") {
                 auto name_raw_ = member_["name"];
                 auto name_ = std::string(name_raw_);
                 // find members
+                auto param = parse_param(member_, g, nullptr);
                 if (parent->members.find(name_) != parent->members.end()) {
-                    auto param = parse_param(member_, g, nullptr);
                     index = param->value;
                     break;
+                } else {
+                    if (!param_node) param_node = param;
                 }
             }
+        }
+        if (!index && param_node) {
+            index = param_node->value;
         }
         if (!index) {
             std::cerr << "Unable to parse blocks from " << parent->handle_name() << "."
