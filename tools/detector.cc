@@ -22,9 +22,9 @@ std::vector<std::pair<const fsm::Property *, std::vector<const fsm::Property *>>
     } else {
         for (auto const property : properties) {
             if (property->state_var2) {
-                fsm::assert_(property->state_var2 == property->state_var1,
-                             "only single FSM supported");
-                entries[property->state_value1].emplace_back(property);
+                // only print out single state
+                if (property->state_var1 == property->state_var2)
+                    entries[property->state_value1].emplace_back(property);
             } else {
                 states[property->state_value1] = property;
             }
@@ -99,6 +99,28 @@ void print_out_fsm(const fsm::FSMResult &fsm_result, const fsm::VerilogModule &m
                 }
             }
         }
+    }
+}
+
+void print_grouped_fsm_formal(const fsm::FSMResult &fsm_result, const fsm::VerilogModule &m) {
+    std::vector<const fsm::Property *> cross_properties;
+    auto const &state_from = fsm_result.node();
+    auto const &properties = m.get_property(state_from);
+    for (auto const &prop : properties) {
+        if (prop->state_var1 == state_from && prop->state_var2 != state_from) {
+            if (prop->valid) cross_properties.emplace_back(prop);
+        }
+    }
+
+    for (uint64_t i = 0; i < cross_properties.size(); i++) {
+        auto const prop = cross_properties[i];
+        std::cout << "-" << prop->state_var1->handle_name() << ": ";
+        print_fsm_value(prop->state_value1);
+
+        std::cout << "-" << prop->state_var2->handle_name() << ": ";
+        print_fsm_value(prop->state_value2);
+
+        if (i != cross_properties.size() - 1) std::cout << std::endl;
     }
 }
 
@@ -288,6 +310,20 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
+    // see coupled FSM
+    std::unordered_map<const fsm::Node *, std::unordered_set<const fsm::Node *>> fsm_groups;
+    if (compute_coupled_fsm) {
+        std::cout << "Calculating coupled FSMs..." << std::endl;
+        time_start = std::chrono::steady_clock::now();
+        fsm_groups = fsm::Graph::group_fsms(fsms);
+        time_end = std::chrono::steady_clock::now();
+        time_used = time_end - time_start;
+        std::cout << "FSM coupling took " << time_used.count() << " seconds" << std::endl;
+
+        // generate cross property coverage
+        m.add_cross_properties(fsm_groups);
+    }
+
     // set properties
     if (use_formal) {
         fsm::JasperGoldGeneration jg(m);
@@ -303,17 +339,17 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // see coupled FSM
-    std::unordered_map<const fsm::Node *, std::unordered_set<const fsm::Node *>> fsm_groups;
     if (compute_coupled_fsm) {
-        std::cout << "Calculating coupled FSMs..." << std::endl;
-        time_start = std::chrono::steady_clock::now();
-        fsm_groups = fsm::Graph::group_fsms(fsms);
-        time_end = std::chrono::steady_clock::now();
-        time_used = time_end - time_start;
-        std::cout << "FSM coupling took " << time_used.count() << " seconds" << std::endl;
-
-        print_grouped_fsm(m, fsm_groups);
+        if (use_formal) {
+            for (uint64_t i = 0; i < fsms.size(); i++) {
+                print_grouped_fsm_formal(fsms[i], m);
+                if (i != fsms.size() - 1) {
+                    std::cout << std::endl;
+                }
+            }
+        } else {
+            print_grouped_fsm(m, fsm_groups);
+        }
     }
 
     if (!output_filename.empty()) {

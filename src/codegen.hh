@@ -11,12 +11,7 @@ namespace fsm {
 constexpr char TOP_NAME[] = "TOP";
 constexpr char PROPERTY_LABEL_PREFIX[] = "FSM_STATE_";
 
-enum class ResetType {
-    Default,
-    None,
-    Posedge,
-    Negedge
-};
+enum class ResetType { Default, None, Posedge, Negedge };
 
 class Property {
 public:
@@ -32,9 +27,10 @@ public:
     bool valid = false;
     bool should_be_valid = false;
 
-    Property(uint32_t id, const Node *top, std::string clk_name, const Node *state_var1, const Node *state_value1);
-    Property(uint32_t id, const Node *top, std::string clk_name, const Node *state_var1, const Node *state_value1,
-             const Node *state_var2, const Node *state_value2);
+    Property(uint32_t id, const Node *top, std::string clk_name, const Node *state_var1,
+             const Node *state_value1);
+    Property(uint32_t id, const Node *top, std::string clk_name, const Node *state_var1,
+             const Node *state_value1, const Node *state_var2, const Node *state_value2);
 
     [[nodiscard]] std::string str() const;
     [[nodiscard]] std::string property_name() const;
@@ -49,6 +45,8 @@ public:
     VerilogModule(Graph *graph, SourceManager parser_result, const std::string &top_name = "");
     void set_fsm_result(const std::vector<FSMResult> &result) { fsm_results_ = result; }
     void create_properties();
+    void add_cross_properties(
+        const std::unordered_map<const Node *, std::unordered_set<const Node *>> &groups);
     [[nodiscard]] Property &get_property(uint32_t id) const;
     [[nodiscard]] Property *get_property(const Node *node, uint32_t state_value) const;
     [[nodiscard]] Property *get_property(const Node *node, uint32_t state_from,
@@ -82,7 +80,6 @@ private:
     std::string clock_name_;
     std::string reset_name_;
     ResetType reset_type_ = ResetType::Default;
-    std::unordered_map<uint32_t, uint32_t> property_id_to_fsm_;
     std::unordered_map<std::string, int64_t> param_values_;
 
     void analyze_reset();

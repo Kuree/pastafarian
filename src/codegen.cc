@@ -170,7 +170,6 @@ void VerilogModule::create_properties() {
                     auto property = std::make_shared<Property>(id_count++, root_module_,
                                                                clock_name_, fsm.node(), value);
                     properties_.emplace(property->id, property);
-                    property_id_to_fsm_.emplace(property->id, i);
                     mutex.unlock();
                 }
             } else {
@@ -182,7 +181,6 @@ void VerilogModule::create_properties() {
                                                                clock_name_, fsm.node(), state);
                     property->should_be_valid = true;
                     properties_.emplace(property->id, property);
-                    property_id_to_fsm_.emplace(property->id, i);
                     mutex.unlock();
                 }
                 // state transition
@@ -202,7 +200,6 @@ void VerilogModule::create_properties() {
                             property->should_be_valid = true;
                         property->delay = 1;
                         properties_.emplace(property->id, property);
-                        property_id_to_fsm_.emplace(property->id, i);
                         mutex.unlock();
                     }
                 }
@@ -217,6 +214,53 @@ void VerilogModule::create_properties() {
     }
     for (auto &t : tasks) {
         t.get();
+    }
+}
+
+void VerilogModule::add_cross_properties(
+    const std::unordered_map<const Node *, std::unordered_set<const Node *>> &groups) {
+    // find out the FSM result indexed by the node
+    // build index
+    std::unordered_map<const Node *, const FSMResult *> node_index;
+    for (auto const &fsm : fsm_results_) {
+        node_index.emplace(fsm.node(), &fsm);
+    }
+    // get the maximum id count
+    uint32_t id_count = 0;
+    for (auto const &iter : properties_) {
+        auto id = iter.first;
+        if (id > id_count) id_count = id;
+    }
+
+    // notice that this is a pairwise, so we need to avoid generating redundant properties
+    std::set<std::pair<const Node *, const Node *>> added_pairs;
+
+    for (auto const &[node_from, coupled_states] : groups) {
+        if (node_index.find(node_from) == node_index.end()) continue;
+        auto fsm_from = node_index.at(node_from);
+        if (fsm_from->is_counter()) continue;
+        auto from_states = fsm_from->unique_states();
+        for (auto const node_to : coupled_states) {
+            if (node_index.find(node_to) == node_index.end()) continue;
+            auto fsm_to = node_index.at(node_to);
+            if (fsm_to->is_counter()) continue;
+            auto to_states = fsm_to->unique_states();
+
+            // creating properties for cross validation
+            for (auto const from_state : from_states) {
+                for (auto const to_state : to_states) {
+                    if (added_pairs.find(std::make_pair(from_state, to_state)) != added_pairs.end())
+                        continue;
+                    auto property =
+                        std::make_shared<Property>(id_count++, root_module_, clock_name_, node_from,
+                                                   from_state, node_to, to_state);
+                    properties_.emplace(property->id, property);
+                    // add the pairs
+                    added_pairs.emplace(std::make_pair(from_state, to_state));
+                    added_pairs.emplace(std::make_pair(to_state, from_state));
+                }
+            }
+        }
     }
 }
 
