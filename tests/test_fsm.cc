@@ -91,3 +91,24 @@ TEST_F(GraphTest, fsm_extract_fsm5) {  // NOLINT
 
     EXPECT_FALSE(fsm.is_counter());
 }
+
+TEST_F(GraphTest, fsm_extract_fsm6) {   // NOLINT
+    parse("fsm6.json");
+
+    auto fsms = g.identify_fsms();
+    EXPECT_EQ(fsms.size(), 1);
+    auto fsm = fsms[0];
+    auto syntax_arc = fsm.syntax_arc();
+
+    // we know that off can only go to idle based on the syntax
+    uint32_t count = 0;
+    for (auto const &[from, to]: syntax_arc) {
+        if (from->value == 0) {
+            EXPECT_EQ(from->name, "OFF");
+            count += 1;
+            EXPECT_EQ(to->value, 1);
+            EXPECT_EQ(to->name, "IDLE");
+        }
+    }
+    EXPECT_EQ(count, 1);
+}

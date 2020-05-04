@@ -92,7 +92,7 @@ std::set<std::pair<const Node *, const Node *>> FSMResult::syntax_arc() const {
     // find all the comparison nodes that compare the state variable with different
     // constants
 
-    auto comp_edges = Graph::find_connection_cond(node_, comp_cond);
+    auto comp_edges = Graph::find_connection_cond(node_, comp_cond, comp_terminate);
     for (auto const node_edge : comp_edges) {
         auto node_comp = node_edge->to;
         std::vector<const Node *> node_comp_control_set;
