@@ -731,45 +731,47 @@ Node *parse_generated_block_array(T value, Graph *g, Node *parent) {
     auto members_raw = value["members"];
     assert_(members_raw.error == SUCCESS, "unable to access members from block array");
     auto members = members_raw.as_array();
-    if (!name_str.empty()) {
-        for (auto member : members) {
-            auto kind = member["kind"];
-            auto kind_str = std::string(kind.as_string());
-            assert_(kind_str == "GenerateBlock", "none generate block found in block array");
-            auto members_raw_ = member["members"];
-            auto members_ = members_raw_.as_array();
-            std::optional<int> index;
-            for (auto member_ : members_) {
-                auto kind_ = member_["kind"];
-                if (std::string(kind_.as_string()) == "Parameter") {
-                    auto name_raw_ = member_["name"];
-                    auto name_ = std::string(name_raw_);
-                    // find members
-                    if (parent->members.find(name_) != parent->members.end()) {
-                        auto param = parse_param(member_, g, nullptr);
-                        index = param->value;
-                        break;
-                    }
+    if (name_str.empty()) {
+        // 1800-2017 27.6 unnamed gen blocks
+        // search for genblock
+        assert_(parent->type == NodeType::Module, "genblock parent has to be a module");
+        // FIXME: we assume there is no variable called genblk
+        auto n_gen = ++parent->num_gen_block;
+        name_str = ::format("genblk{0}", n_gen);
+    }
+
+    for (auto member : members) {
+        auto kind = member["kind"];
+        auto kind_str = std::string(kind.as_string());
+        assert_(kind_str == "GenerateBlock", "none generate block found in block array");
+        auto members_raw_ = member["members"];
+        auto members_ = members_raw_.as_array();
+        std::optional<int> index;
+        for (auto member_ : members_) {
+            auto kind_ = member_["kind"];
+            if (std::string(kind_.as_string()) == "Parameter") {
+                auto name_raw_ = member_["name"];
+                auto name_ = std::string(name_raw_);
+                // find members
+                if (parent->members.find(name_) != parent->members.end()) {
+                    auto param = parse_param(member_, g, nullptr);
+                    index = param->value;
+                    break;
                 }
             }
-            if (!index) {
-                std::cerr << "Unable to parse blocks from " << parent->handle_name() << "."
-                          << name_str << std::endl;
-            } else {
-                auto module_name = ::format("{0}[{1}]", name_str, *index);
-                auto module = g->add_node(g->get_free_id(), module_name, NodeType::Module);
-                parent->children.emplace_back(module);
-                module->parent = parent;
-
-                // parse the member
-                parse_generate_block(member, g, module);
-            }
         }
+        if (!index) {
+            std::cerr << "Unable to parse blocks from " << parent->handle_name() << "."
+                      << name_str << std::endl;
+        } else {
+            auto module_name = ::format("{0}[{1}]", name_str, *index);
+            auto module = g->add_node(g->get_free_id(), module_name, NodeType::Module);
+            parent->children.emplace_back(module);
+            module->parent = parent;
 
-    } else {
-        // cannot access the genvar block, disable the parsing
-        std::cerr << "Unable to find lable name for generated block array from "
-                  << parent->handle_name() << std::endl;
+            // parse the member
+            parse_generate_block(member, g, module);
+        }
     }
     return nullptr;
 }

@@ -95,6 +95,9 @@ public:
     // member access
     // for interface and packed struct
     std::unordered_map<std::string, Node*> members;
+    // for module
+    // number of unnamed gen block
+    uint32_t num_gen_block = 0;
 
     Node(uint64_t id, std::string name) : id(id), name(std::move(name)) {}
     Node(uint64_t id, std::string name, Node* parent)
