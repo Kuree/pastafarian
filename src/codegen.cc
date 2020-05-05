@@ -332,9 +332,10 @@ std::vector<const Property *> VerilogModule::get_property(const Node *node1,
 
 void VerilogModule::analyze_pins() {
     // this applies a series of heuristics to figure out the reset and clock pin name
-    const static std::unordered_set<std::string> reset_names = {"rst", "rst_n", "reset", "resetn"};
+    const static std::unordered_set<std::string> reset_names = {"rst", "rst_n", "reset", "resetn",
+                                                                "reset_in"};
     const static std::unordered_set<std::string> neg_reset_names = {"rst_n", "resetn"};
-    const static std::unordered_set<std::string> clock_names = {"clk", "clock"};
+    const static std::unordered_set<std::string> clock_names = {"clk", "clock", "clk_in"};
     if (clock_name_.empty()) {
         // we assume only one clock domain
         for (auto const &iter : ports) {
@@ -477,7 +478,8 @@ void JasperGoldGeneration::create_command_file(const std::string &cmd_filename,
 
     // clock
     assert_(!module_.clock_name().empty(), "clock name cannot be empty");
-    stream << "clock " << module_.clock_name() << ";" << std::endl;
+    std::string clock_type = module_.double_edge_clock()? "-both_edges " : "";
+    stream << "clock " << clock_type << module_.clock_name() << ";" << std::endl;
 
     // reset
     assert_(!module_.reset_name().empty(), "reset name cannot be empty");
@@ -492,6 +494,11 @@ void JasperGoldGeneration::create_command_file(const std::string &cmd_filename,
         } else {
             stream << "~" << module_.reset_name() << ";" << std::endl;
         }
+    }
+
+    // set time limit if possible
+    if (timeout_limit_) {
+        stream << "set_prove_per_property_max_time_limit " << timeout_limit_ << "s;" << std::endl;
     }
 
     // prove them all

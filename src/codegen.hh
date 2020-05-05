@@ -59,10 +59,12 @@ public:
     void set_reset_name(const std::string &reset_name) { reset_name_ = reset_name; }
     void set_clock_name(const std::string &clock_name) { clock_name_ = clock_name; }
     void set_reset_type(ResetType value) { reset_type_ = value; }
+    void set_double_edge_clock(bool value) { double_edge_clock_ = value; }
     [[nodiscard]] const std::string &clock_name() const { return clock_name_; }
     [[nodiscard]] const std::string &reset_name() const { return reset_name_; }
     [[nodiscard]] ResetType reset_type() const { return reset_type_; }
     [[nodiscard]] const SourceManager &parser_result() const { return parser_result_; }
+    [[nodiscard]] bool double_edge_clock() const { return double_edge_clock_; }
     void analyze_pins();
 
     [[nodiscard]] inline const Node *top() const { return root_module_; }
@@ -80,6 +82,7 @@ private:
     std::string clock_name_;
     std::string reset_name_;
     ResetType reset_type_ = ResetType::Default;
+    bool double_edge_clock_;
     std::unordered_map<std::string, int64_t> param_values_;
 
     void analyze_reset();
@@ -107,11 +110,15 @@ public:
     [[nodiscard]] bool has_tools() const override;
     static bool has_jaspergold();
 
+    void set_timeout_limit(uint32_t value) { timeout_limit_ = value; }
+
 private:
     void create_command_file(const std::string &cmd_filename, const std::string &wrapper_filename);
     void run_process() override;
     void parse_result() override;
     [[nodiscard]] static std::string jg_working_dir();
+
+    uint32_t timeout_limit_ = 0;
 };
 
 }  // namespace fsm

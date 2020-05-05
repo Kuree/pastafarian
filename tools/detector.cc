@@ -227,6 +227,8 @@ int main(int argc, char *argv[]) {
     std::vector<std::string> param_values;
     std::vector<std::string> macro_values;
     std::optional<uint32_t> num_cpu;
+    bool double_edge_clk = false;
+    std::optional<uint32_t> property_time_limit;
 
     fsm::ResetType reset_type = fsm::ResetType::Default;
     std::map<std::string, fsm::ResetType> reset_type_map{
@@ -248,6 +250,9 @@ int main(int argc, char *argv[]) {
     app.add_option("-n,--num-cpu", num_cpu, "Number of CPU. Set to 0 to use all available cores");
     app.add_option("-R,--reset-type", reset_type, "Reset type")
         ->transform(CLI::CheckedTransformer(reset_type_map, CLI::ignore_case));
+    app.add_flag("--double-edge-clock", double_edge_clk,
+                 "Set if the design had double-edge triggered clock");
+    app.add_option("-t,--time-limit", property_time_limit, "Time limit per property");
 
     CLI11_PARSE(app, argc, argv)
 
@@ -287,6 +292,8 @@ int main(int argc, char *argv[]) {
 
     // assign reset types
     m.set_reset_type(reset_type);
+    // set double edge clock type
+    m.set_double_edge_clock(double_edge_clk);
 
     // get FSMs
     std::cout << "Detecting FSM..." << std::endl;
@@ -335,6 +342,9 @@ int main(int argc, char *argv[]) {
         fsm::JasperGoldGeneration jg(m);
         auto parameters = get_token_values(param_values);
         m.set_param_values(parameters);
+        if (property_time_limit) {
+            jg.set_timeout_limit(*property_time_limit);
+        }
         jg.run();
     }
 
