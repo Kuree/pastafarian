@@ -152,15 +152,15 @@ void VerilogModule::create_properties() {
     uint32_t count = 0;
     uint32_t num_fsm = fsm_results_.size();
 
-    for (uint32_t i = 0; i < fsm_results_.size(); i++) {
-        auto t = pool.push([this, &id_count, i, &mutex, &count, num_fsm, &bar]() {
+    for (auto const &fsm_result : fsm_results_) {
+        auto t = pool.push([this, &id_count, &fsm_result, &mutex, &count, num_fsm, &bar]() {
             mutex.lock();
             count++;
             bar.progress(count, num_fsm);
             mutex.unlock();
 
             // this is for reachable state
-            auto const &fsm = fsm_results_[i];
+            auto const &fsm = fsm_result;
             if (fsm.is_counter()) {
                 // get comp values
                 auto counter_values = fsm.counter_values();
