@@ -104,10 +104,10 @@ void print_out_fsm(const fsm::FSMResult &fsm_result, const fsm::VerilogModule &m
 
 void print_grouped_fsm_formal(const fsm::FSMResult &fsm_result, const fsm::VerilogModule &m) {
     std::vector<const fsm::Property *> cross_properties;
-    auto const &state_from = fsm_result.node();
-    auto const &properties = m.get_property(state_from);
+    auto const state_from = fsm_result.node();
+    auto const properties = m.get_property(state_from);
     for (auto const &prop : properties) {
-        if (prop->state_var1 == state_from && prop->state_var2 != state_from) {
+        if (prop->state_var2 != state_from && prop->state_var2) {
             if (prop->valid) cross_properties.emplace_back(prop);
         }
     }
@@ -116,15 +116,14 @@ void print_grouped_fsm_formal(const fsm::FSMResult &fsm_result, const fsm::Veril
         std::cout << std::endl;
     }
 
-    for (uint64_t i = 0; i < cross_properties.size(); i++) {
-        auto const prop = cross_properties[i];
-        std::cout << "-" << prop->state_var1->handle_name() << ": ";
+    for (auto const prop : cross_properties) {
+        std::cout << "- " << prop->state_var1->handle_name() << ": ";
         print_fsm_value(prop->state_value1);
 
-        std::cout << "-" << prop->state_var2->handle_name() << ": ";
+        std::cout << " <==> " << prop->state_var2->handle_name() << ": ";
         print_fsm_value(prop->state_value2);
 
-        if (i != cross_properties.size() - 1) std::cout << std::endl;
+        std::cout << std::endl;
     }
 }
 

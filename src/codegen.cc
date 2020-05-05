@@ -63,7 +63,7 @@ std::string Property::str() const {
             }
         }
         result << " " << op << " ";
-        const auto state_var_name = state_var1->handle_name(top);
+        const auto state_var_name = state_var2->handle_name(top);
         const auto state_value = ::format("{0}", state_value2->value);
         result << state_var_name << " == " << state_value;
     }
@@ -231,6 +231,7 @@ void VerilogModule::add_cross_properties(
         auto id = iter.first;
         if (id > id_count) id_count = id;
     }
+    id_count++;
 
     // notice that this is a pairwise, so we need to avoid generating redundant properties
     std::set<std::pair<const Node *, const Node *>> added_pairs;
