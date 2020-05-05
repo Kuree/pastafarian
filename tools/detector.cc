@@ -112,6 +112,10 @@ void print_grouped_fsm_formal(const fsm::FSMResult &fsm_result, const fsm::Veril
         }
     }
 
+    if (!cross_properties.empty()) {
+        std::cout << std::endl;
+    }
+
     for (uint64_t i = 0; i < cross_properties.size(); i++) {
         auto const prop = cross_properties[i];
         std::cout << "-" << prop->state_var1->handle_name() << ": ";
@@ -127,7 +131,10 @@ void print_grouped_fsm_formal(const fsm::FSMResult &fsm_result, const fsm::Veril
 void print_grouped_fsm(
     const fsm::VerilogModule &m,
     const std::unordered_map<const fsm::Node *, std::unordered_set<const fsm::Node *>> &result) {
-    if (result.empty()) return;
+    if (result.empty())
+        return;
+    else
+        std::cout << std::endl;
     uint64_t count = 0;
     for (auto const &[node, linked_nodes] : result) {
         if (linked_nodes.empty()) continue;

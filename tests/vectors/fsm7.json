@@ -1,0 +1,1532 @@
+{
+  "name": "$root",
+  "kind": "Root",
+  "addr": 94253215095136,
+  "members": [
+    {
+      "name": "",
+      "kind": "CompilationUnit",
+      "addr": 94253215100760,
+      "members": [
+        {
+          "name": "mod",
+          "kind": "Definition",
+          "addr": 94253215100936,
+          "members": [
+            {
+              "name": "in",
+              "kind": "Port",
+              "addr": 94253215242016,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "94253215242208 in"
+            },
+            {
+              "name": "in",
+              "kind": "Net",
+              "addr": 94253215242208,
+              "type": "logic"
+            },
+            {
+              "name": "clk",
+              "kind": "Port",
+              "addr": 94253215242344,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "94253215242536 clk"
+            },
+            {
+              "name": "clk",
+              "kind": "Net",
+              "addr": 94253215242536,
+              "type": "logic"
+            },
+            {
+              "name": "reset",
+              "kind": "Port",
+              "addr": 94253215242672,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "94253215242864 reset"
+            },
+            {
+              "name": "reset",
+              "kind": "Net",
+              "addr": 94253215242864,
+              "type": "logic"
+            },
+            {
+              "name": "A",
+              "kind": "TransparentMember",
+              "addr": 94253215241872
+            },
+            {
+              "name": "B",
+              "kind": "TransparentMember",
+              "addr": 94253215241944
+            },
+            {
+              "name": "FSM1",
+              "kind": "TypeAlias",
+              "addr": 94253215101224,
+              "target": "enum{A=1'd0,B=1'd1}mod.e$2"
+            },
+            {
+              "name": "C",
+              "kind": "TransparentMember",
+              "addr": 94253215103112
+            },
+            {
+              "name": "D",
+              "kind": "TransparentMember",
+              "addr": 94253215103184
+            },
+            {
+              "name": "FSM2",
+              "kind": "TypeAlias",
+              "addr": 94253215101368,
+              "target": "enum{C=1'd0,D=1'd1}mod.e$1"
+            },
+            {
+              "name": "state1",
+              "kind": "Variable",
+              "addr": 94253215243000,
+              "type": {
+                "name": "FSM1",
+                "kind": "TypeAlias",
+                "addr": 94253215101224,
+                "target": "enum{A=1'd0,B=1'd1}mod.e$2"
+              },
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "next_state1",
+              "kind": "Variable",
+              "addr": 94253215243136,
+              "type": {
+                "name": "FSM1",
+                "kind": "TypeAlias",
+                "addr": 94253215101224,
+                "target": "enum{A=1'd0,B=1'd1}mod.e$2"
+              },
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "state2",
+              "kind": "Variable",
+              "addr": 94253215243272,
+              "type": {
+                "name": "FSM2",
+                "kind": "TypeAlias",
+                "addr": 94253215101368,
+                "target": "enum{C=1'd0,D=1'd1}mod.e$1"
+              },
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "next_state2",
+              "kind": "Variable",
+              "addr": 94253215243408,
+              "type": {
+                "name": "FSM2",
+                "kind": "TypeAlias",
+                "addr": 94253215101368,
+                "target": "enum{C=1'd0,D=1'd1}mod.e$1"
+              },
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "",
+              "kind": "ProceduralBlock",
+              "addr": 94253215101656,
+              "procedureKind": "AlwaysFF",
+              "body": {
+                "kind": "Timed",
+                "timing": {
+                  "kind": "EventList",
+                  "events": [
+                    {
+                      "kind": "SignalEvent",
+                      "expr": {
+                        "kind": "NamedValue",
+                        "type": "logic",
+                        "symbol": "94253215242536 clk",
+                        "isHierarchical": false
+                      },
+                      "edge": "PosEdge"
+                    },
+                    {
+                      "kind": "SignalEvent",
+                      "expr": {
+                        "kind": "NamedValue",
+                        "type": "logic",
+                        "symbol": "94253215242864 reset",
+                        "isHierarchical": false
+                      },
+                      "edge": "PosEdge"
+                    }
+                  ]
+                },
+                "stmt": {
+                  "kind": "Block",
+                  "blockKind": "Sequential",
+                  "body": {
+                    "kind": "List",
+                    "list": [
+                      {
+                        "kind": "Conditional",
+                        "cond": {
+                          "kind": "NamedValue",
+                          "type": "logic",
+                          "symbol": "94253215242864 reset",
+                          "isHierarchical": false
+                        },
+                        "ifTrue": {
+                          "kind": "Block",
+                          "blockKind": "Sequential",
+                          "body": {
+                            "kind": "List",
+                            "list": [
+                              {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "FSM1",
+                                    "kind": "TypeAlias",
+                                    "addr": 94253215101224,
+                                    "target": "enum{A=1'd0,B=1'd1}mod.e$2"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "FSM1",
+                                      "kind": "TypeAlias",
+                                      "addr": 94253215101224,
+                                      "target": "enum{A=1'd0,B=1'd1}mod.e$2"
+                                    },
+                                    "symbol": "94253215243000 state1",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{A=1'd0,B=1'd1}mod.e$2",
+                                    "constant": "1'b0",
+                                    "symbol": "94253215241200 A",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": true
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "ifFalse": {
+                          "kind": "Block",
+                          "blockKind": "Sequential",
+                          "body": {
+                            "kind": "List",
+                            "list": [
+                              {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "FSM1",
+                                    "kind": "TypeAlias",
+                                    "addr": 94253215101224,
+                                    "target": "enum{A=1'd0,B=1'd1}mod.e$2"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "FSM1",
+                                      "kind": "TypeAlias",
+                                      "addr": 94253215101224,
+                                      "target": "enum{A=1'd0,B=1'd1}mod.e$2"
+                                    },
+                                    "symbol": "94253215243000 state1",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "FSM1",
+                                      "kind": "TypeAlias",
+                                      "addr": 94253215101224,
+                                      "target": "enum{A=1'd0,B=1'd1}mod.e$2"
+                                    },
+                                    "symbol": "94253215243136 next_state1",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": true
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "name": "",
+              "kind": "ProceduralBlock",
+              "addr": 94253215101792,
+              "procedureKind": "AlwaysFF",
+              "body": {
+                "kind": "Timed",
+                "timing": {
+                  "kind": "EventList",
+                  "events": [
+                    {
+                      "kind": "SignalEvent",
+                      "expr": {
+                        "kind": "NamedValue",
+                        "type": "logic",
+                        "symbol": "94253215242536 clk",
+                        "isHierarchical": false
+                      },
+                      "edge": "PosEdge"
+                    },
+                    {
+                      "kind": "SignalEvent",
+                      "expr": {
+                        "kind": "NamedValue",
+                        "type": "logic",
+                        "symbol": "94253215242864 reset",
+                        "isHierarchical": false
+                      },
+                      "edge": "PosEdge"
+                    }
+                  ]
+                },
+                "stmt": {
+                  "kind": "Block",
+                  "blockKind": "Sequential",
+                  "body": {
+                    "kind": "List",
+                    "list": [
+                      {
+                        "kind": "Conditional",
+                        "cond": {
+                          "kind": "NamedValue",
+                          "type": "logic",
+                          "symbol": "94253215242864 reset",
+                          "isHierarchical": false
+                        },
+                        "ifTrue": {
+                          "kind": "Block",
+                          "blockKind": "Sequential",
+                          "body": {
+                            "kind": "List",
+                            "list": [
+                              {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "FSM2",
+                                    "kind": "TypeAlias",
+                                    "addr": 94253215101368,
+                                    "target": "enum{C=1'd0,D=1'd1}mod.e$1"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "FSM2",
+                                      "kind": "TypeAlias",
+                                      "addr": 94253215101368,
+                                      "target": "enum{C=1'd0,D=1'd1}mod.e$1"
+                                    },
+                                    "symbol": "94253215243272 state2",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{C=1'd0,D=1'd1}mod.e$1",
+                                    "constant": "1'b0",
+                                    "symbol": "94253215102344 C",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": true
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "ifFalse": {
+                          "kind": "Block",
+                          "blockKind": "Sequential",
+                          "body": {
+                            "kind": "List",
+                            "list": [
+                              {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "FSM2",
+                                    "kind": "TypeAlias",
+                                    "addr": 94253215101368,
+                                    "target": "enum{C=1'd0,D=1'd1}mod.e$1"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "FSM2",
+                                      "kind": "TypeAlias",
+                                      "addr": 94253215101368,
+                                      "target": "enum{C=1'd0,D=1'd1}mod.e$1"
+                                    },
+                                    "symbol": "94253215243272 state2",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "FSM2",
+                                      "kind": "TypeAlias",
+                                      "addr": 94253215101368,
+                                      "target": "enum{C=1'd0,D=1'd1}mod.e$1"
+                                    },
+                                    "symbol": "94253215243408 next_state2",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": true
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "name": "",
+              "kind": "ProceduralBlock",
+              "addr": 94253215101928,
+              "procedureKind": "AlwaysComb",
+              "body": {
+                "kind": "Block",
+                "blockKind": "Sequential",
+                "body": {
+                  "kind": "List",
+                  "list": [
+                    {
+                      "kind": "ExpressionStatement",
+                      "expr": {
+                        "kind": "Assignment",
+                        "type": {
+                          "name": "FSM1",
+                          "kind": "TypeAlias",
+                          "addr": 94253215101224,
+                          "target": "enum{A=1'd0,B=1'd1}mod.e$2"
+                        },
+                        "left": {
+                          "kind": "NamedValue",
+                          "type": {
+                            "name": "FSM1",
+                            "kind": "TypeAlias",
+                            "addr": 94253215101224,
+                            "target": "enum{A=1'd0,B=1'd1}mod.e$2"
+                          },
+                          "symbol": "94253215243136 next_state1",
+                          "isHierarchical": false
+                        },
+                        "right": {
+                          "kind": "NamedValue",
+                          "type": {
+                            "name": "FSM1",
+                            "kind": "TypeAlias",
+                            "addr": 94253215101224,
+                            "target": "enum{A=1'd0,B=1'd1}mod.e$2"
+                          },
+                          "symbol": "94253215243000 state1",
+                          "isHierarchical": false
+                        },
+                        "isNonBlocking": false
+                      }
+                    },
+                    {
+                      "kind": "Conditional",
+                      "cond": {
+                        "kind": "NamedValue",
+                        "type": "logic",
+                        "symbol": "94253215242208 in",
+                        "isHierarchical": false
+                      },
+                      "ifTrue": {
+                        "kind": "Block",
+                        "blockKind": "Sequential",
+                        "body": {
+                          "kind": "List",
+                          "list": [
+                            {
+                              "kind": "Conditional",
+                              "cond": {
+                                "kind": "BinaryOp",
+                                "type": "logic",
+                                "op": "Equality",
+                                "left": {
+                                  "kind": "NamedValue",
+                                  "type": {
+                                    "name": "FSM1",
+                                    "kind": "TypeAlias",
+                                    "addr": 94253215101224,
+                                    "target": "enum{A=1'd0,B=1'd1}mod.e$2"
+                                  },
+                                  "symbol": "94253215243000 state1",
+                                  "isHierarchical": false
+                                },
+                                "right": {
+                                  "kind": "NamedValue",
+                                  "type": "enum{A=1'd0,B=1'd1}mod.e$2",
+                                  "constant": "1'b0",
+                                  "symbol": "94253215241200 A",
+                                  "isHierarchical": false
+                                }
+                              },
+                              "ifTrue": {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "FSM1",
+                                    "kind": "TypeAlias",
+                                    "addr": 94253215101224,
+                                    "target": "enum{A=1'd0,B=1'd1}mod.e$2"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "FSM1",
+                                      "kind": "TypeAlias",
+                                      "addr": 94253215101224,
+                                      "target": "enum{A=1'd0,B=1'd1}mod.e$2"
+                                    },
+                                    "symbol": "94253215243136 next_state1",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{A=1'd0,B=1'd1}mod.e$2",
+                                    "constant": "1'b1",
+                                    "symbol": "94253215241536 B",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": false
+                                }
+                              },
+                              "ifFalse": {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "FSM1",
+                                    "kind": "TypeAlias",
+                                    "addr": 94253215101224,
+                                    "target": "enum{A=1'd0,B=1'd1}mod.e$2"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "FSM1",
+                                      "kind": "TypeAlias",
+                                      "addr": 94253215101224,
+                                      "target": "enum{A=1'd0,B=1'd1}mod.e$2"
+                                    },
+                                    "symbol": "94253215243136 next_state1",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{A=1'd0,B=1'd1}mod.e$2",
+                                    "constant": "1'b0",
+                                    "symbol": "94253215241200 A",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": false
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "",
+              "kind": "ProceduralBlock",
+              "addr": 94253215102064,
+              "procedureKind": "AlwaysComb",
+              "body": {
+                "kind": "Block",
+                "blockKind": "Sequential",
+                "body": {
+                  "kind": "List",
+                  "list": [
+                    {
+                      "kind": "ExpressionStatement",
+                      "expr": {
+                        "kind": "Assignment",
+                        "type": {
+                          "name": "FSM2",
+                          "kind": "TypeAlias",
+                          "addr": 94253215101368,
+                          "target": "enum{C=1'd0,D=1'd1}mod.e$1"
+                        },
+                        "left": {
+                          "kind": "NamedValue",
+                          "type": {
+                            "name": "FSM2",
+                            "kind": "TypeAlias",
+                            "addr": 94253215101368,
+                            "target": "enum{C=1'd0,D=1'd1}mod.e$1"
+                          },
+                          "symbol": "94253215243408 next_state2",
+                          "isHierarchical": false
+                        },
+                        "right": {
+                          "kind": "NamedValue",
+                          "type": {
+                            "name": "FSM2",
+                            "kind": "TypeAlias",
+                            "addr": 94253215101368,
+                            "target": "enum{C=1'd0,D=1'd1}mod.e$1"
+                          },
+                          "symbol": "94253215243272 state2",
+                          "isHierarchical": false
+                        },
+                        "isNonBlocking": false
+                      }
+                    },
+                    {
+                      "kind": "Conditional",
+                      "cond": {
+                        "kind": "BinaryOp",
+                        "type": "logic",
+                        "op": "LogicalAnd",
+                        "left": {
+                          "kind": "NamedValue",
+                          "type": "logic",
+                          "symbol": "94253215242208 in",
+                          "isHierarchical": false
+                        },
+                        "right": {
+                          "kind": "BinaryOp",
+                          "type": "logic",
+                          "op": "Equality",
+                          "left": {
+                            "kind": "NamedValue",
+                            "type": {
+                              "name": "FSM1",
+                              "kind": "TypeAlias",
+                              "addr": 94253215101224,
+                              "target": "enum{A=1'd0,B=1'd1}mod.e$2"
+                            },
+                            "symbol": "94253215243000 state1",
+                            "isHierarchical": false
+                          },
+                          "right": {
+                            "kind": "NamedValue",
+                            "type": "enum{A=1'd0,B=1'd1}mod.e$2",
+                            "constant": "1'b0",
+                            "symbol": "94253215241200 A",
+                            "isHierarchical": false
+                          }
+                        }
+                      },
+                      "ifTrue": {
+                        "kind": "Block",
+                        "blockKind": "Sequential",
+                        "body": {
+                          "kind": "List",
+                          "list": [
+                            {
+                              "kind": "Conditional",
+                              "cond": {
+                                "kind": "BinaryOp",
+                                "type": "logic",
+                                "op": "Equality",
+                                "left": {
+                                  "kind": "NamedValue",
+                                  "type": {
+                                    "name": "FSM2",
+                                    "kind": "TypeAlias",
+                                    "addr": 94253215101368,
+                                    "target": "enum{C=1'd0,D=1'd1}mod.e$1"
+                                  },
+                                  "symbol": "94253215243272 state2",
+                                  "isHierarchical": false
+                                },
+                                "right": {
+                                  "kind": "NamedValue",
+                                  "type": "enum{C=1'd0,D=1'd1}mod.e$1",
+                                  "constant": "1'b0",
+                                  "symbol": "94253215102344 C",
+                                  "isHierarchical": false
+                                }
+                              },
+                              "ifTrue": {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "FSM2",
+                                    "kind": "TypeAlias",
+                                    "addr": 94253215101368,
+                                    "target": "enum{C=1'd0,D=1'd1}mod.e$1"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "FSM2",
+                                      "kind": "TypeAlias",
+                                      "addr": 94253215101368,
+                                      "target": "enum{C=1'd0,D=1'd1}mod.e$1"
+                                    },
+                                    "symbol": "94253215243408 next_state2",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{C=1'd0,D=1'd1}mod.e$1",
+                                    "constant": "1'b1",
+                                    "symbol": "94253215102776 D",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": false
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "ifFalse": {
+                        "kind": "Block",
+                        "blockKind": "Sequential",
+                        "body": {
+                          "kind": "List",
+                          "list": [
+                            {
+                              "kind": "ExpressionStatement",
+                              "expr": {
+                                "kind": "Assignment",
+                                "type": {
+                                  "name": "FSM2",
+                                  "kind": "TypeAlias",
+                                  "addr": 94253215101368,
+                                  "target": "enum{C=1'd0,D=1'd1}mod.e$1"
+                                },
+                                "left": {
+                                  "kind": "NamedValue",
+                                  "type": {
+                                    "name": "FSM2",
+                                    "kind": "TypeAlias",
+                                    "addr": 94253215101368,
+                                    "target": "enum{C=1'd0,D=1'd1}mod.e$1"
+                                  },
+                                  "symbol": "94253215243408 next_state2",
+                                  "isHierarchical": false
+                                },
+                                "right": {
+                                  "kind": "NamedValue",
+                                  "type": "enum{C=1'd0,D=1'd1}mod.e$1",
+                                  "constant": "1'b0",
+                                  "symbol": "94253215102344 C",
+                                  "isHierarchical": false
+                                },
+                                "isNonBlocking": false
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "definitionKind": "Module"
+        }
+      ]
+    },
+    {
+      "name": "mod",
+      "kind": "ModuleInstance",
+      "addr": 94253215243544,
+      "members": [
+        {
+          "name": "in",
+          "kind": "Port",
+          "addr": 94253215258848,
+          "type": "logic",
+          "direction": "In",
+          "internalSymbol": "94253215259040 in"
+        },
+        {
+          "name": "in",
+          "kind": "Net",
+          "addr": 94253215259040,
+          "type": "logic"
+        },
+        {
+          "name": "clk",
+          "kind": "Port",
+          "addr": 94253215259176,
+          "type": "logic",
+          "direction": "In",
+          "internalSymbol": "94253215259368 clk"
+        },
+        {
+          "name": "clk",
+          "kind": "Net",
+          "addr": 94253215259368,
+          "type": "logic"
+        },
+        {
+          "name": "reset",
+          "kind": "Port",
+          "addr": 94253215259504,
+          "type": "logic",
+          "direction": "In",
+          "internalSymbol": "94253215259696 reset"
+        },
+        {
+          "name": "reset",
+          "kind": "Net",
+          "addr": 94253215259696,
+          "type": "logic"
+        },
+        {
+          "name": "A",
+          "kind": "TransparentMember",
+          "addr": 94253215258704
+        },
+        {
+          "name": "B",
+          "kind": "TransparentMember",
+          "addr": 94253215258776
+        },
+        {
+          "name": "FSM1",
+          "kind": "TypeAlias",
+          "addr": 94253215243768,
+          "target": "enum{A=1'd0,B=1'd1}mod.e$4"
+        },
+        {
+          "name": "C",
+          "kind": "TransparentMember",
+          "addr": 94253215257744
+        },
+        {
+          "name": "D",
+          "kind": "TransparentMember",
+          "addr": 94253215257816
+        },
+        {
+          "name": "FSM2",
+          "kind": "TypeAlias",
+          "addr": 94253215243912,
+          "target": "enum{C=1'd0,D=1'd1}mod.e$3"
+        },
+        {
+          "name": "state1",
+          "kind": "Variable",
+          "addr": 94253215262240,
+          "type": {
+            "name": "FSM1",
+            "kind": "TypeAlias",
+            "addr": 94253215243768,
+            "target": "enum{A=1'd0,B=1'd1}mod.e$4"
+          },
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "next_state1",
+          "kind": "Variable",
+          "addr": 94253215262376,
+          "type": {
+            "name": "FSM1",
+            "kind": "TypeAlias",
+            "addr": 94253215243768,
+            "target": "enum{A=1'd0,B=1'd1}mod.e$4"
+          },
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "state2",
+          "kind": "Variable",
+          "addr": 94253215262512,
+          "type": {
+            "name": "FSM2",
+            "kind": "TypeAlias",
+            "addr": 94253215243912,
+            "target": "enum{C=1'd0,D=1'd1}mod.e$3"
+          },
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "next_state2",
+          "kind": "Variable",
+          "addr": 94253215262648,
+          "type": {
+            "name": "FSM2",
+            "kind": "TypeAlias",
+            "addr": 94253215243912,
+            "target": "enum{C=1'd0,D=1'd1}mod.e$3"
+          },
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "",
+          "kind": "ProceduralBlock",
+          "addr": 94253215244200,
+          "procedureKind": "AlwaysFF",
+          "body": {
+            "kind": "Timed",
+            "timing": {
+              "kind": "EventList",
+              "events": [
+                {
+                  "kind": "SignalEvent",
+                  "expr": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "94253215259368 clk",
+                    "isHierarchical": false
+                  },
+                  "edge": "PosEdge"
+                },
+                {
+                  "kind": "SignalEvent",
+                  "expr": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "94253215259696 reset",
+                    "isHierarchical": false
+                  },
+                  "edge": "PosEdge"
+                }
+              ]
+            },
+            "stmt": {
+              "kind": "Block",
+              "blockKind": "Sequential",
+              "body": {
+                "kind": "List",
+                "list": [
+                  {
+                    "kind": "Conditional",
+                    "cond": {
+                      "kind": "NamedValue",
+                      "type": "logic",
+                      "symbol": "94253215259696 reset",
+                      "isHierarchical": false
+                    },
+                    "ifTrue": {
+                      "kind": "Block",
+                      "blockKind": "Sequential",
+                      "body": {
+                        "kind": "List",
+                        "list": [
+                          {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "FSM1",
+                                "kind": "TypeAlias",
+                                "addr": 94253215243768,
+                                "target": "enum{A=1'd0,B=1'd1}mod.e$4"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "FSM1",
+                                  "kind": "TypeAlias",
+                                  "addr": 94253215243768,
+                                  "target": "enum{A=1'd0,B=1'd1}mod.e$4"
+                                },
+                                "symbol": "94253215262240 state1",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": "enum{A=1'd0,B=1'd1}mod.e$4",
+                                "constant": "1'b0",
+                                "symbol": "94253215258032 A",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": true
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "ifFalse": {
+                      "kind": "Block",
+                      "blockKind": "Sequential",
+                      "body": {
+                        "kind": "List",
+                        "list": [
+                          {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "FSM1",
+                                "kind": "TypeAlias",
+                                "addr": 94253215243768,
+                                "target": "enum{A=1'd0,B=1'd1}mod.e$4"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "FSM1",
+                                  "kind": "TypeAlias",
+                                  "addr": 94253215243768,
+                                  "target": "enum{A=1'd0,B=1'd1}mod.e$4"
+                                },
+                                "symbol": "94253215262240 state1",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "FSM1",
+                                  "kind": "TypeAlias",
+                                  "addr": 94253215243768,
+                                  "target": "enum{A=1'd0,B=1'd1}mod.e$4"
+                                },
+                                "symbol": "94253215262376 next_state1",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": true
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "",
+          "kind": "ProceduralBlock",
+          "addr": 94253215244336,
+          "procedureKind": "AlwaysFF",
+          "body": {
+            "kind": "Timed",
+            "timing": {
+              "kind": "EventList",
+              "events": [
+                {
+                  "kind": "SignalEvent",
+                  "expr": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "94253215259368 clk",
+                    "isHierarchical": false
+                  },
+                  "edge": "PosEdge"
+                },
+                {
+                  "kind": "SignalEvent",
+                  "expr": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "94253215259696 reset",
+                    "isHierarchical": false
+                  },
+                  "edge": "PosEdge"
+                }
+              ]
+            },
+            "stmt": {
+              "kind": "Block",
+              "blockKind": "Sequential",
+              "body": {
+                "kind": "List",
+                "list": [
+                  {
+                    "kind": "Conditional",
+                    "cond": {
+                      "kind": "NamedValue",
+                      "type": "logic",
+                      "symbol": "94253215259696 reset",
+                      "isHierarchical": false
+                    },
+                    "ifTrue": {
+                      "kind": "Block",
+                      "blockKind": "Sequential",
+                      "body": {
+                        "kind": "List",
+                        "list": [
+                          {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "FSM2",
+                                "kind": "TypeAlias",
+                                "addr": 94253215243912,
+                                "target": "enum{C=1'd0,D=1'd1}mod.e$3"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "FSM2",
+                                  "kind": "TypeAlias",
+                                  "addr": 94253215243912,
+                                  "target": "enum{C=1'd0,D=1'd1}mod.e$3"
+                                },
+                                "symbol": "94253215262512 state2",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": "enum{C=1'd0,D=1'd1}mod.e$3",
+                                "constant": "1'b0",
+                                "symbol": "94253215257072 C",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": true
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "ifFalse": {
+                      "kind": "Block",
+                      "blockKind": "Sequential",
+                      "body": {
+                        "kind": "List",
+                        "list": [
+                          {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "FSM2",
+                                "kind": "TypeAlias",
+                                "addr": 94253215243912,
+                                "target": "enum{C=1'd0,D=1'd1}mod.e$3"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "FSM2",
+                                  "kind": "TypeAlias",
+                                  "addr": 94253215243912,
+                                  "target": "enum{C=1'd0,D=1'd1}mod.e$3"
+                                },
+                                "symbol": "94253215262512 state2",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "FSM2",
+                                  "kind": "TypeAlias",
+                                  "addr": 94253215243912,
+                                  "target": "enum{C=1'd0,D=1'd1}mod.e$3"
+                                },
+                                "symbol": "94253215262648 next_state2",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": true
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "",
+          "kind": "ProceduralBlock",
+          "addr": 94253215244472,
+          "procedureKind": "AlwaysComb",
+          "body": {
+            "kind": "Block",
+            "blockKind": "Sequential",
+            "body": {
+              "kind": "List",
+              "list": [
+                {
+                  "kind": "ExpressionStatement",
+                  "expr": {
+                    "kind": "Assignment",
+                    "type": {
+                      "name": "FSM1",
+                      "kind": "TypeAlias",
+                      "addr": 94253215243768,
+                      "target": "enum{A=1'd0,B=1'd1}mod.e$4"
+                    },
+                    "left": {
+                      "kind": "NamedValue",
+                      "type": {
+                        "name": "FSM1",
+                        "kind": "TypeAlias",
+                        "addr": 94253215243768,
+                        "target": "enum{A=1'd0,B=1'd1}mod.e$4"
+                      },
+                      "symbol": "94253215262376 next_state1",
+                      "isHierarchical": false
+                    },
+                    "right": {
+                      "kind": "NamedValue",
+                      "type": {
+                        "name": "FSM1",
+                        "kind": "TypeAlias",
+                        "addr": 94253215243768,
+                        "target": "enum{A=1'd0,B=1'd1}mod.e$4"
+                      },
+                      "symbol": "94253215262240 state1",
+                      "isHierarchical": false
+                    },
+                    "isNonBlocking": false
+                  }
+                },
+                {
+                  "kind": "Conditional",
+                  "cond": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "94253215259040 in",
+                    "isHierarchical": false
+                  },
+                  "ifTrue": {
+                    "kind": "Block",
+                    "blockKind": "Sequential",
+                    "body": {
+                      "kind": "List",
+                      "list": [
+                        {
+                          "kind": "Conditional",
+                          "cond": {
+                            "kind": "BinaryOp",
+                            "type": "logic",
+                            "op": "Equality",
+                            "left": {
+                              "kind": "NamedValue",
+                              "type": {
+                                "name": "FSM1",
+                                "kind": "TypeAlias",
+                                "addr": 94253215243768,
+                                "target": "enum{A=1'd0,B=1'd1}mod.e$4"
+                              },
+                              "symbol": "94253215262240 state1",
+                              "isHierarchical": false
+                            },
+                            "right": {
+                              "kind": "NamedValue",
+                              "type": "enum{A=1'd0,B=1'd1}mod.e$4",
+                              "constant": "1'b0",
+                              "symbol": "94253215258032 A",
+                              "isHierarchical": false
+                            }
+                          },
+                          "ifTrue": {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "FSM1",
+                                "kind": "TypeAlias",
+                                "addr": 94253215243768,
+                                "target": "enum{A=1'd0,B=1'd1}mod.e$4"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "FSM1",
+                                  "kind": "TypeAlias",
+                                  "addr": 94253215243768,
+                                  "target": "enum{A=1'd0,B=1'd1}mod.e$4"
+                                },
+                                "symbol": "94253215262376 next_state1",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": "enum{A=1'd0,B=1'd1}mod.e$4",
+                                "constant": "1'b1",
+                                "symbol": "94253215258368 B",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": false
+                            }
+                          },
+                          "ifFalse": {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "FSM1",
+                                "kind": "TypeAlias",
+                                "addr": 94253215243768,
+                                "target": "enum{A=1'd0,B=1'd1}mod.e$4"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "FSM1",
+                                  "kind": "TypeAlias",
+                                  "addr": 94253215243768,
+                                  "target": "enum{A=1'd0,B=1'd1}mod.e$4"
+                                },
+                                "symbol": "94253215262376 next_state1",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": "enum{A=1'd0,B=1'd1}mod.e$4",
+                                "constant": "1'b0",
+                                "symbol": "94253215258032 A",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": false
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "",
+          "kind": "ProceduralBlock",
+          "addr": 94253215244608,
+          "procedureKind": "AlwaysComb",
+          "body": {
+            "kind": "Block",
+            "blockKind": "Sequential",
+            "body": {
+              "kind": "List",
+              "list": [
+                {
+                  "kind": "ExpressionStatement",
+                  "expr": {
+                    "kind": "Assignment",
+                    "type": {
+                      "name": "FSM2",
+                      "kind": "TypeAlias",
+                      "addr": 94253215243912,
+                      "target": "enum{C=1'd0,D=1'd1}mod.e$3"
+                    },
+                    "left": {
+                      "kind": "NamedValue",
+                      "type": {
+                        "name": "FSM2",
+                        "kind": "TypeAlias",
+                        "addr": 94253215243912,
+                        "target": "enum{C=1'd0,D=1'd1}mod.e$3"
+                      },
+                      "symbol": "94253215262648 next_state2",
+                      "isHierarchical": false
+                    },
+                    "right": {
+                      "kind": "NamedValue",
+                      "type": {
+                        "name": "FSM2",
+                        "kind": "TypeAlias",
+                        "addr": 94253215243912,
+                        "target": "enum{C=1'd0,D=1'd1}mod.e$3"
+                      },
+                      "symbol": "94253215262512 state2",
+                      "isHierarchical": false
+                    },
+                    "isNonBlocking": false
+                  }
+                },
+                {
+                  "kind": "Conditional",
+                  "cond": {
+                    "kind": "BinaryOp",
+                    "type": "logic",
+                    "op": "LogicalAnd",
+                    "left": {
+                      "kind": "NamedValue",
+                      "type": "logic",
+                      "symbol": "94253215259040 in",
+                      "isHierarchical": false
+                    },
+                    "right": {
+                      "kind": "BinaryOp",
+                      "type": "logic",
+                      "op": "Equality",
+                      "left": {
+                        "kind": "NamedValue",
+                        "type": {
+                          "name": "FSM1",
+                          "kind": "TypeAlias",
+                          "addr": 94253215243768,
+                          "target": "enum{A=1'd0,B=1'd1}mod.e$4"
+                        },
+                        "symbol": "94253215262240 state1",
+                        "isHierarchical": false
+                      },
+                      "right": {
+                        "kind": "NamedValue",
+                        "type": "enum{A=1'd0,B=1'd1}mod.e$4",
+                        "constant": "1'b0",
+                        "symbol": "94253215258032 A",
+                        "isHierarchical": false
+                      }
+                    }
+                  },
+                  "ifTrue": {
+                    "kind": "Block",
+                    "blockKind": "Sequential",
+                    "body": {
+                      "kind": "List",
+                      "list": [
+                        {
+                          "kind": "Conditional",
+                          "cond": {
+                            "kind": "BinaryOp",
+                            "type": "logic",
+                            "op": "Equality",
+                            "left": {
+                              "kind": "NamedValue",
+                              "type": {
+                                "name": "FSM2",
+                                "kind": "TypeAlias",
+                                "addr": 94253215243912,
+                                "target": "enum{C=1'd0,D=1'd1}mod.e$3"
+                              },
+                              "symbol": "94253215262512 state2",
+                              "isHierarchical": false
+                            },
+                            "right": {
+                              "kind": "NamedValue",
+                              "type": "enum{C=1'd0,D=1'd1}mod.e$3",
+                              "constant": "1'b0",
+                              "symbol": "94253215257072 C",
+                              "isHierarchical": false
+                            }
+                          },
+                          "ifTrue": {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "FSM2",
+                                "kind": "TypeAlias",
+                                "addr": 94253215243912,
+                                "target": "enum{C=1'd0,D=1'd1}mod.e$3"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "FSM2",
+                                  "kind": "TypeAlias",
+                                  "addr": 94253215243912,
+                                  "target": "enum{C=1'd0,D=1'd1}mod.e$3"
+                                },
+                                "symbol": "94253215262648 next_state2",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": "enum{C=1'd0,D=1'd1}mod.e$3",
+                                "constant": "1'b1",
+                                "symbol": "94253215257408 D",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": false
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "ifFalse": {
+                    "kind": "Block",
+                    "blockKind": "Sequential",
+                    "body": {
+                      "kind": "List",
+                      "list": [
+                        {
+                          "kind": "ExpressionStatement",
+                          "expr": {
+                            "kind": "Assignment",
+                            "type": {
+                              "name": "FSM2",
+                              "kind": "TypeAlias",
+                              "addr": 94253215243912,
+                              "target": "enum{C=1'd0,D=1'd1}mod.e$3"
+                            },
+                            "left": {
+                              "kind": "NamedValue",
+                              "type": {
+                                "name": "FSM2",
+                                "kind": "TypeAlias",
+                                "addr": 94253215243912,
+                                "target": "enum{C=1'd0,D=1'd1}mod.e$3"
+                              },
+                              "symbol": "94253215262648 next_state2",
+                              "isHierarchical": false
+                            },
+                            "right": {
+                              "kind": "NamedValue",
+                              "type": "enum{C=1'd0,D=1'd1}mod.e$3",
+                              "constant": "1'b0",
+                              "symbol": "94253215257072 C",
+                              "isHierarchical": false
+                            },
+                            "isNonBlocking": false
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "definition": "94253215100936 mod"
+    }
+  ]
+}

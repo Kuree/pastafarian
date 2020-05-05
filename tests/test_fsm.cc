@@ -1,6 +1,5 @@
-#include "util.hh"
 #include "../src/fsm.hh"
-
+#include "util.hh"
 
 TEST_F(GraphTest, fsm_extract_fsm1) {  // NOLINT
     parse("fsm1.json");
@@ -92,7 +91,7 @@ TEST_F(GraphTest, fsm_extract_fsm5) {  // NOLINT
     EXPECT_FALSE(fsm.is_counter());
 }
 
-TEST_F(GraphTest, fsm_extract_fsm6) {   // NOLINT
+TEST_F(GraphTest, fsm_extract_fsm6) {  // NOLINT
     parse("fsm6.json");
 
     auto fsms = g.identify_fsms();
@@ -102,7 +101,7 @@ TEST_F(GraphTest, fsm_extract_fsm6) {   // NOLINT
 
     // we know that off can only go to idle based on the syntax
     uint32_t count = 0;
-    for (auto const &[from, to]: syntax_arc) {
+    for (auto const &[from, to] : syntax_arc) {
         if (from->value == 0) {
             EXPECT_EQ(from->name, "OFF");
             count += 1;
@@ -111,4 +110,14 @@ TEST_F(GraphTest, fsm_extract_fsm6) {   // NOLINT
         }
     }
     EXPECT_EQ(count, 1);
+}
+
+TEST_F(GraphTest, fsm_extract_fsm7) {  // NOLINT
+    parse("fsm7.json");
+
+    auto fsms = g.identify_fsms();
+    EXPECT_EQ(fsms.size(), 2);
+
+    auto grouped_fsm = fsm::Graph::group_fsms(fsms);
+    EXPECT_EQ(grouped_fsm.size(), 1);
 }
