@@ -115,6 +115,11 @@ end
     \label{fig:2}
 \end{figure}
 
+To avoid unnecessary edges and reduce graph complexity, the control edge only connects to ``one hierarchy''
+inside the code block. Nested \texttt{if} statement traversal requires extra ``hops'' at the control nodes.
+Notice that this is consistent with the structural RTL implementation, where \texttt{if} statement is
+implemented as multiplexers, since the nested \texttt{if} is expressed as chained multiplexers. 
+
 \section{Finite State Machine (FSM)}\label{sec:fsm}
 For the purpose of HDL-based design, we categorize FSM into two catagories:
 \begin{itemize}
@@ -408,6 +413,16 @@ terminal condition is $v == v_2$ instead of $v == r$ and the algorithm will work
 fine. Conceptually, if $v_1$ and $v_2$ are the same we will get a loop, which is what the
 algorithm is designed for.
 
+\subsection{FSM Transition Arc Extraction}
+Because the comparison nodes connect the inner logic with control edges, we have traverse
+the control edges to figure out the state transition logic. Because both explicit FSM and
+implicit counters use explicit values to control the logic, such as \texttt{==} or \texttt{<},
+we can use the comparison node to compute the state transition as indicated in the dataflow.
+The main idea is to start from a comparator node where the FSM register node is used to compare
+a constant state value, denoted as \texttt{state\_0}, and then traverse to an assignment where
+the state node is assigned to another constant state value, denoted as \texttt{state\_1}.
+Since it is control logic, all the path has to be control path.
+
 \subsection{Performance Optimization with Parallelism}
 Notice that all the algorithms used in Algorithm~\ref{alg:1} are intentionally designed to not
 share data during the iteration, nor do they modify the graph structure. As a result, we have
@@ -426,5 +441,9 @@ When generating the graph, since we are not interested in the exact logic other 
 the vertex as binary operation, unary operation, etc, we lose lots of logical information
 that could be useful for other tasks. However, at this stage the extra information are
 unnecessary and waste of memory and thus shall not be kept inside the data structure.
+
+
+\section{Interaction with Formal Verification Tools via SVA}
+Once we have obtained FSM information from the dataflow graph, we can generate formal 
 
 \end{document}
