@@ -212,13 +212,41 @@ std::set<std::pair<const Node *, const Node *>> FSMResult::syntax_arc_flow() con
     // find all the assignment nodes
     auto const &assign_edges = const_src_;
     // it has to be a all control path
-    auto control_term = [](const Edge *edge) { return edge->has_type(EdgeType::Control); };
+    auto control_term = [this](const Edge *edge) {
+        if (edge->has_type(EdgeType::False)) {
+            auto const from = edge->from;
+            assert_(from->has_type(NodeType::Control),
+                    "false path has to come from a control node");
+            // the node has to have assignment path to that control node
+            auto assign_only = [](const Edge* edge) { return edge->is_assign(); };
+            auto from_node = Graph::has_path(this->node_, from, assign_only);
+            if (!from_node)
+                return true;
+        }
+        if (edge->has_type(EdgeType::Control)) {
+            // easy
+            return false;
+        }
+        // fan-out is fine, as long as there is not other source in the node, i.e.,
+        // an expression
+        auto node_to = edge->to;
+        if (node_to->has_type(NodeType::Control)) {
+            return false;
+        } else if (node_to->edges_from.size() == 1) {
+            return false;
+        }
+        if (node_to == node_) return true;
+        return true;
+    };
 
     for (auto const &comp_edge : comp_edges) {
         auto start_node = comp_edge->to;
         // brute force on edge connections
         for (auto const end_edge : assign_edges) {
-            auto cond = [end_edge](const Edge *e) { return e == end_edge; };
+            auto cond = [end_edge](const Edge *e) {
+                auto r = e->to == end_edge->to;
+                return r;
+            };
             auto r = Graph::find_connection_cond(start_node, cond, control_term);
             if (!r.empty()) {
                 auto start_value = get_const_from_comp(start_node);

@@ -57,10 +57,10 @@ Node *Graph::get_node(uint64_t key) {
     }
 }
 
-bool Graph::has_path(Node *from, Node *to, uint64_t max_depth) {
+bool Graph::has_path(const Node *from, const Node *to, uint64_t max_depth) {
     // DFS based search
-    std::stack<Node *> nodes;
-    std::unordered_set<Node *> visited;
+    std::stack<const Node *> nodes;
+    std::unordered_set<const Node *> visited;
     nodes.emplace(from);
     uint64_t count = 0;
     while (!nodes.empty() && ((count++) < max_depth)) {
@@ -79,10 +79,11 @@ bool Graph::has_path(Node *from, Node *to, uint64_t max_depth) {
     return false;
 }
 
-bool Graph::has_path(Node *from, Node *to, const std::function<bool(const Edge *)> &cond) {
+bool Graph::has_path(const Node *from, const Node *to,
+                     const std::function<bool(const Edge *)> &cond) {
     // DFS based search
-    std::stack<Node *> nodes;
-    std::unordered_set<Node *> visited;
+    std::stack<const Node *> nodes;
+    std::unordered_set<const Node *> visited;
     nodes.emplace(from);
     while (!nodes.empty()) {
         auto n = nodes.top();

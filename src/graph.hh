@@ -188,8 +188,8 @@ public:
 
     Node* get_node(uint64_t key);
 
-    static bool has_path(Node* from, Node* to, uint64_t max_depth = 1u << 20u);
-    static bool has_path(Node* from, Node* to, const std::function<bool(const Edge*)>& cond);
+    static bool has_path(const Node* from, const Node* to, uint64_t max_depth = 1u << 20u);
+    static bool has_path(const Node* from, const Node* to, const std::function<bool(const Edge*)>& cond);
 
     Node* select(const std::string& name);
     void identify_registers();
