@@ -82,6 +82,20 @@ std::unordered_set<const Node *> FSMResult::comp_const() const {
     return unique_result;
 }
 
+std::set<std::pair<const Node *, const Node *>> make_unique_result(
+    const std::set<std::pair<const Node *, const Node *>> &result) {
+    std::set<std::pair<int64_t, int64_t>> unique_values;
+    std::set<std::pair<const Node *, const Node *>> unique_result;
+    for (auto const &[n1, n2] : result) {
+        if (unique_values.find({n1->value, n2->value}) == unique_values.end()) {
+            unique_result.emplace(std::make_pair(n1, n2));
+            unique_values.emplace(std::make_pair(n1->value, n2->value));
+        }
+    }
+
+    return unique_result;
+}
+
 std::set<std::pair<const Node *, const Node *>> FSMResult::syntax_arc() const {
     // notice that this is not guaranteed to be complete, but have zero false positive.
 
@@ -164,12 +178,7 @@ std::set<std::pair<const Node *, const Node *>> FSMResult::syntax_arc() const {
                     }
                     // this is one transition arc
                     auto const_to = edge->from;
-                    Node *const_from = nullptr;
-                    for (auto const e : node_comp->edges_from) {
-                        if (!const_from) {
-                            const_from = get_direct_const(e);
-                        }
-                    }
+                    Node *const_from = get_const_from_comp(node_comp);
 
                     assert_(const_from != nullptr, "Unable to find const from");
                     result.emplace(std::make_pair(const_from, const_to));
@@ -178,15 +187,48 @@ std::set<std::pair<const Node *, const Node *>> FSMResult::syntax_arc() const {
         }
     }
 
-    std::set<std::pair<int64_t, int64_t>> unique_values;
-    std::set<std::pair<const Node *, const Node *>> unique_result;
-    for (auto const &[n1, n2] : result) {
-        if (unique_values.find({n1->value, n2->value}) == unique_values.end()) {
-            unique_result.emplace(std::make_pair(n1, n2));
-            unique_values.emplace(std::make_pair(n1->value, n2->value));
+    auto unique_result = make_unique_result(result);
+    return unique_result;
+}
+
+Node *FSMResult::get_const_from_comp(const Node *node_comp) {
+    Node *const_from = nullptr;
+    for (auto const e : node_comp->edges_from) {
+        if (!const_from) {
+            const_from = get_direct_const(e);
+        }
+    }
+    return const_from;
+}
+
+std::set<std::pair<const Node *, const Node *>> FSMResult::syntax_arc_flow() const {
+    std::set<std::pair<const Node *, const Node *>> result;
+    // counter based doesn't have arc transition
+    if (is_counter_) return result;
+
+    // find all the comparison nodes that compare the state variable with different
+    // constants
+    auto comp_edges = Graph::find_connection_cond(node_, comp_cond, comp_terminate);
+    // find all the assignment nodes
+    auto const &assign_edges = const_src_;
+    // it has to be a all control path
+    auto control_term = [](const Edge *edge) { return edge->has_type(EdgeType::Control); };
+
+    for (auto const &comp_edge : comp_edges) {
+        auto start_node = comp_edge->to;
+        // brute force on edge connections
+        for (auto const end_edge : assign_edges) {
+            auto cond = [end_edge](const Edge *e) { return e == end_edge; };
+            auto r = Graph::find_connection_cond(start_node, cond, control_term);
+            if (!r.empty()) {
+                auto start_value = get_const_from_comp(start_node);
+                auto end_value = end_edge->from;
+                result.emplace(std::make_pair(start_value, end_value));
+            }
         }
     }
 
+    auto unique_result = make_unique_result(result);
     return unique_result;
 }
 
