@@ -201,65 +201,6 @@ Node *FSMResult::get_const_from_comp(const Node *node_comp) {
     return const_from;
 }
 
-std::set<std::pair<const Node *, const Node *>> FSMResult::syntax_arc_flow() const {
-    std::set<std::pair<const Node *, const Node *>> result;
-    // counter based doesn't have arc transition
-    if (is_counter_) return result;
-
-    // find all the comparison nodes that compare the state variable with different
-    // constants
-    auto comp_edges = Graph::find_connection_cond(node_, comp_cond, comp_terminate);
-    // find all the assignment nodes
-    auto const &assign_edges = const_src_;
-    // it has to be a all control path
-    auto control_term = [this](const Edge *edge) {
-        if (edge->has_type(EdgeType::False)) {
-            auto const from = edge->from;
-            assert_(from->has_type(NodeType::Control),
-                    "false path has to come from a control node");
-            // the node has to have assignment path to that control node
-            auto assign_only = [](const Edge* edge) { return edge->is_assign(); };
-            auto from_node = Graph::has_path(this->node_, from, assign_only);
-            if (!from_node)
-                return true;
-        }
-        if (edge->has_type(EdgeType::Control)) {
-            // easy
-            return false;
-        }
-        // fan-out is fine, as long as there is not other source in the node, i.e.,
-        // an expression
-        auto node_to = edge->to;
-        if (node_to->has_type(NodeType::Control)) {
-            return false;
-        } else if (node_to->edges_from.size() == 1) {
-            return false;
-        }
-        if (node_to == node_) return true;
-        return true;
-    };
-
-    for (auto const &comp_edge : comp_edges) {
-        auto start_node = comp_edge->to;
-        // brute force on edge connections
-        for (auto const end_edge : assign_edges) {
-            auto cond = [end_edge](const Edge *e) {
-                auto r = e->to == end_edge->to;
-                return r;
-            };
-            auto r = Graph::find_connection_cond(start_node, cond, control_term);
-            if (!r.empty()) {
-                auto start_value = get_const_from_comp(start_node);
-                auto end_value = end_edge->from;
-                result.emplace(std::make_pair(start_value, end_value));
-            }
-        }
-    }
-
-    auto unique_result = make_unique_result(result);
-    return unique_result;
-}
-
 std::vector<const Node *> FSMResult::unique_states() const {
     std::map<int64_t, const Node *> values;
     std::vector<const Node *> result;

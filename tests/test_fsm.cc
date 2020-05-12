@@ -51,8 +51,6 @@ TEST_F(GraphTest, fsm_extract_fsm3) {  // NOLINT
 
     auto s_arcs = fsm.syntax_arc();
     EXPECT_EQ(s_arcs.size(), 5);
-    auto flow_arcs = fsm.syntax_arc_flow();
-    EXPECT_EQ(flow_arcs.size(), 5);
 }
 
 TEST_F(GraphTest, fsm_extract_fsm4) {  // NOLINT

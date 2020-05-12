@@ -20,8 +20,6 @@ public:
 
     // get state transition arcs from heuristics
     [[nodiscard]] std::set<std::pair<const Node *, const Node *>> syntax_arc() const;
-    // control flow based transition arcs extraction
-    [[nodiscard]] std::set<std::pair<const Node *, const Node*>> syntax_arc_flow() const;
 
     [[nodiscard]] std::vector<const Node *> unique_states() const;
 
