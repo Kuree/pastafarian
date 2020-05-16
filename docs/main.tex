@@ -27,7 +27,7 @@
     numberstyle=\tiny\color{black},
     numbersep=10pt,
     tabsize=8,
-    morekeywords={unique, logic, always_ff, typedef, enum}
+    morekeywords={unique, logic, always_ff, typedef, enum, property, endproperty, cover}
     literate=*{:}{:}1
 }
 
@@ -418,10 +418,30 @@ Because the comparison nodes connect the inner logic with control edges, we have
 the control edges to figure out the state transition logic. Because both explicit FSM and
 implicit counters use explicit values to control the logic, such as \texttt{==} or \texttt{<},
 we can use the comparison node to compute the state transition as indicated in the dataflow.
-The main idea is to start from a comparator node where the FSM register node is used to compare
-a constant state value, denoted as \texttt{state\_0}, and then traverse to an assignment where
-the state node is assigned to another constant state value, denoted as \texttt{state\_1}.
-Since it is control logic, all the path has to be control path.
+As shown in Algorithm~\ref{alg:6}, the main idea is to start from a comparator node where the
+FSM register node is used to compare a constant state value, denoted as \texttt{state\_0},
+and then traverse to an assignment where the state node is assigned to another constant state
+value, denoted as \texttt{state\_1}. Since it is control logic, all the path has to be control
+path and taken on the \texttt{true} path.
+
+\begin{algorithm}[htb]
+    \label{alg:6}
+    \KwIn{State comparator node $v$}
+    \KwIn{State assign node $w$}
+    \KwResult{$true$ if under condition $v$, $w$ happens}
+    \While{$e \gets Traverse(w)$} {
+        \If{$e.type() != \texttt{control}$ \text{ or } $e.type() == \texttt{false}$} {
+            \text{stop traverse from $e$}\;
+        }
+
+        $n \gets e.end()$\;
+        \If{$n == w$} {
+            \Return{true};
+        }
+    }
+    \Return{false}\;
+ \caption{Algorithm for detecting FSM transition arc}
+\end{algorithm}
 
 \subsection{Performance Optimization with Parallelism}
 Notice that all the algorithms used in Algorithm~\ref{alg:1} are intentionally designed to not
@@ -443,7 +463,83 @@ that could be useful for other tasks. However, at this stage the extra informati
 unnecessary and waste of memory and thus shall not be kept inside the data structure.
 
 
-\section{Interaction with Formal Verification Tools via SVA}
-Once we have obtained FSM information from the dataflow graph, we can generate formal 
+\section{Interaction with Formal Verification Tools via SVA and its Applications}
+Once we have obtained FSM information from the dataflow graph, we can generate FSM specification
+based on the FSM states, types, interaction, and transition. Although there are many different
+languages for specifying formal temporal logic, we choose SystemVerilog Assertions (SVA) for
+several reasons:
+\begin{itemize}
+    \item SVA are widely supported in hardware formal verification tool chains.
+    \item Designers can reuse existing input constraints when verifying FSM properties in design.
+    \item Can be used for traditional constrained random coverage metric.
+\end{itemize}
+
+\subsection{SVA Code Generation Example}
+The code generation for SVA from FSM properties are very mechanical and will not be the main
+focus of this paper. Listing~\ref{lst:5} shows an example of checking whether a FSM \texttt{state}
+is possible to transition from \texttt{STATE\_0} to \texttt{STATE\_1}. Notice that we use
+\texttt{cover} so that formal tools can solve for possible transition given constraints.
+The SVA files can either be a bind file, or inside top-level test-bench file where the
+design under test is instantiated.
+
+\begin{lstlisting}[style={verilog-style}, caption={SVA code example for state transition
+    coverage},
+    label={lst:5}]
+    property fsm_state_0;
+      @(posedge clk) state == STATE_0 |=> state == STATE_1;
+    endproperty
+    FSM_STATE_0: cover property (fsm_state_0);
+\end{lstlisting}
+
+After we collect results from formal tools, we can provide an API so that verification
+engineers can check against their specification programmatically, for instances, number
+of states, possible state transition and so on. Currently we support Cadence JapserGold
+and we plan to support CosA2 via yosys.
+
+\subsection{Dead code Detection}
+One application for automatic state transition and reachability calculation with the help
+of formal tools is dead code detection. If a state or a state transition is proven unreachable,
+it usually implicates either dead code or bug in the FSM design. We will continue this section
+with a case study on dead code since it is very common in generated code where the generator
+parameters are used to produce the states and output logic associated with the state. We will
+use RocketChip's DCache as an example here.
+
+The main FSM in DCache is \texttt{release\_state}, where there are 8 pre-defined states. In
+generated Verilog, these state values are represented as constants, $0, 1, \dots, 7$. If we
+use the default configuration on RocketChip, Chisel will generate an FSM with all 8 states,
+nested in a single \texttt{always} block.
+
+Without much discerning, the FSM logic in generated Verilog looks like any other generated
+code. However, once we use our FSM extraction algorithm and use JapserGold to verify the
+state transition based on the graph analysis, we have discovered a unreachable state,
+$4$. This is because given the default configuration, state $4$ is never going to be
+assigned to \texttt{release\_state}. However, there are still some downstream logic that
+expect \texttt{release\_state} to be $4$ and behave accordingly.
+
+Does this dead state matter in the synthesis tools? Contrary to common belief, the answer
+is yes. We compare two version of DCache: DCache-Original and DCache-Improved, where we
+manually remove the dead state and its corresponding logic from the latter version. The
+edits are formally verified to be functionally equivalent by JasperGold. We
+use FreePDK-45 and Design Compiler for synthesis. To ensure a fair comparison, we target
+both design at 100MHz clock speed, ultra-high effort, and flatten everything. We also
+removed SRAM component to ensure that the comparison only focus the control logic.
+Table~\ref{table:1}
+shows the final synthesis result.
+
+\begin{table}[!htb]\label{table:1}
+    \centering
+    \caption{Synthesis result comparison on RocketChip's DCache with and without dead code on
+    FreePDK-45 with Design Compiler.}
+    \begin{tabular}{|l|l|l|l|l|}
+        \hline
+        Design Name     & \# of Ports & \# of Nets & \# of Cells & \# of Combinational Cells \\ \hline
+        DCache          & 2517        & 10476      & 8469        & 6213                      \\ \hline
+        DCache-Improved & 2517        & 10435      & 8367        & 6112                      \\ \hline
+    \end{tabular}
+\end{table}
+
+Although the difference is minimal, it shows that by properly incorporating dead logic
+detection with our FSM extraction algorithm, we can reduce the size of synthesized netlist
+without changing the circuit logic.
 
 \end{document}
