@@ -315,10 +315,11 @@ Node *parse_module(T &value, Graph *g, Node *parent) {
     n->module_def = std::move(module_def);
 
     // parse inner members
-    assert_(value["members"].error == SUCCESS, "member not found in module");
-    auto members = value["members"].as_array();
-    for (auto const &member : members) {
-        parse_dispatch(member, g, n);
+    if (value["members"].error == SUCCESS) {
+        auto members = value["members"].as_array();
+        for (auto const &member : members) {
+            parse_dispatch(member, g, n);
+        }
     }
 
     return n;
