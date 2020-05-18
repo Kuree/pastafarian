@@ -303,7 +303,11 @@ int main(int argc, char *argv[]) {
 
     time_end = std::chrono::steady_clock::now();
     time_used = time_end - time_start;
-    std::cout << "FSM detection took " << time_used.count() << " seconds" << std::endl;
+    uint64_t num_counters = 0;
+    for (auto const &fsm_result : fsms)
+        if (fsm_result.is_counter()) num_counters++;
+    std::cout << "FSM detection took " << time_used.count() << " seconds. "
+              << fsms.size() - num_counters << " FSMs " << num_counters << " counters" << std::endl;
 
     std::cout << "Analyzing detected FSM..." << std::endl;
     time_start = std::chrono::steady_clock::now();
