@@ -355,7 +355,7 @@ void VerilogModule::analyze_pins() {
             }
         }
     } else {
-        assert_(ports.find(reset_name_) != ports.end(), "Unable to find " + clock_name_);
+        assert_(ports.find(reset_name_) != ports.end(), "Unable to find " + reset_name_);
     }
     if (neg_reset_names.find(reset_name_) != neg_reset_names.end() &&
         reset_type_ == ResetType::Default) {
