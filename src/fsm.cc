@@ -264,10 +264,8 @@ void identify_fsm_arcs(std::vector<FSMResult> &fsm_result) {
     std::vector<std::future<void>> tasks;
     tasks.reserve(fsm_result.size());
 
-    for (auto &fsm: fsm_result) {
-        auto t = pool.push([&]() -> void {
-            fsm.extract_fsm_arcs();
-        });
+    for (auto &fsm : fsm_result) {
+        auto t = pool.push([&]() -> void { fsm.extract_fsm_arcs(); });
         tasks.emplace_back(std::move(t));
     }
     for (auto &t : tasks) {
@@ -278,11 +276,16 @@ void identify_fsm_arcs(std::vector<FSMResult> &fsm_result) {
     }
 }
 
-bool is_pipelined(const Node* from, const Node* to) {
+bool is_pipelined(const Node *from, const Node *to) {
     auto const &edges_to = from->edges_to;
-    for (auto const &edge: edges_to) {
-        if (edge->has_type(EdgeType::NonBlocking) && edge->to == to) {
-            return true;
+    for (auto const &edge : edges_to) {
+        if (edge->has_type(EdgeType::Blocking)) {
+            auto assign = edge->to;
+            assert_(assign->edges_to.size() == 1, "assign should only has one assign ");
+            auto &edge_to = assign->edges_to[0];
+            if (edge_to->has_type(EdgeType::NonBlocking) && edge_to->to == to) {
+                return true;
+            }
         }
     }
     return false;
@@ -290,9 +293,9 @@ bool is_pipelined(const Node* from, const Node* to) {
 
 void merge_pipelined_fsm(std::vector<FSMResult> &fsm_result) {
     // this one only merges directly pipelined fsm
-    std::unordered_map<FSMResult*, FSMResult*> pipelined_fsm;
-    for (auto &fsm_from: fsm_result) {
-        for (auto &fsm_to: fsm_result) {
+    std::unordered_map<FSMResult *, FSMResult *> pipelined_fsm;
+    for (auto &fsm_from : fsm_result) {
+        for (auto &fsm_to : fsm_result) {
             if (&fsm_from != &fsm_to) {
                 auto from_node = fsm_from.node();
                 auto to_node = fsm_to.node();
@@ -302,32 +305,51 @@ void merge_pipelined_fsm(std::vector<FSMResult> &fsm_result) {
             }
         }
     }
+    // early out the computation
+    if (pipelined_fsm.empty()) return;
     // need to find root FSM
-    std::unordered_map<FSMResult*, std::unordered_set<FSMResult*>> fsms;
-    for (auto &[fsm_from, fsm_to]: pipelined_fsm) {
-        if (fsms.find(fsm_to) != fsms.end()) {
+    // union find
+    struct Root {
+        FSMResult *result;
+    };
+    std::unordered_map<FSMResult *, std::shared_ptr<Root>> fsm_root;
+    std::unordered_map<std::shared_ptr<Root>, std::unordered_set<FSMResult *>> fsms;
+    for (auto &[fsm_from, fsm_to] : pipelined_fsm) {
+        if (fsm_root.find(fsm_from) != fsm_root.end()) {
             // need to merge everything
-            auto set = fsms.at(fsm_to);
-            fsms.erase(fsm_to);
-            set.emplace(fsm_to);
-            fsms.emplace(std::make_pair(fsm_from, set));
+            auto root = fsm_root.at(fsm_from);
+            fsms.at(root).emplace(fsm_to);
+            fsm_root.emplace(fsm_to, root);
+        } else if (fsm_root.find(fsm_to) != fsm_root.end()) {
+            // upgrade the root
+            auto root = fsm_root.at(fsm_to);
+            root->result = fsm_from;
+            fsms.at(root).emplace(fsm_from);
         } else {
-            fsms.emplace(std::make_pair(fsm_from, std::unordered_set<FSMResult*>{fsm_to}));
+            // new stuff
+            auto root = std::make_shared<Root>();
+            root->result = fsm_from;
+            fsm_root.emplace(fsm_from, root);
+            fsm_root.emplace(fsm_to, root);
+            fsms.emplace(root, std::unordered_set<FSMResult *>{fsm_from, fsm_to});
         }
     }
+
     // now we need to merge them
-    for (auto [root, children]: fsms) {
-        for (auto child: children) {
-            root->merge_fsm(*child);
+    for (auto [root, children] : fsms) {
+        auto root_fsm = root->result;
+        for (auto child : children) {
+            if (child != root_fsm) root_fsm->merge_fsm(*child);
         }
     }
     // delete the fsm that's been merged
-    for (auto const &iter: fsms) {
-        auto set = iter.second;
-        for (auto child: set) {
-            auto pos = std::find(fsm_result.begin(), fsm_result.end(), *child);
-            assert_(pos != fsm_result.end(), "cannot find fsm when merging");
-            fsm_result.erase(pos);
+    for (auto const &[root, set] : fsms) {
+        for (auto child : set) {
+            if (child != root->result) {
+                auto pos = std::find(fsm_result.begin(), fsm_result.end(), *child);
+                assert_(pos != fsm_result.end(), "cannot find fsm when merging");
+                fsm_result.erase(pos);
+            }
         }
     }
 }

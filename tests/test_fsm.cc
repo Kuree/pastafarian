@@ -140,3 +140,19 @@ TEST_F(GraphTest, fsm_extract_fsm7) {  // NOLINT
     auto grouped_fsm = fsm::Graph::group_fsms(fsms);
     EXPECT_EQ(grouped_fsm.size(), 1);
 }
+
+TEST_F(GraphTest, fsm_extract_fsm8) {  // NOLINT
+    parse("fsm8.json");
+
+    auto fsms = g.identify_fsms();
+    EXPECT_EQ(fsms.size(), 3);
+    fsm::identify_fsm_arcs(fsms);
+
+    fsm::merge_pipelined_fsm(fsms);
+
+    EXPECT_EQ(fsms.size(), 1);
+
+    auto fsm = fsms[0];
+    auto const &syntax_arc = fsm.syntax_arc();
+    EXPECT_EQ(syntax_arc.size(), 4);
+}

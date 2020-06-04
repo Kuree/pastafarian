@@ -1,0 +1,1370 @@
+{
+  "name": "$root",
+  "kind": "Root",
+  "addr": 94010639744288,
+  "members": [
+    {
+      "name": "",
+      "kind": "CompilationUnit",
+      "addr": 94010639736664,
+      "members": [
+        {
+          "name": "fsm8",
+          "kind": "Definition",
+          "addr": 94010639736840,
+          "members": [
+            {
+              "name": "clk",
+              "kind": "Port",
+              "addr": 94010639738760,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "94010639738952 clk"
+            },
+            {
+              "name": "clk",
+              "kind": "Net",
+              "addr": 94010639738952,
+              "type": "logic"
+            },
+            {
+              "name": "rst",
+              "kind": "Port",
+              "addr": 94010639876624,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "94010639876816 rst"
+            },
+            {
+              "name": "rst",
+              "kind": "Net",
+              "addr": 94010639876816,
+              "type": "logic"
+            },
+            {
+              "name": "in",
+              "kind": "Port",
+              "addr": 94010639876952,
+              "type": "logic",
+              "direction": "In",
+              "internalSymbol": "94010639877144 in"
+            },
+            {
+              "name": "in",
+              "kind": "Net",
+              "addr": 94010639877144,
+              "type": "logic"
+            },
+            {
+              "name": "STATE0",
+              "kind": "TransparentMember",
+              "addr": 94010639738616
+            },
+            {
+              "name": "STATE1",
+              "kind": "TransparentMember",
+              "addr": 94010639738688
+            },
+            {
+              "name": "STATE",
+              "kind": "TypeAlias",
+              "addr": 94010639737128,
+              "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+            },
+            {
+              "name": "state0",
+              "kind": "Variable",
+              "addr": 94010639877280,
+              "type": {
+                "name": "STATE",
+                "kind": "TypeAlias",
+                "addr": 94010639737128,
+                "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+              },
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "next_state",
+              "kind": "Variable",
+              "addr": 94010639877416,
+              "type": {
+                "name": "STATE",
+                "kind": "TypeAlias",
+                "addr": 94010639737128,
+                "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+              },
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "state1",
+              "kind": "Variable",
+              "addr": 94010639877552,
+              "type": {
+                "name": "STATE",
+                "kind": "TypeAlias",
+                "addr": 94010639737128,
+                "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+              },
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "state2",
+              "kind": "Variable",
+              "addr": 94010639877688,
+              "type": {
+                "name": "STATE",
+                "kind": "TypeAlias",
+                "addr": 94010639737128,
+                "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+              },
+              "lifetime": "Static",
+              "isConstant": false,
+              "isCompilerGenerated": false
+            },
+            {
+              "name": "",
+              "kind": "ProceduralBlock",
+              "addr": 94010639737560,
+              "procedureKind": "AlwaysComb",
+              "body": {
+                "kind": "Block",
+                "blockKind": "Sequential",
+                "body": {
+                  "kind": "List",
+                  "list": [
+                    {
+                      "kind": "ExpressionStatement",
+                      "expr": {
+                        "kind": "Assignment",
+                        "type": {
+                          "name": "STATE",
+                          "kind": "TypeAlias",
+                          "addr": 94010639737128,
+                          "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                        },
+                        "left": {
+                          "kind": "NamedValue",
+                          "type": {
+                            "name": "STATE",
+                            "kind": "TypeAlias",
+                            "addr": 94010639737128,
+                            "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                          },
+                          "symbol": "94010639877416 next_state",
+                          "isHierarchical": false
+                        },
+                        "right": {
+                          "kind": "NamedValue",
+                          "type": {
+                            "name": "STATE",
+                            "kind": "TypeAlias",
+                            "addr": 94010639737128,
+                            "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                          },
+                          "symbol": "94010639877280 state0",
+                          "isHierarchical": false
+                        },
+                        "isNonBlocking": false
+                      }
+                    },
+                    {
+                      "kind": "Conditional",
+                      "cond": {
+                        "kind": "BinaryOp",
+                        "type": "logic",
+                        "op": "Equality",
+                        "left": {
+                          "kind": "NamedValue",
+                          "type": {
+                            "name": "STATE",
+                            "kind": "TypeAlias",
+                            "addr": 94010639737128,
+                            "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                          },
+                          "symbol": "94010639877280 state0",
+                          "isHierarchical": false
+                        },
+                        "right": {
+                          "kind": "NamedValue",
+                          "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1",
+                          "constant": "1'b0",
+                          "symbol": "94010639737976 STATE0",
+                          "isHierarchical": false
+                        }
+                      },
+                      "ifTrue": {
+                        "kind": "Block",
+                        "blockKind": "Sequential",
+                        "body": {
+                          "kind": "List",
+                          "list": [
+                            {
+                              "kind": "Conditional",
+                              "cond": {
+                                "kind": "NamedValue",
+                                "type": "logic",
+                                "symbol": "94010639877144 in",
+                                "isHierarchical": false
+                              },
+                              "ifTrue": {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "STATE",
+                                    "kind": "TypeAlias",
+                                    "addr": 94010639737128,
+                                    "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "STATE",
+                                      "kind": "TypeAlias",
+                                      "addr": 94010639737128,
+                                      "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                    },
+                                    "symbol": "94010639877416 next_state",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1",
+                                    "constant": "1'b1",
+                                    "symbol": "94010639738344 STATE1",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": false
+                                }
+                              },
+                              "ifFalse": {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "STATE",
+                                    "kind": "TypeAlias",
+                                    "addr": 94010639737128,
+                                    "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "STATE",
+                                      "kind": "TypeAlias",
+                                      "addr": 94010639737128,
+                                      "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                    },
+                                    "symbol": "94010639877416 next_state",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1",
+                                    "constant": "1'b0",
+                                    "symbol": "94010639737976 STATE0",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": false
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "ifFalse": {
+                        "kind": "Conditional",
+                        "cond": {
+                          "kind": "BinaryOp",
+                          "type": "logic",
+                          "op": "Equality",
+                          "left": {
+                            "kind": "NamedValue",
+                            "type": {
+                              "name": "STATE",
+                              "kind": "TypeAlias",
+                              "addr": 94010639737128,
+                              "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                            },
+                            "symbol": "94010639877552 state1",
+                            "isHierarchical": false
+                          },
+                          "right": {
+                            "kind": "NamedValue",
+                            "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1",
+                            "constant": "1'b1",
+                            "symbol": "94010639738344 STATE1",
+                            "isHierarchical": false
+                          }
+                        },
+                        "ifTrue": {
+                          "kind": "Block",
+                          "blockKind": "Sequential",
+                          "body": {
+                            "kind": "List",
+                            "list": [
+                              {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "STATE",
+                                    "kind": "TypeAlias",
+                                    "addr": 94010639737128,
+                                    "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "STATE",
+                                      "kind": "TypeAlias",
+                                      "addr": 94010639737128,
+                                      "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                    },
+                                    "symbol": "94010639877416 next_state",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1",
+                                    "constant": "1'b0",
+                                    "symbol": "94010639737976 STATE0",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": false
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "ifFalse": {
+                          "kind": "Conditional",
+                          "cond": {
+                            "kind": "BinaryOp",
+                            "type": "logic",
+                            "op": "Equality",
+                            "left": {
+                              "kind": "NamedValue",
+                              "type": {
+                                "name": "STATE",
+                                "kind": "TypeAlias",
+                                "addr": 94010639737128,
+                                "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                              },
+                              "symbol": "94010639877688 state2",
+                              "isHierarchical": false
+                            },
+                            "right": {
+                              "kind": "NamedValue",
+                              "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1",
+                              "constant": "1'b1",
+                              "symbol": "94010639738344 STATE1",
+                              "isHierarchical": false
+                            }
+                          },
+                          "ifTrue": {
+                            "kind": "Block",
+                            "blockKind": "Sequential",
+                            "body": {
+                              "kind": "List",
+                              "list": [
+                                {
+                                  "kind": "ExpressionStatement",
+                                  "expr": {
+                                    "kind": "Assignment",
+                                    "type": {
+                                      "name": "STATE",
+                                      "kind": "TypeAlias",
+                                      "addr": 94010639737128,
+                                      "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                    },
+                                    "left": {
+                                      "kind": "NamedValue",
+                                      "type": {
+                                        "name": "STATE",
+                                        "kind": "TypeAlias",
+                                        "addr": 94010639737128,
+                                        "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                      },
+                                      "symbol": "94010639877416 next_state",
+                                      "isHierarchical": false
+                                    },
+                                    "right": {
+                                      "kind": "NamedValue",
+                                      "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1",
+                                      "constant": "1'b1",
+                                      "symbol": "94010639738344 STATE1",
+                                      "isHierarchical": false
+                                    },
+                                    "isNonBlocking": false
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "",
+              "kind": "ProceduralBlock",
+              "addr": 94010639737696,
+              "procedureKind": "AlwaysFF",
+              "body": {
+                "kind": "Timed",
+                "timing": {
+                  "kind": "EventList",
+                  "events": [
+                    {
+                      "kind": "SignalEvent",
+                      "expr": {
+                        "kind": "NamedValue",
+                        "type": "logic",
+                        "symbol": "94010639738952 clk",
+                        "isHierarchical": false
+                      },
+                      "edge": "PosEdge"
+                    },
+                    {
+                      "kind": "SignalEvent",
+                      "expr": {
+                        "kind": "NamedValue",
+                        "type": "logic",
+                        "symbol": "94010639876816 rst",
+                        "isHierarchical": false
+                      },
+                      "edge": "PosEdge"
+                    }
+                  ]
+                },
+                "stmt": {
+                  "kind": "Block",
+                  "blockKind": "Sequential",
+                  "body": {
+                    "kind": "List",
+                    "list": [
+                      {
+                        "kind": "Conditional",
+                        "cond": {
+                          "kind": "NamedValue",
+                          "type": "logic",
+                          "symbol": "94010639876816 rst",
+                          "isHierarchical": false
+                        },
+                        "ifTrue": {
+                          "kind": "Block",
+                          "blockKind": "Sequential",
+                          "body": {
+                            "kind": "List",
+                            "list": [
+                              {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "STATE",
+                                    "kind": "TypeAlias",
+                                    "addr": 94010639737128,
+                                    "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "STATE",
+                                      "kind": "TypeAlias",
+                                      "addr": 94010639737128,
+                                      "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                    },
+                                    "symbol": "94010639877280 state0",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1",
+                                    "constant": "1'b0",
+                                    "symbol": "94010639737976 STATE0",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": true
+                                }
+                              },
+                              {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "STATE",
+                                    "kind": "TypeAlias",
+                                    "addr": 94010639737128,
+                                    "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "STATE",
+                                      "kind": "TypeAlias",
+                                      "addr": 94010639737128,
+                                      "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                    },
+                                    "symbol": "94010639877552 state1",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1",
+                                    "constant": "1'b0",
+                                    "symbol": "94010639737976 STATE0",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": true
+                                }
+                              },
+                              {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "STATE",
+                                    "kind": "TypeAlias",
+                                    "addr": 94010639737128,
+                                    "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "STATE",
+                                      "kind": "TypeAlias",
+                                      "addr": 94010639737128,
+                                      "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                    },
+                                    "symbol": "94010639877688 state2",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1",
+                                    "constant": "1'b0",
+                                    "symbol": "94010639737976 STATE0",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": true
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "ifFalse": {
+                          "kind": "Block",
+                          "blockKind": "Sequential",
+                          "body": {
+                            "kind": "List",
+                            "list": [
+                              {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "STATE",
+                                    "kind": "TypeAlias",
+                                    "addr": 94010639737128,
+                                    "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "STATE",
+                                      "kind": "TypeAlias",
+                                      "addr": 94010639737128,
+                                      "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                    },
+                                    "symbol": "94010639877280 state0",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "STATE",
+                                      "kind": "TypeAlias",
+                                      "addr": 94010639737128,
+                                      "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                    },
+                                    "symbol": "94010639877416 next_state",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": true
+                                }
+                              },
+                              {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "STATE",
+                                    "kind": "TypeAlias",
+                                    "addr": 94010639737128,
+                                    "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "STATE",
+                                      "kind": "TypeAlias",
+                                      "addr": 94010639737128,
+                                      "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                    },
+                                    "symbol": "94010639877552 state1",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "STATE",
+                                      "kind": "TypeAlias",
+                                      "addr": 94010639737128,
+                                      "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                    },
+                                    "symbol": "94010639877280 state0",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": true
+                                }
+                              },
+                              {
+                                "kind": "ExpressionStatement",
+                                "expr": {
+                                  "kind": "Assignment",
+                                  "type": {
+                                    "name": "STATE",
+                                    "kind": "TypeAlias",
+                                    "addr": 94010639737128,
+                                    "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                  },
+                                  "left": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "STATE",
+                                      "kind": "TypeAlias",
+                                      "addr": 94010639737128,
+                                      "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                    },
+                                    "symbol": "94010639877688 state2",
+                                    "isHierarchical": false
+                                  },
+                                  "right": {
+                                    "kind": "NamedValue",
+                                    "type": {
+                                      "name": "STATE",
+                                      "kind": "TypeAlias",
+                                      "addr": 94010639737128,
+                                      "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$1"
+                                    },
+                                    "symbol": "94010639877552 state1",
+                                    "isHierarchical": false
+                                  },
+                                  "isNonBlocking": true
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "definitionKind": "Module"
+        }
+      ]
+    },
+    {
+      "name": "fsm8",
+      "kind": "ModuleInstance",
+      "addr": 94010639877824,
+      "members": [
+        {
+          "name": "clk",
+          "kind": "Port",
+          "addr": 94010639886976,
+          "type": "logic",
+          "direction": "In",
+          "internalSymbol": "94010639887168 clk"
+        },
+        {
+          "name": "clk",
+          "kind": "Net",
+          "addr": 94010639887168,
+          "type": "logic"
+        },
+        {
+          "name": "rst",
+          "kind": "Port",
+          "addr": 94010639891936,
+          "type": "logic",
+          "direction": "In",
+          "internalSymbol": "94010639892128 rst"
+        },
+        {
+          "name": "rst",
+          "kind": "Net",
+          "addr": 94010639892128,
+          "type": "logic"
+        },
+        {
+          "name": "in",
+          "kind": "Port",
+          "addr": 94010639892264,
+          "type": "logic",
+          "direction": "In",
+          "internalSymbol": "94010639892456 in"
+        },
+        {
+          "name": "in",
+          "kind": "Net",
+          "addr": 94010639892456,
+          "type": "logic"
+        },
+        {
+          "name": "STATE0",
+          "kind": "TransparentMember",
+          "addr": 94010639886832
+        },
+        {
+          "name": "STATE1",
+          "kind": "TransparentMember",
+          "addr": 94010639886904
+        },
+        {
+          "name": "STATE",
+          "kind": "TypeAlias",
+          "addr": 94010639878048,
+          "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+        },
+        {
+          "name": "state0",
+          "kind": "Variable",
+          "addr": 94010639892592,
+          "type": {
+            "name": "STATE",
+            "kind": "TypeAlias",
+            "addr": 94010639878048,
+            "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+          },
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "next_state",
+          "kind": "Variable",
+          "addr": 94010639892728,
+          "type": {
+            "name": "STATE",
+            "kind": "TypeAlias",
+            "addr": 94010639878048,
+            "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+          },
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "state1",
+          "kind": "Variable",
+          "addr": 94010639892864,
+          "type": {
+            "name": "STATE",
+            "kind": "TypeAlias",
+            "addr": 94010639878048,
+            "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+          },
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "state2",
+          "kind": "Variable",
+          "addr": 94010639893000,
+          "type": {
+            "name": "STATE",
+            "kind": "TypeAlias",
+            "addr": 94010639878048,
+            "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+          },
+          "lifetime": "Static",
+          "isConstant": false,
+          "isCompilerGenerated": false
+        },
+        {
+          "name": "",
+          "kind": "ProceduralBlock",
+          "addr": 94010639878480,
+          "procedureKind": "AlwaysComb",
+          "body": {
+            "kind": "Block",
+            "blockKind": "Sequential",
+            "body": {
+              "kind": "List",
+              "list": [
+                {
+                  "kind": "ExpressionStatement",
+                  "expr": {
+                    "kind": "Assignment",
+                    "type": {
+                      "name": "STATE",
+                      "kind": "TypeAlias",
+                      "addr": 94010639878048,
+                      "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                    },
+                    "left": {
+                      "kind": "NamedValue",
+                      "type": {
+                        "name": "STATE",
+                        "kind": "TypeAlias",
+                        "addr": 94010639878048,
+                        "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                      },
+                      "symbol": "94010639892728 next_state",
+                      "isHierarchical": false
+                    },
+                    "right": {
+                      "kind": "NamedValue",
+                      "type": {
+                        "name": "STATE",
+                        "kind": "TypeAlias",
+                        "addr": 94010639878048,
+                        "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                      },
+                      "symbol": "94010639892592 state0",
+                      "isHierarchical": false
+                    },
+                    "isNonBlocking": false
+                  }
+                },
+                {
+                  "kind": "Conditional",
+                  "cond": {
+                    "kind": "BinaryOp",
+                    "type": "logic",
+                    "op": "Equality",
+                    "left": {
+                      "kind": "NamedValue",
+                      "type": {
+                        "name": "STATE",
+                        "kind": "TypeAlias",
+                        "addr": 94010639878048,
+                        "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                      },
+                      "symbol": "94010639892592 state0",
+                      "isHierarchical": false
+                    },
+                    "right": {
+                      "kind": "NamedValue",
+                      "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2",
+                      "constant": "1'b0",
+                      "symbol": "94010639886288 STATE0",
+                      "isHierarchical": false
+                    }
+                  },
+                  "ifTrue": {
+                    "kind": "Block",
+                    "blockKind": "Sequential",
+                    "body": {
+                      "kind": "List",
+                      "list": [
+                        {
+                          "kind": "Conditional",
+                          "cond": {
+                            "kind": "NamedValue",
+                            "type": "logic",
+                            "symbol": "94010639892456 in",
+                            "isHierarchical": false
+                          },
+                          "ifTrue": {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "STATE",
+                                "kind": "TypeAlias",
+                                "addr": 94010639878048,
+                                "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "STATE",
+                                  "kind": "TypeAlias",
+                                  "addr": 94010639878048,
+                                  "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                                },
+                                "symbol": "94010639892728 next_state",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2",
+                                "constant": "1'b1",
+                                "symbol": "94010639886560 STATE1",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": false
+                            }
+                          },
+                          "ifFalse": {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "STATE",
+                                "kind": "TypeAlias",
+                                "addr": 94010639878048,
+                                "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "STATE",
+                                  "kind": "TypeAlias",
+                                  "addr": 94010639878048,
+                                  "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                                },
+                                "symbol": "94010639892728 next_state",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2",
+                                "constant": "1'b0",
+                                "symbol": "94010639886288 STATE0",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": false
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "ifFalse": {
+                    "kind": "Conditional",
+                    "cond": {
+                      "kind": "BinaryOp",
+                      "type": "logic",
+                      "op": "Equality",
+                      "left": {
+                        "kind": "NamedValue",
+                        "type": {
+                          "name": "STATE",
+                          "kind": "TypeAlias",
+                          "addr": 94010639878048,
+                          "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                        },
+                        "symbol": "94010639892864 state1",
+                        "isHierarchical": false
+                      },
+                      "right": {
+                        "kind": "NamedValue",
+                        "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2",
+                        "constant": "1'b1",
+                        "symbol": "94010639886560 STATE1",
+                        "isHierarchical": false
+                      }
+                    },
+                    "ifTrue": {
+                      "kind": "Block",
+                      "blockKind": "Sequential",
+                      "body": {
+                        "kind": "List",
+                        "list": [
+                          {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "STATE",
+                                "kind": "TypeAlias",
+                                "addr": 94010639878048,
+                                "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "STATE",
+                                  "kind": "TypeAlias",
+                                  "addr": 94010639878048,
+                                  "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                                },
+                                "symbol": "94010639892728 next_state",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2",
+                                "constant": "1'b0",
+                                "symbol": "94010639886288 STATE0",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": false
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "ifFalse": {
+                      "kind": "Conditional",
+                      "cond": {
+                        "kind": "BinaryOp",
+                        "type": "logic",
+                        "op": "Equality",
+                        "left": {
+                          "kind": "NamedValue",
+                          "type": {
+                            "name": "STATE",
+                            "kind": "TypeAlias",
+                            "addr": 94010639878048,
+                            "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                          },
+                          "symbol": "94010639893000 state2",
+                          "isHierarchical": false
+                        },
+                        "right": {
+                          "kind": "NamedValue",
+                          "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2",
+                          "constant": "1'b1",
+                          "symbol": "94010639886560 STATE1",
+                          "isHierarchical": false
+                        }
+                      },
+                      "ifTrue": {
+                        "kind": "Block",
+                        "blockKind": "Sequential",
+                        "body": {
+                          "kind": "List",
+                          "list": [
+                            {
+                              "kind": "ExpressionStatement",
+                              "expr": {
+                                "kind": "Assignment",
+                                "type": {
+                                  "name": "STATE",
+                                  "kind": "TypeAlias",
+                                  "addr": 94010639878048,
+                                  "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                                },
+                                "left": {
+                                  "kind": "NamedValue",
+                                  "type": {
+                                    "name": "STATE",
+                                    "kind": "TypeAlias",
+                                    "addr": 94010639878048,
+                                    "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                                  },
+                                  "symbol": "94010639892728 next_state",
+                                  "isHierarchical": false
+                                },
+                                "right": {
+                                  "kind": "NamedValue",
+                                  "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2",
+                                  "constant": "1'b1",
+                                  "symbol": "94010639886560 STATE1",
+                                  "isHierarchical": false
+                                },
+                                "isNonBlocking": false
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "",
+          "kind": "ProceduralBlock",
+          "addr": 94010639878616,
+          "procedureKind": "AlwaysFF",
+          "body": {
+            "kind": "Timed",
+            "timing": {
+              "kind": "EventList",
+              "events": [
+                {
+                  "kind": "SignalEvent",
+                  "expr": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "94010639887168 clk",
+                    "isHierarchical": false
+                  },
+                  "edge": "PosEdge"
+                },
+                {
+                  "kind": "SignalEvent",
+                  "expr": {
+                    "kind": "NamedValue",
+                    "type": "logic",
+                    "symbol": "94010639892128 rst",
+                    "isHierarchical": false
+                  },
+                  "edge": "PosEdge"
+                }
+              ]
+            },
+            "stmt": {
+              "kind": "Block",
+              "blockKind": "Sequential",
+              "body": {
+                "kind": "List",
+                "list": [
+                  {
+                    "kind": "Conditional",
+                    "cond": {
+                      "kind": "NamedValue",
+                      "type": "logic",
+                      "symbol": "94010639892128 rst",
+                      "isHierarchical": false
+                    },
+                    "ifTrue": {
+                      "kind": "Block",
+                      "blockKind": "Sequential",
+                      "body": {
+                        "kind": "List",
+                        "list": [
+                          {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "STATE",
+                                "kind": "TypeAlias",
+                                "addr": 94010639878048,
+                                "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "STATE",
+                                  "kind": "TypeAlias",
+                                  "addr": 94010639878048,
+                                  "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                                },
+                                "symbol": "94010639892592 state0",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2",
+                                "constant": "1'b0",
+                                "symbol": "94010639886288 STATE0",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": true
+                            }
+                          },
+                          {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "STATE",
+                                "kind": "TypeAlias",
+                                "addr": 94010639878048,
+                                "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "STATE",
+                                  "kind": "TypeAlias",
+                                  "addr": 94010639878048,
+                                  "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                                },
+                                "symbol": "94010639892864 state1",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2",
+                                "constant": "1'b0",
+                                "symbol": "94010639886288 STATE0",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": true
+                            }
+                          },
+                          {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "STATE",
+                                "kind": "TypeAlias",
+                                "addr": 94010639878048,
+                                "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "STATE",
+                                  "kind": "TypeAlias",
+                                  "addr": 94010639878048,
+                                  "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                                },
+                                "symbol": "94010639893000 state2",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2",
+                                "constant": "1'b0",
+                                "symbol": "94010639886288 STATE0",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": true
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "ifFalse": {
+                      "kind": "Block",
+                      "blockKind": "Sequential",
+                      "body": {
+                        "kind": "List",
+                        "list": [
+                          {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "STATE",
+                                "kind": "TypeAlias",
+                                "addr": 94010639878048,
+                                "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "STATE",
+                                  "kind": "TypeAlias",
+                                  "addr": 94010639878048,
+                                  "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                                },
+                                "symbol": "94010639892592 state0",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "STATE",
+                                  "kind": "TypeAlias",
+                                  "addr": 94010639878048,
+                                  "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                                },
+                                "symbol": "94010639892728 next_state",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": true
+                            }
+                          },
+                          {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "STATE",
+                                "kind": "TypeAlias",
+                                "addr": 94010639878048,
+                                "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "STATE",
+                                  "kind": "TypeAlias",
+                                  "addr": 94010639878048,
+                                  "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                                },
+                                "symbol": "94010639892864 state1",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "STATE",
+                                  "kind": "TypeAlias",
+                                  "addr": 94010639878048,
+                                  "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                                },
+                                "symbol": "94010639892592 state0",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": true
+                            }
+                          },
+                          {
+                            "kind": "ExpressionStatement",
+                            "expr": {
+                              "kind": "Assignment",
+                              "type": {
+                                "name": "STATE",
+                                "kind": "TypeAlias",
+                                "addr": 94010639878048,
+                                "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                              },
+                              "left": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "STATE",
+                                  "kind": "TypeAlias",
+                                  "addr": 94010639878048,
+                                  "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                                },
+                                "symbol": "94010639893000 state2",
+                                "isHierarchical": false
+                              },
+                              "right": {
+                                "kind": "NamedValue",
+                                "type": {
+                                  "name": "STATE",
+                                  "kind": "TypeAlias",
+                                  "addr": 94010639878048,
+                                  "target": "enum{STATE0=1'd0,STATE1=1'd1}fsm8.e$2"
+                                },
+                                "symbol": "94010639892864 state1",
+                                "isHierarchical": false
+                              },
+                              "isNonBlocking": true
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "definition": "94010639736840 fsm8"
+    }
+  ]
+}

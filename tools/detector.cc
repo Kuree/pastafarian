@@ -314,6 +314,9 @@ int main(int argc, char *argv[]) {
 
     // extract syntax arc
     fsm::identify_fsm_arcs(fsms);
+    // merge fsm, if any
+    auto raw_fsm_count = fsms.size();
+    fsm::merge_pipelined_fsm(fsms);
 
     m.set_fsm_result(fsms);
     if (!clock_name.empty()) m.set_clock_name(clock_name);
@@ -323,6 +326,8 @@ int main(int argc, char *argv[]) {
 
     time_end = std::chrono::steady_clock::now();
     time_used = time_end - time_start;
+    std::cout << "FSM Merging: before " << raw_fsm_count << " after " << fsms.size() << " "
+              << std::endl;
     std::cout << "FSM analysis took " << time_used.count() << " seconds" << std::endl;
 
     if (fsms.empty()) {
