@@ -28,6 +28,10 @@ public:
 
     [[nodiscard]] std::unordered_set<const Node *> counter_values() const;
 
+    void merge_fsm(FSMResult &fsm);
+
+    bool operator==(const FSMResult &other) const { return node_ == other.node_; }
+
     FSMResult() = delete;
 
 private:

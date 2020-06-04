@@ -4,6 +4,8 @@
 TEST_F(GraphTest, fsm_extract_fsm1) {  // NOLINT
     parse("fsm1.json");
     auto fsms = g.identify_fsms();
+    fsm::merge_pipelined_fsm(fsms);
+
     EXPECT_EQ(fsms.size(), 1);
     auto &fsm = fsms[0];
 
@@ -22,6 +24,8 @@ TEST_F(GraphTest, fsm_extract_fsm1) {  // NOLINT
 TEST_F(GraphTest, fsm_extract_fsm2) {  // NOLINT
     parse("fsm2.json");
     auto fsms = g.identify_fsms();
+    fsm::merge_pipelined_fsm(fsms);
+
     EXPECT_EQ(fsms.size(), 1);
     auto &fsm = fsms[0];
 
@@ -40,6 +44,9 @@ TEST_F(GraphTest, fsm_extract_fsm2) {  // NOLINT
 TEST_F(GraphTest, fsm_extract_fsm3) {  // NOLINT
     parse("fsm3.json");
     auto fsms = g.identify_fsms();
+    fsm::merge_pipelined_fsm(fsms);
+
+
     EXPECT_EQ(fsms.size(), 1);
     auto &fsm = fsms[0];
 
@@ -58,6 +65,8 @@ TEST_F(GraphTest, fsm_extract_fsm3) {  // NOLINT
 TEST_F(GraphTest, fsm_extract_fsm4) {  // NOLINT
     parse("fsm4.json");
     auto fsms = g.identify_fsms();
+    fsm::merge_pipelined_fsm(fsms);
+
     EXPECT_EQ(fsms.size(), 1);
     auto &fsm = fsms[0];
 
@@ -83,6 +92,8 @@ TEST_F(GraphTest, fsm_extract_fsm4) {  // NOLINT
 TEST_F(GraphTest, fsm_extract_fsm5) {  // NOLINT
     parse("fsm5.json");
     auto fsms = g.identify_fsms();
+    fsm::merge_pipelined_fsm(fsms);
+
     EXPECT_EQ(fsms.size(), 1);
     auto const &fsm = fsms[0];
 
@@ -98,6 +109,8 @@ TEST_F(GraphTest, fsm_extract_fsm6) {  // NOLINT
     parse("fsm6.json");
 
     auto fsms = g.identify_fsms();
+    fsm::merge_pipelined_fsm(fsms);
+
     EXPECT_EQ(fsms.size(), 1);
     auto &fsm = fsms[0];
     fsm.extract_fsm_arcs();
@@ -120,6 +133,8 @@ TEST_F(GraphTest, fsm_extract_fsm7) {  // NOLINT
     parse("fsm7.json");
 
     auto fsms = g.identify_fsms();
+    fsm::merge_pipelined_fsm(fsms);
+
     EXPECT_EQ(fsms.size(), 2);
 
     auto grouped_fsm = fsm::Graph::group_fsms(fsms);
