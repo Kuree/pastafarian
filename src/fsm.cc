@@ -1,5 +1,7 @@
 #include "fsm.hh"
 
+#include <cxxpool.h>
+
 #include <map>
 #include <queue>
 #include <utility>
@@ -96,12 +98,12 @@ std::set<std::pair<const Node *, const Node *>> make_unique_result(
     return unique_result;
 }
 
-std::set<std::pair<const Node *, const Node *>> FSMResult::syntax_arc() const {
+void FSMResult::extract_fsm_arcs() {
     // notice that this is not guaranteed to be complete, but have zero false positive.
 
     std::set<std::pair<const Node *, const Node *>> result;
     // counter based doesn't have arc transition
-    if (is_counter_) return result;
+    if (is_counter_) return;
 
     // find all the comparison nodes that compare the state variable with different
     // constants
@@ -186,9 +188,7 @@ std::set<std::pair<const Node *, const Node *>> FSMResult::syntax_arc() const {
             }
         }
     }
-
-    auto unique_result = make_unique_result(result);
-    return unique_result;
+    syntax_arc_ = make_unique_result(result);
 }
 
 Node *FSMResult::get_const_from_comp(const Node *node_comp) {
@@ -249,6 +249,26 @@ std::unordered_set<const Node *> FSMResult::counter_values() const {
     }
 
     return result;
+}
+
+void identify_fsm_arcs(std::vector<FSMResult> &fsm_result) {
+    auto num_cpus = get_num_cpus();
+    cxxpool::thread_pool pool{num_cpus};
+    std::vector<std::future<void>> tasks;
+    tasks.reserve(fsm_result.size());
+
+    for (auto &fsm: fsm_result) {
+        auto t = pool.push([&]() -> void {
+            fsm.extract_fsm_arcs();
+        });
+        tasks.emplace_back(std::move(t));
+    }
+    for (auto &t : tasks) {
+        t.wait();
+    }
+    for (auto &t : tasks) {
+        t.get();
+    }
 }
 
 }  // namespace fsm

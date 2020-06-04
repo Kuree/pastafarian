@@ -5,7 +5,7 @@ TEST_F(GraphTest, fsm_extract_fsm1) {  // NOLINT
     parse("fsm1.json");
     auto fsms = g.identify_fsms();
     EXPECT_EQ(fsms.size(), 1);
-    auto const &fsm = fsms[0];
+    auto &fsm = fsms[0];
 
     EXPECT_EQ(fsm.node()->name, "Color_current_state");
 
@@ -14,7 +14,8 @@ TEST_F(GraphTest, fsm_extract_fsm1) {  // NOLINT
 
     EXPECT_FALSE(fsm.is_counter());
 
-    auto s_arcs = fsm.syntax_arc();
+    fsm.extract_fsm_arcs();
+    const auto& s_arcs = fsm.syntax_arc();
     EXPECT_EQ(s_arcs.size(), 4);
 }
 
@@ -22,7 +23,7 @@ TEST_F(GraphTest, fsm_extract_fsm2) {  // NOLINT
     parse("fsm2.json");
     auto fsms = g.identify_fsms();
     EXPECT_EQ(fsms.size(), 1);
-    auto const &fsm = fsms[0];
+    auto &fsm = fsms[0];
 
     EXPECT_EQ(fsm.node()->name, "state");
 
@@ -31,8 +32,8 @@ TEST_F(GraphTest, fsm_extract_fsm2) {  // NOLINT
 
     EXPECT_FALSE(fsm.is_counter());
 
-    // CHISEL is not working yet
-    auto s_arcs = fsm.syntax_arc();
+    fsm.extract_fsm_arcs();
+    const auto& s_arcs = fsm.syntax_arc();
     EXPECT_EQ(s_arcs.size(), 4);
 }
 
@@ -40,7 +41,7 @@ TEST_F(GraphTest, fsm_extract_fsm3) {  // NOLINT
     parse("fsm3.json");
     auto fsms = g.identify_fsms();
     EXPECT_EQ(fsms.size(), 1);
-    auto const &fsm = fsms[0];
+    auto &fsm = fsms[0];
 
     EXPECT_EQ(fsm.node()->name, "state");
 
@@ -49,7 +50,8 @@ TEST_F(GraphTest, fsm_extract_fsm3) {  // NOLINT
 
     EXPECT_FALSE(fsm.is_counter());
 
-    auto s_arcs = fsm.syntax_arc();
+    fsm.extract_fsm_arcs();
+    const auto& s_arcs = fsm.syntax_arc();
     EXPECT_EQ(s_arcs.size(), 5);
 }
 
@@ -57,7 +59,7 @@ TEST_F(GraphTest, fsm_extract_fsm4) {  // NOLINT
     parse("fsm4.json");
     auto fsms = g.identify_fsms();
     EXPECT_EQ(fsms.size(), 1);
-    auto const &fsm = fsms[0];
+    auto &fsm = fsms[0];
 
     EXPECT_EQ(fsm.node()->name, "release_state");
 
@@ -71,7 +73,8 @@ TEST_F(GraphTest, fsm_extract_fsm4) {  // NOLINT
 
     EXPECT_FALSE(fsm.is_counter());
 
-    auto s_arcs = fsm.syntax_arc();
+    fsm.extract_fsm_arcs();
+    const auto& s_arcs = fsm.syntax_arc();
     // NOTICE: this high number is due to dead code generation. In scala there aren't as many
     //  state transition as in verilog.
     EXPECT_EQ(s_arcs.size(), 47);
@@ -96,7 +99,8 @@ TEST_F(GraphTest, fsm_extract_fsm6) {  // NOLINT
 
     auto fsms = g.identify_fsms();
     EXPECT_EQ(fsms.size(), 1);
-    auto fsm = fsms[0];
+    auto &fsm = fsms[0];
+    fsm.extract_fsm_arcs();
     auto syntax_arc = fsm.syntax_arc();
 
     // we know that off can only go to idle based on the syntax

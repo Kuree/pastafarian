@@ -299,7 +299,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Detecting FSM..." << std::endl;
     time_start = std::chrono::steady_clock::now();
 
-    auto const fsms = g.identify_fsms(m.top());
+    auto fsms = g.identify_fsms(m.top());
 
     time_end = std::chrono::steady_clock::now();
     time_used = time_end - time_start;
@@ -311,6 +311,9 @@ int main(int argc, char *argv[]) {
 
     std::cout << "Analyzing detected FSM..." << std::endl;
     time_start = std::chrono::steady_clock::now();
+
+    // extract syntax arc
+    fsm::identify_fsm_arcs(fsms);
 
     m.set_fsm_result(fsms);
     if (!clock_name.empty()) m.set_clock_name(clock_name);
