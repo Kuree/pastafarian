@@ -277,15 +277,29 @@ void identify_fsm_arcs(std::vector<FSMResult> &fsm_result) {
 }
 
 bool is_pipelined(const Node *from, const Node *to) {
-    auto const &edges_to = from->edges_to;
-    for (auto const &edge : edges_to) {
-        if (edge->has_type(EdgeType::Blocking)) {
-            auto assign = edge->to;
-            assert_(assign->edges_to.size() == 1, "assign should only has one assign ");
-            auto &edge_to = assign->edges_to[0];
-            if (edge_to->has_type(EdgeType::NonBlocking) && edge_to->to == to) {
-                return true;
+    auto predicate = [](const Edge *edge) -> bool {
+        if (edge->has_type(EdgeType::Control)) return false;
+        // only for fan out one
+        return !edge->to->has_type(NodeType::Control) && !edge->to->has_type(NodeType::Net);
+    };
+    // usually the assignment chain won't be more than 16 nodes
+    // otherwise whoever create this design is really stupid...
+    auto path = Graph::route(from, to, predicate, 16);
+    if (path.empty()) return false;
+    // need to check if there is an non-blocking edge
+    for (uint64_t i = 0; i < path.size() - 1; i++) {
+        auto node_from = path[i];
+        auto node_to = path[i + 1];
+        // need to check the edge
+        const Edge *edge = nullptr;
+        for (auto &e : node_from->edges_to) {
+            if (e->to == node_to) {
+                edge = e.get();
+                break;
             }
+        }
+        if (edge->has_type(EdgeType::NonBlocking) && edge->to == to) {
+            return true;
         }
     }
     return false;

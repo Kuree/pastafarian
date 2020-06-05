@@ -189,7 +189,8 @@ public:
     Node* get_node(uint64_t key);
 
     static bool has_path(const Node* from, const Node* to, uint64_t max_depth = 1u << 20u);
-    static bool has_path(const Node* from, const Node* to, const std::function<bool(const Edge*)>& cond);
+    static bool has_path(const Node* from, const Node* to,
+                         const std::function<bool(const Edge*)>& cond);
 
     Node* select(const std::string& name);
     void identify_registers();
@@ -214,6 +215,9 @@ public:
     static std::unordered_set<const Edge*> find_connection_cond(
         const Node* from, const std::function<bool(const Edge*)>& predicate,
         const std::function<bool(const Edge*)>& terminate);
+    static std::vector<const Node*> route(const Node* from, const Node* to,
+                                          const std::function<bool(const Edge*)>& predicate,
+                                          uint32_t depth = 0);
 
     std::vector<FSMResult> identify_fsms();
     std::vector<FSMResult> identify_fsms(const Node* top);

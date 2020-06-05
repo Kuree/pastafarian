@@ -533,6 +533,49 @@ std::unordered_set<const Edge *> Graph::find_connection_cond(
     return result;
 }
 
+std::vector<const Node *> Graph::route(const Node *from, const Node *to,
+                                       const std::function<bool(const Edge *)> &predicate,
+                                       uint32_t depth) {
+    std::queue<const Node *> working_set;
+    std::unordered_map<const Node *, uint32_t> known_depth{{from, 0}};
+    std::unordered_set<const Node *> visited;
+    working_set.emplace(from);
+    std::unordered_map<const Node *, const Node *> trace;
+    bool found = false;
+
+    while (!working_set.empty() && !found) {
+        auto node = working_set.front();
+        working_set.pop();
+        if (visited.find(node) != visited.end()) continue;
+        visited.emplace(node);
+        auto current_depth = known_depth.at(node);
+        if (depth > 0 && current_depth > depth) continue;
+
+        for (auto const &edge : node->edges_to) {
+            auto node_to = edge->to;
+            trace.emplace(node_to, node);
+            if (node_to == to) {
+                found = true;
+                break;
+            }
+            if (!predicate(edge.get())) continue;
+            working_set.emplace(node_to);
+            known_depth.emplace(node_to, current_depth + 1);
+        }
+    }
+    if (trace.find(to) == trace.end()) return {};
+    std::vector<const Node *> path;
+    auto temp = to;
+    while (trace.find(temp) != trace.end() && temp != from) {
+        path.emplace_back(temp);
+        temp = trace.at(temp);
+    }
+    assert_(temp == from, "unable to compute trace");
+
+    std::reverse(path.begin(), path.end());
+    return path;
+}
+
 std::vector<FSMResult> Graph::identify_fsms() { return identify_fsms(nullptr); }
 
 std::vector<FSMResult> Graph::identify_fsms(const Node *top) {
