@@ -71,7 +71,7 @@ cross-validation.
    ```
 
 ## How to download/build
-Currently only Linux with AVX is supported. To see if your CPU supports AVX, simply do `cat /prof/cpuinfo | grep avx`.
+Currently only Linux with AVX is supported. To see if your CPU supports AVX, simply do `cat /proc/cpuinfo | grep avx`.
 ### Use pre-built binaries
 Here is a one-line install script
 ```bash
@@ -98,7 +98,15 @@ driver at runtime.
 
 ## How it works
 You can find a Latex-based documentation in `docs/` folder. To view the PDF, simply do `make` in the `docs` folder.
-This requires to have `pdflatex` and `dot2tex` installed.
+This requires to have `pdflatex` and `dot2tex` installed. Here is a brief sketch on the internal algorithms:
+1. Parse SystemVerilog files.
+2. Produce a specialized graph similar to that of a synthesized netlist.
+3. Multiple passes on the graph to identify FSM and extract its states and transition arcs.
+4. SVA code generation for property coverage and tcl generation to interact with `JasperGold`.
+5. Parse `JasperGold` proof result and compare the reachability with the graph analysis result.
+
+Currently the reachability is performed without input constraints. Adding SVA-based constraints for FSM proof is
+working-in-progress.
 
 ## Why called Pastafarian
 Pastafarian is a parody religion called [Flying Spaghetti Monster](https://en.wikipedia.org/wiki/Flying_Spaghetti_Monster).
