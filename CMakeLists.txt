@@ -18,6 +18,8 @@ else ()
     add_compile_options(-Wall -Wextra -Werror)
 endif ()
 
+# static build
+set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 
 # adding src
 add_subdirectory(src)
