@@ -8,6 +8,8 @@ curl -s https://api.github.com/repos/Kuree/pastafarian/releases/latest \
 | tr -d \" \
 | wget -i -
 
+# set to error in case unzip is not installed
+set -xe
 # unzip it and remove the zip file
 unzip release.zip
 rm release.zip
