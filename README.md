@@ -80,8 +80,12 @@ curl -s https://raw.githubusercontent.com/Kuree/pastafarian/master/scripts/insta
 The script will download the `detector` binary and `slang` driver into the current directory, `sudo` not required.
 All the binaries are statically linked so they should work with most Linux systems.
 ### Build from source
-This project requires C++17 compiler such as `g++-8` and `cmake`. Here is an example to build a release binary
+This project requires C++17 compiler such as `g++-8` and `cmake`. Here is an example to build a release binary. Notice
+that we need to update all the git submodules before we build everything.
 ```bash
+git clone https://github.com/Kuree/pastafarian
+cd pastafarian
+git submodule update --init --recursive
 mkdir build
 cd build && cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j
