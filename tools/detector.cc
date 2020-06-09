@@ -214,6 +214,17 @@ std::unordered_map<std::string, int64_t> get_token_values(const std::vector<std:
     return result;
 }
 
+void detect_slang(char *path) {
+    auto detector_path = std::string(path);
+    auto dir_name = fsm::fs::dirname(detector_path);
+    auto slang_path = fsm::fs::join(dir_name, "slang");
+    if (fsm::fs::exists(slang_path)) {
+        // set the env for the detector to use slang automatically
+        // do not override if user already has SLANG as env
+        setenv("SLANG", slang_path.c_str(), false);
+    }
+}
+
 int main(int argc, char *argv[]) {
     CLI::App app{"FSM Detector"};
     std::vector<std::string> include_dirs;
@@ -255,6 +266,9 @@ int main(int argc, char *argv[]) {
     app.add_option("-t,--time-limit", property_time_limit, "Time limit per property");
 
     CLI11_PARSE(app, argc, argv)
+
+    // automatic slang detection
+    detect_slang(argv[0]);
 
     // multi-threading support
     if (num_cpu) {
