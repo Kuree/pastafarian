@@ -222,6 +222,12 @@ void detect_slang(char *path) {
         // set the env for the detector to use slang automatically
         // do not override if user already has SLANG as env
         setenv("SLANG", slang_path.c_str(), false);
+    } else {
+        auto cwd = fsm::fs::getcwd();
+        slang_path = fsm::fs::join(cwd, "slang");
+        if (fsm::fs::exists(slang_path)) {
+            setenv("SLANG", slang_path.c_str(), false);
+        }
     }
 }
 

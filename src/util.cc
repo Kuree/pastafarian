@@ -173,6 +173,15 @@ char separator() {
     return '/';
 #endif
 }
+
+std::string getcwd() {
+#if defined(INCLUDE_FILESYSTEM)
+    return std::filesystem::current_path();
+#else
+    throw std::runtime_error("not implemented");
+#endif
+}
+
 }  // namespace fs
 
 namespace string {

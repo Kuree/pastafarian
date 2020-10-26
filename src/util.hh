@@ -27,6 +27,7 @@ std::string basename(const std::string &filename);
 std::string resolve(const std::string &filename, const std::string &base);
 std::string dirname(const std::string &filename);
 char separator();
+std::string getcwd();
 }  // namespace fs
 
 namespace string {
