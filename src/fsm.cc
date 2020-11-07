@@ -310,7 +310,7 @@ void merge_pipelined_fsm(std::vector<FSMResult> &fsm_result) {
     std::unordered_map<FSMResult *, FSMResult *> pipelined_fsm;
     for (auto &fsm_from : fsm_result) {
         for (auto &fsm_to : fsm_result) {
-            if (&fsm_from != &fsm_to) {
+            if (&fsm_from != &fsm_to && !fsm_from.is_counter() && !fsm_to.is_counter()) {
                 auto from_node = fsm_from.node();
                 auto to_node = fsm_to.node();
                 if (is_pipelined(from_node, to_node)) {
