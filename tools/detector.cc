@@ -323,11 +323,8 @@ int main(int argc, char *argv[]) {
 
     time_end = std::chrono::steady_clock::now();
     time_used = time_end - time_start;
-    uint64_t num_counters = 0;
-    for (auto const &fsm_result : fsms)
-        if (fsm_result.is_counter()) num_counters++;
-    std::cout << "FSM detection took " << time_used.count() << " seconds. "
-              << fsms.size() - num_counters << " FSMs " << num_counters << " counters" << std::endl;
+
+    std::cout << "FSM detection took " << time_used.count() << " seconds. " << std::endl;
 
     std::cout << "Analyzing detected FSM..." << std::endl;
     time_start = std::chrono::steady_clock::now();
@@ -337,6 +334,11 @@ int main(int argc, char *argv[]) {
     // merge fsm, if any
     auto raw_fsm_count = fsms.size();
     fsm::merge_pipelined_fsm(fsms);
+    uint64_t num_counters = 0;
+    for (auto const &fsm_result : fsms)
+        if (fsm_result.is_counter()) num_counters++;
+    std::cout << "Result: "
+              << fsms.size() - num_counters << " FSMs " << num_counters << " counters" << std::endl;
 
     m.set_fsm_result(fsms);
     if (!clock_name.empty()) m.set_clock_name(clock_name);
