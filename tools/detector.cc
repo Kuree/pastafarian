@@ -245,6 +245,7 @@ int main(int argc, char *argv[]) {
     std::vector<std::string> macro_values;
     std::optional<uint32_t> num_cpu;
     bool double_edge_clk = false;
+    bool merge_fsm = false;
     std::optional<uint32_t> property_time_limit;
 
     fsm::ResetType reset_type = fsm::ResetType::Default;
@@ -270,6 +271,7 @@ int main(int argc, char *argv[]) {
     app.add_flag("--double-edge-clock", double_edge_clk,
                  "Set if the design had double-edge triggered clock");
     app.add_option("-t,--time-limit", property_time_limit, "Time limit per property");
+    app.add_flag("-m,--merge", merge_fsm, "Set this flag to enable FSM merge");
 
     CLI11_PARSE(app, argc, argv)
 
@@ -333,7 +335,10 @@ int main(int argc, char *argv[]) {
     fsm::identify_fsm_arcs(fsms);
     // merge fsm, if any
     auto raw_fsm_count = fsms.size();
-    fsm::merge_pipelined_fsm(fsms);
+    if (merge_fsm) {
+        fsm::merge_pipelined_fsm(fsms);
+    }
+
     uint64_t num_counters = 0;
     for (auto const &fsm_result : fsms)
         if (fsm_result.is_counter()) num_counters++;
@@ -348,8 +353,11 @@ int main(int argc, char *argv[]) {
 
     time_end = std::chrono::steady_clock::now();
     time_used = time_end - time_start;
-    std::cout << "FSM Merging: before " << raw_fsm_count << " after " << fsms.size() << " "
-              << std::endl;
+    if (merge_fsm) {
+        std::cout << "FSM Merging: before " << raw_fsm_count << " after " << fsms.size() << " "
+                  << std::endl;
+    }
+
     std::cout << "FSM analysis took " << time_used.count() << " seconds" << std::endl;
 
     if (fsms.empty()) {
